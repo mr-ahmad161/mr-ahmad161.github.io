@@ -26,7 +26,7 @@ button{font-family:Inter}
 .home{position:relative;z-index:1;max-width:700px;margin:0 auto;padding:34px 20px 170px;text-align:center}
 .greet{color:var(--mut);font-size:16.5px;font-weight:500;margin-bottom:10px}
 .home h1{font-size:clamp(40px,7vw,58px);font-weight:900;letter-spacing:-1.6px;line-height:1.06}
-.home h1 .blue{color:#111827}
+.home h1 .blue{color:var(--blue)}
 .avatar-big{width:118px;height:118px;border-radius:50%;margin:26px auto 6px;background:linear-gradient(135deg,#2F80ED,#7B61FF);display:flex;align-items:center;justify-content:center;color:#fff;font-size:42px;font-weight:900;letter-spacing:-1px;box-shadow:0 18px 40px rgba(47,128,237,.30);border:4px solid #fff;outline:1px solid var(--line)}
 .hero-sub{color:var(--mut);font-size:16.5px;max-width:520px;margin:14px auto 0}
 .askbar{margin:30px auto 0;max-width:560px;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.35);-webkit-backdrop-filter:blur(16px) saturate(1.2);backdrop-filter:blur(16px) saturate(1.2);border:1px solid rgba(15,23,42,.08);border-radius:999px;padding:6px 6px 6px 22px;box-shadow:0 10px 30px rgba(17,17,19,.06)}
@@ -171,7 +171,7 @@ body.inchat #homeBtn{display:none}
 .crow .car{margin-left:auto;color:#B9B9C0;font-size:19px;font-weight:800;flex:none}
 
 /* v10: stylish script accents + cursor spotlight inside cards */
-.script-grad{font-family:'Sacramento',cursive;font-weight:400;font-size:1.22em;line-height:.9;display:inline-block;transform:rotate(-2.5deg) translateY(4px);color:#111827}
+.script-grad{font-family:'Sacramento',cursive;font-weight:400;font-size:1.22em;line-height:.9;display:inline-block;transform:rotate(-2.5deg) translateY(4px);background:linear-gradient(92deg,#2F80ED,#7B61FF 55%,#E84393);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.08em}
 .sig{font-family:'Sacramento',cursive;font-size:27px;color:#8A6D1F;background:linear-gradient(92deg,#B8912A,#E9C46A);-webkit-background-clip:text;background-clip:text;color:transparent;margin-left:8px;vertical-align:-4px}
 .qcard,.crow{position:relative;overflow:hidden}
 .qcard::before,.pcard::before,.crow::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(230px circle at var(--mx,50%) var(--my,50%),rgba(47,128,237,.16),rgba(123,97,255,.07) 45%,transparent 68%);opacity:0;transition:opacity .3s;pointer-events:none;z-index:0}
