@@ -3,7 +3,7 @@
   --rad:22px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%}
+html,html{background:#fff}body{background:#fff;height:100%}
 body{background:#fff;color:var(--ink);font-family:Inter,system-ui,-apple-system,sans-serif;display:flex;flex-direction:column;overflow:hidden}
 button{font-family:Inter}
 ::-webkit-scrollbar{width:0;height:0}
@@ -202,7 +202,7 @@ a.btn{color:#fff !important;text-decoration:none}
 .pc-media img{filter:none}
 .pcard:hover .pc-media img{filter:none;transform:scale(1.06)}
 
-#fluid{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
+#fluid{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;background:#fff}
 
 /* v16: cards polished, skills redesigned light and tinted */
 .pc-media{height:180px}
