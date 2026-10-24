@@ -83,7 +83,7 @@ const PROJ = [
 ];
 
 
-const COVERS = {"CareerKitPro":"covers/careerkitpro.jpg","Euraxia Visa Platform":"covers/euraxia.jpg","Calzo AI Calorie Counter":"covers/calzo.jpg","Tessio Leisures":"covers/tessio.jpg","Ticket Draws":"covers/ticketdraws.jpg","Daily Frame":"covers/dailyframe.jpg","Woo Me":"covers/woome.jpg","Flare Match":"covers/flarematch.jpg","Card Fraud Detection":"covers/cardfraud.jpg","30 AI Agent Demos":"covers/demos.jpg","MediCore AI":"covers/medicore.jpg","CallDesk AI":"covers/calldesk.jpg","Talim AI":"covers/talim.jpg","Paisa":"covers/paisa.jpg","Noor Quran":"covers/noorquran.jpg","MedixAI":"covers/medix.jpg","ResumeRank AI":"covers/resumerank.jpg","Real Estate Tour Agent":"covers/realestate.jpg","Curator":"covers/curator.jpg","PULSE":"covers/pulse.jpg","Vision Defect Inspection":"covers/cvision.jpg","n8n Lead Automation":"covers/n8n.jpg","Solace Dental Studio":"covers/solace.jpg"};
+const COVERS = {"CareerKitPro":"covers/careerkitpro.jpg?v=19","Euraxia Visa Platform":"covers/euraxia.jpg?v=19","Calzo AI Calorie Counter":"covers/calzo.jpg?v=19","Tessio Leisures":"covers/tessio.jpg?v=19","Ticket Draws":"covers/ticketdraws.jpg?v=19","Daily Frame":"covers/dailyframe.jpg?v=19","Woo Me":"covers/woome.jpg?v=19","Flare Match":"covers/flarematch.jpg?v=19","Card Fraud Detection":"covers/cardfraud.jpg?v=19","30 AI Agent Demos":"covers/demos.jpg?v=19","MediCore AI":"covers/medicore.jpg?v=19","CallDesk AI":"covers/calldesk.jpg?v=19","Talim AI":"covers/talim.jpg?v=19","Paisa":"covers/paisa.jpg?v=19","Noor Quran":"covers/noorquran.jpg?v=19","MedixAI":"covers/medix.jpg?v=19","ResumeRank AI":"covers/resumerank.jpg?v=19","Real Estate Tour Agent":"covers/realestate.jpg?v=19","Curator":"covers/curator.jpg?v=19","PULSE":"covers/pulse.jpg?v=19","Vision Defect Inspection":"covers/cvision.jpg?v=19","n8n Lead Automation":"covers/n8n.jpg?v=19","Solace Dental Studio":"covers/solace.jpg?v=19"};
 const CATS = {all:"My Projects", ai:"AI and Agent Projects", mobile:"Mobile App Projects", web:"Web Projects", data:"Data Science Projects"};
 function cardHTML(p){
   const src = COVERS[p.t] || p.img || "";
@@ -268,6 +268,21 @@ setTimeout(function(){
   var tx = innerWidth/2, ty = innerHeight*0.35, seen = false;
   addEventListener('mousemove', function(e){ tx = e.clientX; ty = e.clientY; seen = true; }, {passive:true});
   addEventListener('touchmove', function(e){ var t = e.touches[0]; tx = t.clientX; ty = t.clientY; seen = true; }, {passive:true});
+  function burst(e){
+    var x = e.clientX || (e.touches && e.touches[0].clientX), y = e.clientY || (e.touches && e.touches[0].clientY);
+    if (x == null) return;
+    var best = null, bd = 1e12;
+    els.forEach(function(el, i){
+      var dx = pts[i].x - x, dy = pts[i].y - y, d = dx*dx + dy*dy;
+      if (d < bd){ bd = d; best = el; }
+    });
+    if (!best) return;
+    best.style.transition = 'transform .35s ease';
+    best.style.transform = 'translate(-50%,-50%) scale(1.9)';
+    setTimeout(function(){ best.style.transform = 'translate(-50%,-50%) scale(1)'; }, 320);
+  }
+  addEventListener('mousedown', burst, {passive:true});
+  addEventListener('touchstart', burst, {passive:true});
   (function loop(t){
     if (!seen){ tx = innerWidth/2 + Math.sin(t/2400)*150; ty = innerHeight*0.36 + Math.cos(t/2900)*80; }
     var cx = tx, cy = ty;

@@ -1371,7 +1371,7 @@ window.addEventListener('mousedown', e => {
     if (p == null) { p = new pointerPrototype(); pointers.push(p); }
     let pos = fluidPos(e);
     updatePointerDownData(p, -1, pos.x, pos.y);
-    for (let i = 0; i < 3; i++) { p.color = generateColor(); splatPointer(p); }
+    for (let i = 0; i < 6; i++) { p.color = generateColor(); splatPointer(p); }
 });
 window.addEventListener('mousemove', e => {
     let p = pointers[0];
@@ -1459,9 +1459,9 @@ function correctDeltaY (delta) {
 
 function generateColor () {
     let c = HSVtoRGB(Math.random(), 0.7, 1.0);
-    c.r *= 0.85;
-    c.g *= 0.85;
-    c.b *= 0.85;
+    c.r *= 0.5;
+    c.g *= 0.5;
+    c.b *= 0.5;
     return c;
 }
 

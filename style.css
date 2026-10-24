@@ -227,3 +227,26 @@ a.btn{color:#fff !important;text-decoration:none}
 /* v17: answer-card heading sizes for the restored .ans wrapper */
 .ans h3{font-size:20px;letter-spacing:-.3px;margin:2px 0 6px}
 .ans h4{font-size:11.5px;letter-spacing:1.2px;text-transform:uppercase;color:#8A8A93;margin:16px 0 9px}
+
+/* v18: card pictures keep their full 3:2 frame, centred, never cut */
+.pc-media{height:auto;aspect-ratio:3/2}
+.pc-media img{object-position:center}
+
+/* v19: entrance animations, fast staggered rise/fade like the reference */
+@keyframes riseIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes dropIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.topbar{animation:dropIn .6s 0s both}
+.home .greet{animation:dropIn .6s .05s both}
+.home h1{animation:riseIn .7s .12s both}
+.home .avatar-ring{animation:popIn .7s .22s both}
+.home .hero-sub{animation:riseIn .7s .3s both}
+.home .askbar{animation:riseIn .7s .38s both}
+.home .quick .qcard{animation:riseIn .6s both}
+.home .quick .qcard:nth-child(1){animation-delay:.45s}
+.home .quick .qcard:nth-child(2){animation-delay:.52s}
+.home .quick .qcard:nth-child(3){animation-delay:.59s}
+.home .quick .qcard:nth-child(4){animation-delay:.66s}
+.home .quick .qcard:nth-child(5){animation-delay:.73s}
+.watermark{animation:fadeIn 1.2s .5s both}
