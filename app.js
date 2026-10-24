@@ -34,13 +34,13 @@ function addBot(html){
   return new Promise(res => setTimeout(() => {
     t.remove();
     const d = document.createElement('div');
-    d.className = 'msg bot'; d.innerHTML = html;
+    d.className = 'msg bot'; d.innerHTML = '<div class="ans">' + html + '</div>';
     chatEl.appendChild(d); scrollDown(); res(d);
   }, 780));
 }
 function addRaw(html){
   const d = document.createElement('div');
-  d.className = 'msg bot'; d.innerHTML = html;
+  d.className = 'msg bot'; d.innerHTML = '<div class="ans">' + html + '</div>';
   chatEl.appendChild(d); scrollDown(); return d;
 }
 function chips(list, fn){
