@@ -35,12 +35,12 @@ let config = {
     SIM_RESOLUTION: 128,
     DYE_RESOLUTION: 1440,
     CAPTURE_RESOLUTION: 512,
-    DENSITY_DISSIPATION: 0.35,
+    DENSITY_DISSIPATION: 0.5,
     VELOCITY_DISSIPATION: 0.2,
     PRESSURE: 0.1,
     PRESSURE_ITERATIONS: 20,
-    CURL: 5,
-    SPLAT_RADIUS: 0.25,
+    CURL: 3,
+    SPLAT_RADIUS: 0.2,
     SPLAT_FORCE: 6000,
     SHADING: true,
     COLORFUL: true,
@@ -1068,7 +1068,6 @@ function updateKeywords () {
 
 updateKeywords();
 initFramebuffers();
-multipleSplats(parseInt(Math.random() * 20) + 5);
 
 let lastUpdateTime = Date.now();
 let colorUpdateTimer = 0.0;
@@ -1371,7 +1370,7 @@ window.addEventListener('mousedown', e => {
     if (p == null) { p = new pointerPrototype(); pointers.push(p); }
     let pos = fluidPos(e);
     updatePointerDownData(p, -1, pos.x, pos.y);
-    for (let i = 0; i < 6; i++) { p.color = generateColor(); splatPointer(p); }
+    for (let i = 0; i < 6; i++) { p.color = generateColor(); p.color.r *= 10.0; p.color.g *= 10.0; p.color.b *= 10.0; p.x = pos.x + (Math.random() - 0.5) * 120; p.y = pos.y + (Math.random() - 0.5) * 120; splatPointer(p); }
 });
 window.addEventListener('mousemove', e => {
     let p = pointers[0];
@@ -1459,9 +1458,9 @@ function correctDeltaY (delta) {
 
 function generateColor () {
     let c = HSVtoRGB(Math.random(), 0.7, 1.0);
-    c.r *= 0.5;
-    c.g *= 0.5;
-    c.b *= 0.5;
+    c.r *= 1.0;
+    c.g *= 1.0;
+    c.b *= 1.0;
     return c;
 }
 

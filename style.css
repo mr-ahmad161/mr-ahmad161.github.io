@@ -232,8 +232,6 @@ a.btn{color:#fff !important;text-decoration:none}
 .pc-media{height:auto;aspect-ratio:3/2}
 .pc-media img{object-position:center}
 
-/* v19: entrance animations, fast staggered rise/fade like the reference */
-@keyframes riseIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 @keyframes dropIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
 @keyframes popIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -250,3 +248,23 @@ a.btn{color:#fff !important;text-decoration:none}
 .home .quick .qcard:nth-child(4){animation-delay:.66s}
 .home .quick .qcard:nth-child(5){animation-delay:.73s}
 .watermark{animation:fadeIn 1.2s .5s both}
+
+/* v23: entrance exactly like the reference: drop 60px from above, rise 80px from below, 0.8s ease; avatar pops scale .8 after 1s */
+@keyframes refDrop{from{opacity:0;transform:translateY(-60px)}to{opacity:1;transform:translateY(0)}}
+@keyframes refRise{from{opacity:0;transform:translateY(80px)}to{opacity:1;transform:translateY(0)}}
+@keyframes refPop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+.topbar{animation:refDrop .8s ease 0s both}
+.home .greet{animation:refDrop .8s ease 0s both}
+.home h1{animation:refRise .8s ease .2s both}
+.home .hero-sub{animation:refRise .8s ease .2s both}
+.home .askbar{animation:refRise .8s ease .2s both}
+.home .quick .qcard{animation:refRise .8s ease backwards}
+.home .quick .qcard:nth-child(1){animation-delay:.26s}
+.home .quick .qcard:nth-child(2){animation-delay:.32s}
+.home .quick .qcard:nth-child(3){animation-delay:.38s}
+.home .quick .qcard:nth-child(4){animation-delay:.44s}
+.home .quick .qcard:nth-child(5){animation-delay:.5s}
+.home .avatar-ring{animation:refPop .3s ease 1s backwards}
+.home .avatar-ring:hover{transform:scale(1.05)}
+.home .avatar-ring:active{transform:scale(.95)}
+.qcard:hover{transform:translateY(-4px);box-shadow:0 14px 28px rgba(15,23,42,.14)}
