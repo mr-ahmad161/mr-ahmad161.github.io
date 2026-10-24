@@ -117,10 +117,7 @@ button{font-family:Inter}
 .tab{transition:all .25s}
 .chip{transition:all .2s}
 
-.avatar-ring{position:relative;width:148px;height:148px;margin:28px auto 8px}
-.avatar-ring::before{content:"";position:absolute;inset:-6px;border-radius:50%;background:conic-gradient(from 0deg,#2F80ED,#7B61FF,#E84393,#F2994A,#34A853,#2F80ED);animation:spin 7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.avatar-ring .avatar-big{width:100%;height:100%;margin:0;position:relative;z-index:1}
 .qcard{transition:all .35s cubic-bezier(.2,.8,.3,1.2)}
 .qcard:hover,.qcard:active{transform:translateY(-5px) scale(1.03);box-shadow:0 16px 34px rgba(17,17,19,.12);border-color:#D8D8DE}
 .qcard:hover .qi,.qcard:active .qi{transform:scale(1.22) rotate(-4deg)}
@@ -232,39 +229,17 @@ a.btn{color:#fff !important;text-decoration:none}
 .pc-media{height:auto;aspect-ratio:3/2}
 .pc-media img{object-position:center}
 
-@keyframes dropIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
-@keyframes popIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.topbar{animation:dropIn .6s 0s both}
-.home .greet{animation:dropIn .6s .05s both}
-.home h1{animation:riseIn .7s .12s both}
-.home .avatar-ring{animation:popIn .7s .22s both}
-.home .hero-sub{animation:riseIn .7s .3s both}
-.home .askbar{animation:riseIn .7s .38s both}
-.home .quick .qcard{animation:riseIn .6s both}
-.home .quick .qcard:nth-child(1){animation-delay:.45s}
-.home .quick .qcard:nth-child(2){animation-delay:.52s}
-.home .quick .qcard:nth-child(3){animation-delay:.59s}
-.home .quick .qcard:nth-child(4){animation-delay:.66s}
-.home .quick .qcard:nth-child(5){animation-delay:.73s}
-.watermark{animation:fadeIn 1.2s .5s both}
 
-/* v23: entrance exactly like the reference: drop 60px from above, rise 80px from below, 0.8s ease; avatar pops scale .8 after 1s */
+/* v24: entrance mapped exactly from the reference: hero text drops 60px, ask+cards rise 80px together (delay .2s), avatar and watermark static */
 @keyframes refDrop{from{opacity:0;transform:translateY(-60px)}to{opacity:1;transform:translateY(0)}}
 @keyframes refRise{from{opacity:0;transform:translateY(80px)}to{opacity:1;transform:translateY(0)}}
-@keyframes refPop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+.qcard:hover{transform:translateY(-4px);box-shadow:0 14px 28px rgba(15,23,42,.14)}
+@keyframes refRise{from{opacity:0;transform:translateY(80px)}to{opacity:1;transform:translateY(0)}}
+.qcard:hover{transform:translateY(-4px);box-shadow:0 14px 28px rgba(15,23,42,.14)}
 .topbar{animation:refDrop .8s ease 0s both}
 .home .greet{animation:refDrop .8s ease 0s both}
-.home h1{animation:refRise .8s ease .2s both}
-.home .hero-sub{animation:refRise .8s ease .2s both}
+.home h1{animation:refDrop .8s ease 0s both}
+.home .hero-sub{animation:refDrop .8s ease 0s both}
 .home .askbar{animation:refRise .8s ease .2s both}
-.home .quick .qcard{animation:refRise .8s ease backwards}
-.home .quick .qcard:nth-child(1){animation-delay:.26s}
-.home .quick .qcard:nth-child(2){animation-delay:.32s}
-.home .quick .qcard:nth-child(3){animation-delay:.38s}
-.home .quick .qcard:nth-child(4){animation-delay:.44s}
-.home .quick .qcard:nth-child(5){animation-delay:.5s}
-.home .avatar-ring{animation:refPop .3s ease 1s backwards}
-.home .avatar-ring:hover{transform:scale(1.05)}
-.home .avatar-ring:active{transform:scale(.95)}
+.home .quick{animation:refRise .8s ease .2s both}
 .qcard:hover{transform:translateY(-4px);box-shadow:0 14px 28px rgba(15,23,42,.14)}
