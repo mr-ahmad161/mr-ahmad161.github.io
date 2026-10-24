@@ -206,3 +206,20 @@ a.btn{color:#fff !important;text-decoration:none}
 .pcard:hover .pc-media img{filter:none;transform:scale(1.06)}
 
 #fluid{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
+
+/* v16: cards polished, skills redesigned light and tinted */
+.pc-media{height:180px}
+.pc-body{padding:15px 16px 16px;gap:7px}
+.pc-body .tag{display:inline-block;align-self:flex-start;background:#F2F2F7;color:#55555C;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;border-radius:99px;padding:5px 11px}
+.pbtn{border:1px solid #E3E3E8;background:#FAFAFB;padding:8px 14px;font-size:12px}
+.pbtn.gold{background:linear-gradient(135deg,#FFC53D,#FF9E2C);border-color:transparent;color:#1A1A1E}
+.msg.bot.ans h3{font-size:20px;letter-spacing:-.3px;margin:2px 0 6px}
+.msg.bot.ans h4{font-size:11.5px;letter-spacing:1.2px;text-transform:uppercase;color:#8A8A93;margin:16px 0 9px}
+.pills{gap:9px;margin-bottom:4px}
+.pillb{background:#fff;border:1px solid #E7E7EC;color:#1A1A1E;box-shadow:0 2px 8px rgba(17,17,19,.04);padding:8px 15px;transition:all .2s}
+.pillb:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(17,17,19,.08)}
+.pills.g-ai .pillb{background:#F2F7FF;border-color:#D6E4FF}
+.pills.g-lang .pillb{background:#F5F3FF;border-color:#E2DBFF}
+.pills.g-web .pillb{background:#EFFAF3;border-color:#CFEBDB}
+.pills.g-data .pillb{background:#FFF7ED;border-color:#FADFC0}
+.pills.g-tools .pillb{background:#FDF2F8;border-color:#F5D5E4}

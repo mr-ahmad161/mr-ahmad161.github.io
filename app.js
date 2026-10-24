@@ -87,11 +87,11 @@ const COVERS = {"CareerKitPro":"covers/careerkitpro.jpg","Euraxia Visa Platform"
 const CATS = {all:"My Projects", ai:"AI and Agent Projects", mobile:"Mobile App Projects", web:"Web Projects", data:"Data Science Projects"};
 function cardHTML(p){
   const src = COVERS[p.t] || p.img || "";
-  const media = `<div class="pc-media" style="background:${p.g || "#EDF0F5"}">${src ? `<img src="${src}" alt="${p.t}">` : ``}<span class="tag">${p.tag}</span></div>`;
+  const media = `<div class="pc-media" style="background:${p.g || "#EDF0F5"}">${src ? `<img src="${src}" alt="${p.t}">` : ``}</div>`;
   let btns = "";
   if (p.gh) btns += `<a class="pbtn" href="${p.gh}" target="_blank" rel="noopener">Code on GitHub</a>`;
   if (p.li) btns += `<a class="pbtn gold" href="${p.li}" target="_blank" rel="noopener">${p.vid ? "Watch on LinkedIn" : "See on LinkedIn"}</a>`;
-  return `<div class="pcard">${media}<div class="pc-body"><div class="tt">${p.t}</div><div class="ds">${p.d}</div><div class="pc-btns">${btns}</div></div></div>`;
+  return `<div class="pcard">${media}<div class="pc-body"><span class="tag">${p.tag}</span><div class="tt">${p.t}</div><div class="ds">${p.d}</div><div class="pc-btns">${btns}</div></div></div>`;
 }
 function renderProjects(cat){
   const list = PROJ.filter(p => cat === "all" || p.cats.includes(cat));
@@ -126,15 +126,15 @@ const A = {
   skills: () => `
     <h3>Skills &amp; Expertise</h3>
     <h4>AI Agents and Agentic AI</h4>
-    <div class="pills"><span class="pillb">AI Agents</span><span class="pillb">OpenAI</span><span class="pillb">Claude</span><span class="pillb">LangChain</span><span class="pillb">LangGraph</span><span class="pillb">CrewAI</span><span class="pillb">RAG</span><span class="pillb">Prompt Engineering</span><span class="pillb">n8n</span></div>
+    <div class="pills g-ai"><span class="pillb">AI Agents</span><span class="pillb">OpenAI</span><span class="pillb">Claude</span><span class="pillb">LangChain</span><span class="pillb">LangGraph</span><span class="pillb">CrewAI</span><span class="pillb">RAG</span><span class="pillb">Prompt Engineering</span><span class="pillb">n8n</span></div>
     <h4>Programming Languages</h4>
-    <div class="pills"><span class="pillb">Python</span><span class="pillb">JavaScript</span><span class="pillb">Dart</span><span class="pillb">Java</span><span class="pillb">C#</span><span class="pillb">C++</span><span class="pillb">R</span></div>
+    <div class="pills g-lang"><span class="pillb">Python</span><span class="pillb">JavaScript</span><span class="pillb">Dart</span><span class="pillb">Java</span><span class="pillb">C#</span><span class="pillb">C++</span><span class="pillb">R</span></div>
     <h4>Web and Mobile</h4>
-    <div class="pills"><span class="pillb">React</span><span class="pillb">Node.js</span><span class="pillb">Flutter</span><span class="pillb">HTML5</span><span class="pillb">CSS3</span><span class="pillb">Firebase</span></div>
+    <div class="pills g-web"><span class="pillb">React</span><span class="pillb">Node.js</span><span class="pillb">Flutter</span><span class="pillb">HTML5</span><span class="pillb">CSS3</span><span class="pillb">Firebase</span></div>
     <h4>Data Science and ML</h4>
-    <div class="pills"><span class="pillb">TensorFlow</span><span class="pillb">Scikit-Learn</span><span class="pillb">Pandas</span><span class="pillb">NumPy</span><span class="pillb">Power BI</span><span class="pillb">Tableau</span></div>
+    <div class="pills g-data"><span class="pillb">TensorFlow</span><span class="pillb">Scikit-Learn</span><span class="pillb">Pandas</span><span class="pillb">NumPy</span><span class="pillb">Power BI</span><span class="pillb">Tableau</span></div>
     <h4>Tools I Build With</h4>
-    <div class="pills"><span class="pillb light">Cursor</span><span class="pillb light">Lovable</span><span class="pillb light">GitHub</span><span class="pillb light">VS Code</span><span class="pillb light">Android Studio</span></div>
+    <div class="pills g-tools"><span class="pillb light">Cursor</span><span class="pillb light">Lovable</span><span class="pillb light">GitHub</span><span class="pillb light">VS Code</span><span class="pillb light">Android Studio</span></div>
     <p style="margin-top:12px">In short: if it is an agent, an app, a website or a data problem, I can build it end to end.</p>`,
   contact: () => `
     <h3>Contact</h3>
