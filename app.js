@@ -83,7 +83,7 @@ const PROJ = [
 ];
 
 
-const COVERS = {"CareerKitPro":"covers/careerkitpro.jpg?v=19","Euraxia Visa Platform":"covers/euraxia.jpg?v=19","Calzo AI Calorie Counter":"covers/calzo.jpg?v=19","Tessio Leisures":"covers/tessio.jpg?v=19","Ticket Draws":"covers/ticketdraws.jpg?v=19","Daily Frame":"covers/dailyframe.jpg?v=19","Woo Me":"covers/woome.jpg?v=19","Flare Match":"covers/flarematch.jpg?v=19","Card Fraud Detection":"covers/cardfraud.jpg?v=19","30 AI Agent Demos":"covers/demos.jpg?v=19","MediCore AI":"covers/medicore.jpg?v=19","CallDesk AI":"covers/calldesk.jpg?v=19","Talim AI":"covers/talim.jpg?v=19","Paisa":"covers/paisa.jpg?v=19","Noor Quran":"covers/noorquran.jpg?v=19","MedixAI":"covers/medix.jpg?v=19","ResumeRank AI":"covers/resumerank.jpg?v=19","Real Estate Tour Agent":"covers/realestate.jpg?v=19","Curator":"covers/curator.jpg?v=19","PULSE":"covers/pulse.jpg?v=19","Vision Defect Inspection":"covers/cvision.jpg?v=19","n8n Lead Automation":"covers/n8n.jpg?v=19","Solace Dental Studio":"covers/solace.jpg?v=19"};
+const COVERS = {"CareerKitPro":"covers/careerkitpro.jpg?v=21","Euraxia Visa Platform":"covers/euraxia.jpg?v=21","Calzo AI Calorie Counter":"covers/calzo.jpg?v=21","Tessio Leisures":"covers/tessio.jpg?v=21","Ticket Draws":"covers/ticketdraws.jpg?v=21","Daily Frame":"covers/dailyframe.jpg?v=21","Woo Me":"covers/woome.jpg?v=21","Flare Match":"covers/flarematch.jpg?v=21","Card Fraud Detection":"covers/cardfraud.jpg?v=21","30 AI Agent Demos":"covers/demos.jpg?v=21","MediCore AI":"covers/medicore.jpg?v=21","CallDesk AI":"covers/calldesk.jpg?v=21","Talim AI":"covers/talim.jpg?v=21","Paisa":"covers/paisa.jpg?v=21","Noor Quran":"covers/noorquran.jpg?v=21","MedixAI":"covers/medix.jpg?v=21","ResumeRank AI":"covers/resumerank.jpg?v=21","Real Estate Tour Agent":"covers/realestate.jpg?v=21","Curator":"covers/curator.jpg?v=21","PULSE":"covers/pulse.jpg?v=21","Vision Defect Inspection":"covers/cvision.jpg?v=21","n8n Lead Automation":"covers/n8n.jpg?v=21","Solace Dental Studio":"covers/solace.jpg?v=21"};
 const CATS = {all:"My Projects", ai:"AI and Agent Projects", mobile:"Mobile App Projects", web:"Web Projects", data:"Data Science Projects"};
 function cardHTML(p){
   const src = COVERS[p.t] || p.img || "";
@@ -256,43 +256,48 @@ document.addEventListener('mousemove', e => {
 
 setTimeout(function(){
   if (window.__fluidStarted) return;
-  var cols = ['#FFD1EC,#CDB4F6 32%,#A8D8FF 56%,#B8F1CC 78%,#FFF3B0', '#FFC7E3,#B9A7F9 40%,#9ED0FF 70%,#CFF7DC', '#FFE3F1,#D5C2FA 45%,#BDEBFF'];
-  var sizes = [250, 190, 150], ops = [0.8, 0.5, 0.35], ease = [0.16, 0.09, 0.05];
-  var els = cols.map(function(c, i){
-    var d = document.createElement('div');
-    d.style.cssText = 'position:fixed;left:0;top:0;width:' + sizes[i] + 'px;height:' + sizes[i] + 'px;border-radius:50%;pointer-events:none;z-index:0;transform:translate(-50%,-50%);background:radial-gradient(circle at 35% 35%,' + c + ');filter:blur(26px);opacity:' + ops[i];
-    document.body.appendChild(d);
-    return d;
-  });
-  var pts = els.map(function(){ return {x: innerWidth/2, y: innerHeight*0.35}; });
-  var tx = innerWidth/2, ty = innerHeight*0.35, seen = false;
-  addEventListener('mousemove', function(e){ tx = e.clientX; ty = e.clientY; seen = true; }, {passive:true});
-  addEventListener('touchmove', function(e){ var t = e.touches[0]; tx = t.clientX; ty = t.clientY; seen = true; }, {passive:true});
-  function burst(e){
-    var x = e.clientX || (e.touches && e.touches[0].clientX), y = e.clientY || (e.touches && e.touches[0].clientY);
-    if (x == null) return;
-    var best = null, bd = 1e12;
-    els.forEach(function(el, i){
-      var dx = pts[i].x - x, dy = pts[i].y - y, d = dx*dx + dy*dy;
-      if (d < bd){ bd = d; best = el; }
-    });
-    if (!best) return;
-    best.style.transition = 'transform .35s ease';
-    best.style.transform = 'translate(-50%,-50%) scale(1.9)';
-    setTimeout(function(){ best.style.transform = 'translate(-50%,-50%) scale(1)'; }, 320);
+  var cv = document.createElement('canvas');
+  cv.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none';
+  document.body.appendChild(cv);
+  var ctx = cv.getContext('2d');
+  function size(){ cv.width = innerWidth * (devicePixelRatio||1); cv.height = innerHeight * (devicePixelRatio||1); }
+  size(); addEventListener('resize', size);
+  var palette = ['255,107,157','167,139,250','125,211,252','110,231,183','253,224,71','251,146,60'];
+  function blob(x, y, r, color, a){
+    var g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, 'rgba(' + color + ',' + a + ')');
+    g.addColorStop(1, 'rgba(' + color + ',0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill();
   }
-  addEventListener('mousedown', burst, {passive:true});
-  addEventListener('touchstart', burst, {passive:true});
-  (function loop(t){
-    if (!seen){ tx = innerWidth/2 + Math.sin(t/2400)*150; ty = innerHeight*0.36 + Math.cos(t/2900)*80; }
-    var cx = tx, cy = ty;
-    els.forEach(function(el, i){
-      var pt = pts[i];
-      pt.x += (cx - pt.x) * ease[i];
-      pt.y += (cy - pt.y) * ease[i];
-      el.style.left = pt.x + 'px'; el.style.top = pt.y + 'px';
-      cx = pt.x; cy = pt.y;
-    });
-    requestAnimationFrame(loop);
-  })(0);
+  function paint(x, y, color, big){
+    var pr = devicePixelRatio||1;
+    blob(x*pr, y*pr, (big ? 130 : 85) * pr, color, big ? 0.85 : 0.55);
+  }
+  function burst(x, y){
+    var c = palette[Math.floor(Math.random()*palette.length)];
+    for (var i=0;i<10;i++){
+      var a = Math.random()*6.28, d = Math.random()*110;
+      paint(x + Math.cos(a)*d, y + Math.sin(a)*d, c, true);
+    }
+  }
+  var cur = null;
+  addEventListener('mousemove', function(e){
+    if (!cur) cur = palette[Math.floor(Math.random()*palette.length)];
+    paint(e.clientX, e.clientY, cur, false);
+  }, {passive:true});
+  addEventListener('mousedown', function(e){ burst(e.clientX, e.clientY); }, {passive:true});
+  addEventListener('touchstart', function(e){ var t=e.touches[0]; burst(t.clientX, t.clientY); }, {passive:true});
+  addEventListener('touchmove', function(e){
+    var t=e.touches[0];
+    if (!cur) cur = palette[Math.floor(Math.random()*palette.length)];
+    paint(t.clientX, t.clientY, cur, false);
+  }, {passive:true});
+  (function fade(){
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.fillStyle = 'rgba(0,0,0,0.045)';
+    ctx.fillRect(0, 0, cv.width, cv.height);
+    ctx.globalCompositeOperation = 'source-over';
+    requestAnimationFrame(fade);
+  })();
 }, 900);
