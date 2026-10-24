@@ -1542,3 +1542,5 @@ function hashCode (s) {
 
 // intro splats so the colours show on load
 splatStack.push(6);
+
+window.__fluidStarted = true;

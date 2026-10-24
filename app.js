@@ -253,3 +253,31 @@ document.addEventListener('mousemove', e => {
   el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
   el.style.setProperty('--my', (e.clientY - r.top) + 'px');
 }, {passive:true});
+
+setTimeout(function(){
+  if (window.__fluidStarted) return;
+  var cols = ['#FFD1EC,#CDB4F6 32%,#A8D8FF 56%,#B8F1CC 78%,#FFF3B0', '#FFC7E3,#B9A7F9 40%,#9ED0FF 70%,#CFF7DC', '#FFE3F1,#D5C2FA 45%,#BDEBFF'];
+  var sizes = [250, 190, 150], ops = [0.8, 0.5, 0.35], ease = [0.16, 0.09, 0.05];
+  var els = cols.map(function(c, i){
+    var d = document.createElement('div');
+    d.style.cssText = 'position:fixed;left:0;top:0;width:' + sizes[i] + 'px;height:' + sizes[i] + 'px;border-radius:50%;pointer-events:none;z-index:0;transform:translate(-50%,-50%);background:radial-gradient(circle at 35% 35%,' + c + ');filter:blur(26px);opacity:' + ops[i];
+    document.body.appendChild(d);
+    return d;
+  });
+  var pts = els.map(function(){ return {x: innerWidth/2, y: innerHeight*0.35}; });
+  var tx = innerWidth/2, ty = innerHeight*0.35, seen = false;
+  addEventListener('mousemove', function(e){ tx = e.clientX; ty = e.clientY; seen = true; }, {passive:true});
+  addEventListener('touchmove', function(e){ var t = e.touches[0]; tx = t.clientX; ty = t.clientY; seen = true; }, {passive:true});
+  (function loop(t){
+    if (!seen){ tx = innerWidth/2 + Math.sin(t/2400)*150; ty = innerHeight*0.36 + Math.cos(t/2900)*80; }
+    var cx = tx, cy = ty;
+    els.forEach(function(el, i){
+      var pt = pts[i];
+      pt.x += (cx - pt.x) * ease[i];
+      pt.y += (cy - pt.y) * ease[i];
+      el.style.left = pt.x + 'px'; el.style.top = pt.y + 'px';
+      cx = pt.x; cy = pt.y;
+    });
+    requestAnimationFrame(loop);
+  })(0);
+}, 900);
