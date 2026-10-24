@@ -35,12 +35,12 @@ let config = {
     SIM_RESOLUTION: 128,
     DYE_RESOLUTION: 1440,
     CAPTURE_RESOLUTION: 512,
-    DENSITY_DISSIPATION: 0.5,
+    DENSITY_DISSIPATION: 0.35,
     VELOCITY_DISSIPATION: 0.2,
     PRESSURE: 0.1,
     PRESSURE_ITERATIONS: 20,
-    CURL: 3,
-    SPLAT_RADIUS: 0.2,
+    CURL: 5,
+    SPLAT_RADIUS: 0.25,
     SPLAT_FORCE: 6000,
     SHADING: true,
     COLORFUL: true,
@@ -1381,6 +1381,7 @@ window.addEventListener('mousemove', e => {
     else updatePointerMoveData(p, pos.x, pos.y);
     p.color = generateColor();
     p.moved = true;
+    splatPointer(p);
 });
 window.addEventListener('mouseup', () => {
     if (pointers[0]) updatePointerUpData(pointers[0]);
@@ -1457,10 +1458,10 @@ function correctDeltaY (delta) {
 }
 
 function generateColor () {
-    let c = HSVtoRGB(Math.random(), 0.6, 1.0);
-    c.r *= 0.5;
-    c.g *= 0.5;
-    c.b *= 0.5;
+    let c = HSVtoRGB(Math.random(), 0.7, 1.0);
+    c.r *= 0.85;
+    c.g *= 0.85;
+    c.b *= 0.85;
     return c;
 }
 
@@ -1538,3 +1539,6 @@ function hashCode (s) {
     }
     return hash;
 };
+
+// intro splats so the colours show on load
+splatStack.push(6);
