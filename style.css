@@ -251,3 +251,8 @@ a.btn{color:#fff !important;text-decoration:none}
 .avatar-ring{position:relative;width:148px;height:148px;margin:28px auto 8px}
 .avatar-ring::before{content:"";position:absolute;inset:-6px;border-radius:50%;background:conic-gradient(from 0deg,#2F80ED,#7B61FF,#E84393,#F2994A,#34A853,#2F80ED);animation:spin 7s linear infinite}
 .avatar-ring .avatar-big{width:100%;height:100%;margin:0;position:relative;z-index:1}
+
+/* scroll fix: definite page height + shrinkable scroll area */
+html{height:100%}
+.scroll{min-height:0}
+.topbar{flex:none}
