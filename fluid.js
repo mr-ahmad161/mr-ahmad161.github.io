@@ -127,7 +127,6 @@ function getWebGLContext (canvas) {
         formatR = getSupportedFormat(gl, gl.RGBA, gl.RGBA, halfFloatTexType);
     }
 
-    ga('send', 'event', isWebGL2 ? 'webgl2' : 'webgl', formatRGBA == null ? 'not supported' : 'supported');
 
     return {
         gl,
@@ -1539,7 +1538,5 @@ function hashCode (s) {
     return hash;
 };
 
-// intro splats so the colours show on load
-splatStack.push(6);
 
 window.__fluidStarted = true;
