@@ -20,16 +20,16 @@ button{font-family:Inter}
 
 /* scroll area */
 .scroll{flex:1;overflow-y:auto;position:relative}
-.watermark{position:fixed;left:50%;transform:translateX(-50%);bottom:86px;font-weight:900;font-size:19vw;line-height:.8;color:#F4F4F6;z-index:0;pointer-events:none;letter-spacing:-4px;white-space:nowrap;user-select:none}
+.watermark{position:fixed;left:50%;transform:translateX(-50%);bottom:86px;font-weight:900;font-size:19vw;line-height:.8;color:transparent;background:linear-gradient(rgba(15,23,42,.10),rgba(15,23,42,0));-webkit-background-clip:text;background-clip:text;z-index:0;pointer-events:none;letter-spacing:-4px;white-space:nowrap;user-select:none}
 
 /* home hero */
 .home{position:relative;z-index:1;max-width:700px;margin:0 auto;padding:34px 20px 170px;text-align:center}
 .greet{color:var(--mut);font-size:16.5px;font-weight:500;margin-bottom:10px}
 .home h1{font-size:clamp(40px,7vw,58px);font-weight:900;letter-spacing:-1.6px;line-height:1.06}
-.home h1 .blue{color:var(--blue)}
+.home h1 .blue{color:#111827}
 .avatar-big{width:118px;height:118px;border-radius:50%;margin:26px auto 6px;background:linear-gradient(135deg,#2F80ED,#7B61FF);display:flex;align-items:center;justify-content:center;color:#fff;font-size:42px;font-weight:900;letter-spacing:-1px;box-shadow:0 18px 40px rgba(47,128,237,.30);border:4px solid #fff;outline:1px solid var(--line)}
 .hero-sub{color:var(--mut);font-size:16.5px;max-width:520px;margin:14px auto 0}
-.askbar{margin:30px auto 0;max-width:560px;display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 6px 6px 22px;box-shadow:0 10px 30px rgba(17,17,19,.06)}
+.askbar{margin:30px auto 0;max-width:560px;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.35);-webkit-backdrop-filter:blur(16px) saturate(1.2);backdrop-filter:blur(16px) saturate(1.2);border:1px solid rgba(15,23,42,.08);border-radius:999px;padding:6px 6px 6px 22px;box-shadow:0 10px 30px rgba(17,17,19,.06)}
 .askbar input{flex:1;border:none;outline:none;font-size:16px;font-family:Inter;color:var(--ink);background:transparent;min-width:0}
 .askbar input::placeholder{color:#B9B9C0}
 .sendbtn{width:42px;height:42px;border-radius:50%;border:none;background:var(--blue);color:#fff;font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto;transition:transform .15s,opacity .15s}
@@ -37,7 +37,7 @@ button{font-family:Inter}
 .sendbtn:not(:disabled):hover{transform:scale(1.07)}
 .quick{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;max-width:640px;margin:22px auto 0}
 @media(max-width:640px){.quick{grid-template-columns:repeat(3,1fr)}}
-.qcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px 8px 13px;cursor:pointer;font-weight:600;font-size:14.5px;display:flex;flex-direction:column;align-items:center;gap:8px;transition:background .15s,transform .15s}
+.qcard{background:rgba(255,255,255,.35);-webkit-backdrop-filter:blur(16px) saturate(1.2);backdrop-filter:blur(16px) saturate(1.2);border:1px solid rgba(15,23,42,.08);border-radius:18px;padding:15px 8px 13px;cursor:pointer;font-weight:600;font-size:14.5px;display:flex;flex-direction:column;align-items:center;gap:8px;transition:background .2s,transform .2s,box-shadow .2s}
 .qcard:hover{background:var(--fill);transform:translateY(-2px)}
 .qcard .qi{width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center}
 .qcard .qi svg{width:17px;height:17px}
@@ -171,7 +171,7 @@ body.inchat #homeBtn{display:none}
 .crow .car{margin-left:auto;color:#B9B9C0;font-size:19px;font-weight:800;flex:none}
 
 /* v10: stylish script accents + cursor spotlight inside cards */
-.script-grad{font-family:'Sacramento',cursive;font-weight:400;font-size:1.22em;line-height:.9;display:inline-block;transform:rotate(-2.5deg) translateY(4px);background:linear-gradient(92deg,#2F80ED,#7B61FF 55%,#E84393);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.08em}
+.script-grad{font-family:'Sacramento',cursive;font-weight:400;font-size:1.22em;line-height:.9;display:inline-block;transform:rotate(-2.5deg) translateY(4px);color:#111827}
 .sig{font-family:'Sacramento',cursive;font-size:27px;color:#8A6D1F;background:linear-gradient(92deg,#B8912A,#E9C46A);-webkit-background-clip:text;background-clip:text;color:transparent;margin-left:8px;vertical-align:-4px}
 .qcard,.crow{position:relative;overflow:hidden}
 .qcard::before,.pcard::before,.crow::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(230px circle at var(--mx,50%) var(--my,50%),rgba(47,128,237,.16),rgba(123,97,255,.07) 45%,transparent 68%);opacity:0;transition:opacity .3s;pointer-events:none;z-index:0}
@@ -233,13 +233,16 @@ a.btn{color:#fff !important;text-decoration:none}
 /* v24: entrance mapped exactly from the reference: hero text drops 60px, ask+cards rise 80px together (delay .2s), avatar and watermark static */
 @keyframes refDrop{from{opacity:0;transform:translateY(-60px)}to{opacity:1;transform:translateY(0)}}
 @keyframes refRise{from{opacity:0;transform:translateY(80px)}to{opacity:1;transform:translateY(0)}}
-.qcard:hover{transform:translateY(-4px);box-shadow:0 14px 28px rgba(15,23,42,.14)}
+.qcard:hover{transform:translateY(-4px);background:rgba(255,255,255,.6);box-shadow:0 14px 28px rgba(15,23,42,.14)}
+.qcard:active{transform:scale(.95)}
 @keyframes refRise{from{opacity:0;transform:translateY(80px)}to{opacity:1;transform:translateY(0)}}
-.qcard:hover{transform:translateY(-4px);box-shadow:0 14px 28px rgba(15,23,42,.14)}
+.qcard:hover{transform:translateY(-4px);background:rgba(255,255,255,.6);box-shadow:0 14px 28px rgba(15,23,42,.14)}
+.qcard:active{transform:scale(.95)}
 .topbar{animation:refDrop .8s ease 0s both}
 .home .greet{animation:refDrop .8s ease 0s both}
 .home h1{animation:refDrop .8s ease 0s both}
 .home .hero-sub{animation:refDrop .8s ease 0s both}
 .home .askbar{animation:refRise .8s ease .2s both}
 .home .quick{animation:refRise .8s ease .2s both}
-.qcard:hover{transform:translateY(-4px);box-shadow:0 14px 28px rgba(15,23,42,.14)}
+.qcard:hover{transform:translateY(-4px);background:rgba(255,255,255,.6);box-shadow:0 14px 28px rgba(15,23,42,.14)}
+.qcard:active{transform:scale(.95)}
