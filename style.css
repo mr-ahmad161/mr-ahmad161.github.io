@@ -198,3 +198,19 @@ body.inchat #homeBtn{display:none}
 #glow2{width:190px;height:190px;opacity:.5}
 #glow3{width:150px;height:150px;opacity:.35}
 @keyframes hueSpin{from{filter:blur(30px) saturate(1.5) hue-rotate(0deg)}to{filter:blur(30px) saturate(1.5) hue-rotate(360deg)}}
+
+/* v14: prettier rounded buttons/cards, readable button text, glow moved behind content */
+a.btn{color:#fff !important;text-decoration:none}
+.btn{padding:12px 24px;border-radius:99px;font-weight:800;letter-spacing:.2px;box-shadow:0 12px 26px rgba(17,17,19,.13);transition:all .25s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 18px 34px rgba(17,17,19,.16)}
+.btn.wa{background:linear-gradient(135deg,#2BE07A,#1DA851)}
+.btn.blue{background:linear-gradient(135deg,#3B8BFF,#2F6FDB)}
+.crow{border-radius:20px;padding:13px 16px;border-color:#ECECF1;box-shadow:0 8px 22px rgba(17,17,19,.05)}
+.crow .ci{border-radius:14px;width:44px;height:44px}
+#glow,#glow2,#glow3{z-index:0}
+#glow{opacity:.65}
+#glow2{opacity:.45}
+#glow3{opacity:.3}
+@keyframes hueSpin{from{filter:blur(30px) saturate(1.75) hue-rotate(0deg)}to{filter:blur(30px) saturate(1.75) hue-rotate(360deg)}}
+.scroll{position:relative;z-index:1}
+.topbar{z-index:60}
