@@ -36,7 +36,7 @@ let config = {
     DYE_RESOLUTION: 1440,
     CAPTURE_RESOLUTION: 512,
     DENSITY_DISSIPATION: 0.5,
-    VELOCITY_DISSIPATION: 0.2,
+    VELOCITY_DISSIPATION: 3,
     PRESSURE: 0.1,
     PRESSURE_ITERATIONS: 20,
     CURL: 3,
@@ -1457,7 +1457,7 @@ function correctDeltaY (delta) {
 }
 
 function generateColor () {
-    let c = HSVtoRGB(Math.random(), 0.7, 1.0);
+    let c = HSVtoRGB(Math.random(), 1.0, 1.0);
     c.r *= 1.0;
     c.g *= 1.0;
     c.b *= 1.0;
