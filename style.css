@@ -117,7 +117,6 @@ button{font-family:Inter}
 .tab{transition:all .25s}
 .chip{transition:all .2s}
 
-#glow{position:fixed;width:540px;height:540px;border-radius:50%;pointer-events:none;z-index:0;left:0;top:0;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(47,128,237,.20),rgba(123,97,255,.13) 42%,rgba(232,67,147,.06) 60%,transparent 70%);filter:blur(28px);opacity:.85}
 .avatar-ring{position:relative;width:148px;height:148px;margin:28px auto 8px}
 .avatar-ring::before{content:"";position:absolute;inset:-6px;border-radius:50%;background:conic-gradient(from 0deg,#2F80ED,#7B61FF,#E84393,#F2994A,#34A853,#2F80ED);animation:spin 7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -181,25 +180,15 @@ body.inchat #homeBtn{display:none}
 .qcard::before,.pcard::before,.crow::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(230px circle at var(--mx,50%) var(--my,50%),rgba(47,128,237,.16),rgba(123,97,255,.07) 45%,transparent 68%);opacity:0;transition:opacity .3s;pointer-events:none;z-index:0}
 .qcard:hover::before,.pcard:hover::before,.crow:hover::before{opacity:1}
 .qcard>*,.crow>*{position:relative;z-index:1}
-#glow{width:620px;height:620px;opacity:.95}
 
 /* v11: reference matched cursor wash: small pastel blob, springy trail, slow hue cycle */
-#glow,#glow2,#glow3{position:fixed;left:0;top:0;width:150px;height:150px;border-radius:50%;pointer-events:none;z-index:200;transform:translate(-50%,-50%);background:radial-gradient(circle at 35% 35%,#FFD1EC,#CDB4F6 32%,#A8D8FF 56%,#B8F1CC 78%,#FFF3B0);mix-blend-mode:multiply;animation:hueSpin 16s linear infinite}
-#glow{opacity:.55}
-#glow2{opacity:.34}
-#glow3{opacity:.22}
 @keyframes hueSpin{from{filter:blur(42px) hue-rotate(0deg)}to{filter:blur(42px) hue-rotate(360deg)}}
 
 .photo{background-image:url("avatar.jpg") !important;background-size:cover !important;background-position:center 20% !important}
 
 /* v12: cursor wash made clearly visible: bigger, richer color, grows over interactive things */
-#glow,#glow2,#glow3{mix-blend-mode:normal;transform:translate(-50%,-50%) scale(var(--gs,1));transition:transform .35s ease}
-#glow{width:250px;height:250px;opacity:.8}
-#glow2{width:190px;height:190px;opacity:.5}
-#glow3{width:150px;height:150px;opacity:.35}
 @keyframes hueSpin{from{filter:blur(30px) saturate(1.5) hue-rotate(0deg)}to{filter:blur(30px) saturate(1.5) hue-rotate(360deg)}}
 
-/* v14: prettier rounded buttons/cards, readable button text, glow moved behind content */
 a.btn{color:#fff !important;text-decoration:none}
 .btn{padding:12px 24px;border-radius:99px;font-weight:800;letter-spacing:.2px;box-shadow:0 12px 26px rgba(17,17,19,.13);transition:all .25s}
 .btn:hover{transform:translateY(-2px);box-shadow:0 18px 34px rgba(17,17,19,.16)}
@@ -207,10 +196,6 @@ a.btn{color:#fff !important;text-decoration:none}
 .btn.blue{background:linear-gradient(135deg,#3B8BFF,#2F6FDB)}
 .crow{border-radius:20px;padding:13px 16px;border-color:#ECECF1;box-shadow:0 8px 22px rgba(17,17,19,.05)}
 .crow .ci{border-radius:14px;width:44px;height:44px}
-#glow,#glow2,#glow3{z-index:0}
-#glow{opacity:.65}
-#glow2{opacity:.45}
-#glow3{opacity:.3}
 @keyframes hueSpin{from{filter:blur(30px) saturate(1.75) hue-rotate(0deg)}to{filter:blur(30px) saturate(1.75) hue-rotate(360deg)}}
 .scroll{position:relative;z-index:1}
 .topbar{z-index:60}
@@ -219,3 +204,5 @@ a.btn{color:#fff !important;text-decoration:none}
 .pc-media{height:170px}
 .pc-media img{filter:none}
 .pcard:hover .pc-media img{filter:none;transform:scale(1.06)}
+
+#fluid{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none}

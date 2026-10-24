@@ -246,36 +246,10 @@ document.querySelectorAll('.tab').forEach(t => t.onclick = () => ask(t.dataset.q
 $('homeBtn').onclick = toHome;
 $('backBtn').onclick = toHome;
 
-(function(){
-  const els = [document.getElementById('glow'), document.getElementById('glow2'), document.getElementById('glow3')];
-  const ease = [0.16, 0.09, 0.05];
-  const pts = els.map(() => ({x: innerWidth/2, y: innerHeight*0.35}));
-  let tx = innerWidth/2, ty = innerHeight*0.35, seen = false;
-  addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; seen = true; }, {passive:true});
-  addEventListener('touchmove', e => { const t = e.touches[0]; tx = t.clientX; ty = t.clientY; seen = true; }, {passive:true});
-  (function loop(t){
-    if (!seen){ tx = innerWidth/2 + Math.sin(t/2400)*150; ty = innerHeight*0.36 + Math.cos(t/2900)*80; }
-    let cx = tx, cy = ty;
-    els.forEach((el, i) => {
-      const pt = pts[i];
-      pt.x += (cx - pt.x) * ease[i];
-      pt.y += (cy - pt.y) * ease[i];
-      el.style.left = pt.x + 'px'; el.style.top = pt.y + 'px';
-      cx = pt.x; cy = pt.y;
-    });
-    requestAnimationFrame(loop);
-  })(0);
-})();
-
 document.addEventListener('mousemove', e => {
   const el = e.target.closest ? e.target.closest('.qcard,.pcard,.crow') : null;
   if (!el) return;
   const r = el.getBoundingClientRect();
   el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
   el.style.setProperty('--my', (e.clientY - r.top) + 'px');
-}, {passive:true});
-
-document.addEventListener('mouseover', e => {
-  const hot = e.target.closest ? e.target.closest('a,button,.qcard,.pcard,.crow,.fchip,.tab,input') : null;
-  document.body.style.setProperty('--gs', hot ? '1.6' : '1');
 }, {passive:true});
