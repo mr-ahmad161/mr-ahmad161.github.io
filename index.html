@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ahmad Raza — AI Full Stack Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="glow"></div><div id="glow2"></div><div id="glow3"></div>
+
+<div class="topbar">
+  <div class="brand-pill" id="homeBtn"><span class="mk">A</span> Ahmad Raza — AI Portfolio</div>
+  <button id="backBtn">&#8249; Back</button>
+  <div class="top-mid" id="topMid"><span class="av photo"></span> Ahmad Raza</div>
+  <div class="info-dot">i</div>
+</div>
+
+<div class="scroll" id="scroll">
+  <div class="watermark" id="wm">AHMAD</div>
+
+  <!-- HOME -->
+  <div class="home" id="home">
+    <div class="greet">👋 Hi there, I am Ahmad Raza</div>
+    <h1>AI Full Stack<br>Developer <span class="blue">&amp;</span><br><span class="script-grad">Agent Builder</span></h1>
+    <div class="avatar-ring"><div class="avatar-big photo"></div></div>
+    <p class="hero-sub">I build AI Agents, websites and mobile apps for businesses in the USA, UK and worldwide. Ask my portfolio anything.</p>
+    <div class="askbar">
+      <input id="askIn" type="text" placeholder="Ask me anything…" autocomplete="off">
+      <button class="sendbtn" id="askSend" disabled>↑</button>
+    </div>
+    <div class="quick">
+      <div class="qcard" data-q="me"><span class="qi" style="background:#E6F7F4"><svg viewBox="0 0 24 24" fill="none" stroke="#0E9594" stroke-width="2.2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg></span>Me</div>
+      <div class="qcard" data-q="projects"><span class="qi" style="background:#EAF7EC"><svg viewBox="0 0 24 24" fill="none" stroke="#34A853" stroke-width="2.2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>Projects</div>
+      <div class="qcard" data-q="skills"><span class="qi" style="background:#F1EAFD"><svg viewBox="0 0 24 24" fill="none" stroke="#7B61FF" stroke-width="2.2"><path d="M13 2 4.5 13.5H11L9.5 22 19 9.5h-6.5z"/></svg></span>Skills</div>
+      <div class="qcard" data-q="demo"><span class="qi" style="background:#FDEAF3"><svg viewBox="0 0 24 24" fill="none" stroke="#E84393" stroke-width="2.2"><path d="M7 4.5v15l13-7.5z"/></svg></span>Agent Demo</div>
+      <div class="qcard" data-q="contact"><span class="qi" style="background:#FFF3E0"><svg viewBox="0 0 24 24" fill="none" stroke="#F2994A" stroke-width="2.2"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3 7 9 6 9-6"/></svg></span>Contact</div>
+    </div>
+    <div class="hint">This portfolio talks back. Try a card, or ask your own question.</div>
+  </div>
+
+  <!-- CHAT -->
+  <div class="chatview" id="chat"></div>
+</div>
+
+<div class="composer" id="composer" style="display:none">
+  <div class="composer-in">
+    <div class="tabs">
+      <button class="tab" data-q="me">Me</button>
+      <button class="tab" data-q="projects">Projects</button>
+      <button class="tab" data-q="skills">Skills</button>
+      <button class="tab" data-q="demo">Agent Demo</button>
+      <button class="tab" data-q="contact">Contact</button>
+    </div>
+    <div class="askbar" style="margin-top:0">
+      <input id="chatIn" type="text" placeholder="Ask me anything…" autocomplete="off">
+      <button class="sendbtn" id="chatSend" disabled>↑</button>
+    </div>
+    <div class="powered">Ahmad Raza — AI Full Stack Developer</div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<script src="app.js"></script>
+</body>
+</html>
