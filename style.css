@@ -214,3 +214,8 @@ a.btn{color:#fff !important;text-decoration:none}
 @keyframes hueSpin{from{filter:blur(30px) saturate(1.75) hue-rotate(0deg)}to{filter:blur(30px) saturate(1.75) hue-rotate(360deg)}}
 .scroll{position:relative;z-index:1}
 .topbar{z-index:60}
+
+/* v15: project card pictures in full colour */
+.pc-media{height:170px}
+.pc-media img{filter:none}
+.pcard:hover .pc-media img{filter:none;transform:scale(1.06)}
