@@ -240,31 +240,39 @@ setTimeout(function(){
   size(); addEventListener('resize', size);
   var palette = ['255,107,157','167,139,250','125,211,252','110,231,183','253,224,71','251,146,60'];
   var parts = [];
+  var cur = palette[0], lastColor = 0, colorIdx = 0;
+  function nextColor(){
+    colorIdx = (colorIdx + 1 + Math.floor(Math.random()*(palette.length-1))) % palette.length;
+    cur = palette[colorIdx];
+  }
   function spawn(x, y, vx, vy, color, big){
-    var n = big ? 26 : 4;
+    var n = big ? 20 : 3;
     for (var i=0;i<n;i++){
-      var a = Math.random()*6.28, sp = big ? 2+Math.random()*4 : 0.5+Math.random()*1.2;
-      parts.push({x:x, y:y, vx: vx*0.35 + Math.cos(a)*sp, vy: vy*0.35 + Math.sin(a)*sp,
-        r: (big ? 26+Math.random()*40 : 18+Math.random()*30), c: color, life: 1});
+      var a = Math.random()*6.28, sp = big ? 1+Math.random()*1.5 : 0.3+Math.random()*0.5;
+      var px = vx*0.15 + Math.cos(a)*sp, py = vy*0.15 + Math.sin(a)*sp;
+      var mag = Math.sqrt(px*px + py*py);
+      if (mag > 3){ px = px/mag*3; py = py/mag*3; }
+      parts.push({x:x, y:y, vx: px, vy: py,
+        r: (big ? 20+Math.random()*16 : 14+Math.random()*12), c: color, life: 1});
     }
-    if (parts.length > 400) parts.splice(0, parts.length-400);
+    if (parts.length > 350) parts.splice(0, parts.length-350);
   }
   function frame(){
     var pr = devicePixelRatio||1;
     ctx.globalCompositeOperation = 'destination-out';
-    ctx.fillStyle = 'rgba(0,0,0,0.06)';
+    ctx.fillStyle = 'rgba(0,0,0,0.045)';
     ctx.fillRect(0, 0, cv.width, cv.height);
     ctx.globalCompositeOperation = 'source-over';
     for (var i=parts.length-1;i>=0;i--){
       var pt = parts[i];
       pt.x += pt.vx; pt.y += pt.vy;
-      pt.vx += Math.sin((pt.x+pt.y)*0.004 + pt.life*3) * 0.07;
-      pt.vy += Math.cos(pt.x*0.004) * 0.05;
-      pt.vx *= 0.97; pt.vy *= 0.97;
-      pt.life *= 0.965;
+      pt.vx += Math.sin((pt.x+pt.y)*0.004 + pt.life*3) * 0.04;
+      pt.vy += Math.cos(pt.x*0.004) * 0.03;
+      pt.vx *= 0.93; pt.vy *= 0.93;
+      pt.life *= 0.975;
       if (pt.life < 0.05){ parts.splice(i,1); continue; }
       var g = ctx.createRadialGradient(pt.x*pr, pt.y*pr, 0, pt.x*pr, pt.y*pr, pt.r*pr);
-      g.addColorStop(0, 'rgba(' + pt.c + ',' + (0.5*pt.life) + ')');
+      g.addColorStop(0, 'rgba(' + pt.c + ',' + (0.45*pt.life) + ')');
       g.addColorStop(1, 'rgba(' + pt.c + ',0)');
       ctx.fillStyle = g;
       ctx.beginPath(); ctx.arc(pt.x*pr, pt.y*pr, pt.r*pr, 0, 7); ctx.fill();
@@ -272,17 +280,18 @@ setTimeout(function(){
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
-  var cur = null, lx = 0, ly = 0;
+  var lx = 0, ly = 0;
   function move(x, y){
-    if (!cur) cur = palette[Math.floor(Math.random()*palette.length)];
+    var now = Date.now();
+    if (now - lastColor > 400){ nextColor(); lastColor = now; }
     spawn(x, y, x-lx, y-ly, cur, false);
     lx = x; ly = y;
   }
   addEventListener('mousemove', function(e){ move(e.clientX, e.clientY); }, {passive:true});
   addEventListener('touchmove', function(e){ var t=e.touches[0]; move(t.clientX, t.clientY); }, {passive:true});
   function burst(x, y){
-    var c = palette[Math.floor(Math.random()*palette.length)];
-    spawn(x, y, 0, 0, c, true);
+    nextColor(); lastColor = Date.now();
+    spawn(x, y, 0, 0, cur, true);
   }
   addEventListener('mousedown', function(e){ burst(e.clientX, e.clientY); }, {passive:true});
   addEventListener('touchstart', function(e){ var t=e.touches[0]; burst(t.clientX, t.clientY); }, {passive:true});
