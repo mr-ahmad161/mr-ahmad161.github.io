@@ -712,7 +712,7 @@
         userBookings.push({client:name, service:selService.name, stylist:selStylist, time:selTime, price:selService.price});
         renderCalendar({stylist:selStylist, time:selTime}); renderBookings(); renderStats(); renderSlotGrid();
         msg.className="book-msg ok";
-        msg.textContent="✓ Booked at "+CFG.salon+"! "+name+" — "+selService.name+" with "+selStylist+", Saturday "+selTime+" · "+money(selService.price)+". Confirmation sent, reminder set for Friday 6:00 PM.";
+        msg.textContent="✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", Saturday "+selTime+" · "+money(selService.price)+". Confirmation sent, and a reminder is set for Friday 6:00 PM.";
         selTime=null; renderSlotGrid();
         $("inpName").value="";
       });
