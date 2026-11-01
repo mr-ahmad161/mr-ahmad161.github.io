@@ -705,9 +705,9 @@
       $("btnBook").addEventListener("click", function(){
         var name=$("inpName").value.trim();
         var msg=$("bookMsg");
-        if(!selTime){ msg.className="book-msg err"; msg.textContent="Pick a free time slot first — Noor only offers slots that are actually open."; return; }
-        if(!name){ msg.className="book-msg err"; msg.textContent="Add your name so the salon knows who the chair is for."; $("inpName").focus(); return; }
-        if(calendar[selStylist][selTime]){ msg.className="book-msg err"; msg.textContent="That slot just got taken — pick another one."; renderSlotGrid(); return; }
+        if(!selTime){ msg.className="book-msg err"; msg.textContent="Almost there — just pick a free time slot first."; return; }
+        if(!name){ msg.className="book-msg err"; msg.textContent="What's your name? The salon wants to know whose chair to prepare."; $("inpName").focus(); return; }
+        if(calendar[selStylist][selTime]){ msg.className="book-msg err"; msg.textContent="Oops, someone just took that slot — grab a free one instead."; renderSlotGrid(); return; }
         calendar[selStylist][selTime]={client:name, service:selService.name, price:selService.price, byUser:true};
         userBookings.push({client:name, service:selService.name, stylist:selStylist, time:selTime, price:selService.price});
         renderCalendar({stylist:selStylist, time:selTime}); renderBookings(); renderStats(); renderSlotGrid();
