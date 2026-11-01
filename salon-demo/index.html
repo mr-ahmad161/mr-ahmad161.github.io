@@ -536,7 +536,7 @@
         var items=[];
         STYLISTS.forEach(function(st){ TIMES.forEach(function(tm){ var b=calendar[st][tm]; if(b) items.push({client:b.client,service:b.service,stylist:st,time:tm,byUser:!!b.byUser}); }); });
         items.sort(function(a,b){ return TIMES.indexOf(a.time)-TIMES.indexOf(b.time); });
-        if(!items.length){ list.innerHTML='<p class="sub">No bookings yet.</p>'; return; }
+        if(!items.length){ list.innerHTML='<p class="sub">No bookings yet today — try the live demo or the Try It panel to add one.</p>'; return; }
         items.forEach(function(it){
           var d=document.createElement("div"); d.className="bk-item";
           d.innerHTML="<b>"+it.client+" — "+it.service+"</b><span>with "+it.stylist+" · Saturday "+it.time+"</span>"+
