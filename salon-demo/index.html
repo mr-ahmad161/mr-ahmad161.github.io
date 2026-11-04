@@ -210,6 +210,9 @@
         background:var(--surface);color:var(--ink);margin:8px 0 16px}
       input[type=text]:focus,input[type=number]:focus{outline:2px solid var(--gold);outline-offset:1px}
       .btn:focus-visible,.ctl:focus-visible,.chip:focus-visible,.slot-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+      /* D028: 44px minimum tap targets for touch users */
+      .btn,.ctl,.chip,.slot-btn{min-height:44px;justify-content:center}
+      .ctl select{min-height:44px}
       .book-msg{font-size:.88rem;margin-top:12px;min-height:1.3em}
       .book-msg.ok{color:var(--green);font-weight:600}
       .book-msg.err{color:var(--red);font-weight:600}
