@@ -236,7 +236,14 @@
       .book-msg.ok{color:var(--green);font-weight:600}
       .book-msg.err{color:var(--red);font-weight:600}
       .bk-list{display:flex;flex-direction:column;gap:10px}
-      .bk-item{border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 14px;background:var(--surface-2)}
+      /* D032: booking items never overflow on narrow screens — long client/service names wrap */
+      .bk-item{border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 14px;background:var(--surface-2);min-width:0;overflow-wrap:break-word}
+      @media (max-width:560px){
+        .bk-list{gap:8px}
+        .bk-item{padding:13px 14px}
+        .bk-item b{font-size:.95rem}
+        .bk-item .tag{margin-top:7px}
+      }
       .bk-item b{font-size:.92rem}
       .bk-item span{display:block;font-size:.82rem;color:var(--muted)}
       .bk-item .tag{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
