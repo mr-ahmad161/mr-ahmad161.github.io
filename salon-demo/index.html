@@ -147,6 +147,17 @@
       .log-line.show{opacity:1}
       .log-line::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold);flex:none;transform:translateY(-1px)}
       .log-line.done::before{background:var(--green)}
+      /* D031: call panel fits small screens — header wraps, transcript shortens, bubbles widen */
+      @media (max-width:560px){
+        .demo-grid .panel{padding:16px}
+        .call-top{flex-wrap:wrap}
+        .call-top h3{font-size:.95rem}
+        .status-pill{margin-left:0}
+        .wave{height:30px}
+        .transcript{min-height:200px;max-height:300px}
+        .bubble{max-width:94%;font-size:.88rem}
+        .log{min-height:0}
+      }
       /* calendar */
       .cal-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:12px}
       .cal-table{display:grid;grid-template-columns:64px repeat(5,1fr);gap:6px;font-size:.78rem}
