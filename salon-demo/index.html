@@ -39,11 +39,16 @@
       }
       *{box-sizing:border-box}
       html{scroll-behavior:smooth}
+      /* D029: never allow horizontal scroll; clip keeps position:sticky working */
+      html,body{overflow-x:clip}
+      @supports not (overflow:clip){html,body{overflow-x:hidden}}
       body{margin:0;background:var(--bg);color:var(--ink);
         font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",Roboto,sans-serif;
         -webkit-font-smoothing:antialiased;line-height:1.55}
       img{max-width:100%;display:block}
       .wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+      /* D029: grid children must be allowed to shrink below content width */
+      .hero-grid>*,.demo-grid>*,.book-grid>*,.cust-grid>*,.cards3>*,.steps4>*,.stats>*{min-width:0}
       .brand{font-family:"Playfair Display",Georgia,serif;font-style:italic;font-weight:700;
         letter-spacing:.14em;font-size:1.05rem;color:var(--ink);text-decoration:none;white-space:nowrap}
       .brand i{color:var(--gold);font-style:italic}
@@ -56,6 +61,8 @@
       .topnav a:hover{color:var(--ink)}
       @media (max-width:560px){.topnav{gap:14px;font-size:.8rem}}
       @media (max-width:480px){.topnav .nav-problem{display:none}.topnav{gap:12px}}
+      /* D029: keep the top bar inside very narrow screens */
+      @media (max-width:380px){.topbar-in{gap:10px}.topnav{gap:10px;font-size:.76rem}.cal-table{grid-template-columns:44px repeat(5,1fr);font-size:.62rem}}
       /* hero */
       /* D023: subtle hero gradient, gold-tinted top fading to background */
       .hero{padding:56px 0 30px;
