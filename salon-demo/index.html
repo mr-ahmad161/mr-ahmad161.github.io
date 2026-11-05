@@ -388,9 +388,9 @@
           </div>
           <div class="demo-shell">
             <div class="demo-controls">
-              <button class="ctl primary" id="btnPlay" type="button">⏸ Pause</button>
-              <button class="ctl" id="btnRestart" type="button">↺ Restart</button>
-              <button class="ctl" id="btnStep" type="button">Step →</button>
+              <button class="ctl primary" id="btnPlay" type="button" aria-label="Pause live demo">⏸ Pause</button>
+              <button class="ctl" id="btnRestart" type="button" aria-label="Restart live demo">↺ Restart</button>
+              <button class="ctl" id="btnStep" type="button" aria-label="Play next step of the live demo">Step →</button>
               <label class="ctl">Speed
                 <select id="selSpeed" aria-label="Playback speed">
                   <option value="1">1×</option>
@@ -713,8 +713,8 @@
           st.fn(); idx++; markDots(); scheduleNext();
         }, st.d/speed);
       }
-      function play(){ if(playing) return; playing=true; $("btnPlay").textContent="⏸ Pause"; scheduleNext(); }
-      function pause(){ playing=false; $("btnPlay").textContent="▶ Play"; if(timer){clearTimeout(timer); timer=null;} speaking(false); }
+      function play(){ if(playing) return; playing=true; $("btnPlay").textContent="⏸ Pause"; $("btnPlay").setAttribute("aria-label","Pause live demo"); scheduleNext(); }
+      function pause(){ playing=false; $("btnPlay").textContent="▶ Play"; $("btnPlay").setAttribute("aria-label","Play live demo"); if(timer){clearTimeout(timer); timer=null;} speaking(false); }
       function restart(){
         pause(); idx=0; markDots();
         transcript.innerHTML=""; logEl.innerHTML="";
@@ -841,7 +841,7 @@
       /* ---------- Init ---------- */
       renderCalendar(); renderBookings(); renderStats(); buildBookingForm();
       var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if(reduce){ $("btnPlay").textContent="▶ Play"; }
+      if(reduce){ $("btnPlay").textContent="▶ Play"; $("btnPlay").setAttribute("aria-label","Play live demo"); }
       else { play(); }
     })();
     </script>
