@@ -216,7 +216,8 @@
       .chip small{color:var(--muted);font-weight:500}
       .chip.sel{border-color:var(--gold);background:var(--gold-soft);color:var(--ink)}
       .chip.sel small{color:var(--gold)}
-      .field-lbl{font-size:.8rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:0}
+      /* D036: labels for all form inputs; .field-lbl stays block-level as a <label> */
+      .field-lbl{display:block;font-size:.8rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:0}
       .slot-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:8px 0 18px}
       @media (max-width:560px){.slot-grid{grid-template-columns:repeat(3,1fr)}}
       .slot-btn{border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-sm);padding:10px 6px;cursor:pointer;
@@ -340,33 +341,33 @@
             <p>See it on your salon, not ours. Type in your salon's real name, your services, prices and stylists — then watch Noor answer the call, check your calendar and confirm the booking with your name on it.</p>
           </div>
           <div class="panel cust-panel">
-            <p class="field-lbl">Your salon name</p>
+            <label class="field-lbl" for="custSalon">Your salon name</label>
             <input type="text" id="custSalon" value="Lumière Salon" placeholder="e.g. Glow Studio" autocomplete="off" />
             <div class="cust-grid">
               <div>
                 <p class="field-lbl">Your services &amp; prices ($)</p>
                 <div class="svc-edit">
-                  <input type="text" class="nm" id="custSvc0" value="Balayage" placeholder="Service 1" autocomplete="off" />
+                  <input type="text" class="nm" id="custSvc0" aria-label="Service 1 name" value="Balayage" placeholder="Service 1" autocomplete="off" />
                   <input type="number" class="pr" id="custPrice0" value="140" min="0" step="any" aria-label="Price for service 1" />
                 </div>
                 <div class="svc-edit">
-                  <input type="text" class="nm" id="custSvc1" value="Cut &amp; Finish" placeholder="Service 2" autocomplete="off" />
+                  <input type="text" class="nm" id="custSvc1" aria-label="Service 2 name" value="Cut &amp; Finish" placeholder="Service 2" autocomplete="off" />
                   <input type="number" class="pr" id="custPrice1" value="65" min="0" step="any" aria-label="Price for service 2" />
                 </div>
                 <div class="svc-edit">
-                  <input type="text" class="nm" id="custSvc2" value="Gel Manicure" placeholder="Service 3" autocomplete="off" />
+                  <input type="text" class="nm" id="custSvc2" aria-label="Service 3 name" value="Gel Manicure" placeholder="Service 3" autocomplete="off" />
                   <input type="number" class="pr" id="custPrice2" value="45" min="0" step="any" aria-label="Price for service 3" />
                 </div>
                 <div class="svc-edit">
-                  <input type="text" class="nm" id="custSvc3" value="Bridal Trial" placeholder="Service 4 (optional)" autocomplete="off" />
+                  <input type="text" class="nm" id="custSvc3" aria-label="Service 4 name" value="Bridal Trial" placeholder="Service 4 (optional)" autocomplete="off" />
                   <input type="number" class="pr" id="custPrice3" value="95" min="0" step="any" aria-label="Price for service 4" />
                 </div>
               </div>
               <div>
                 <p class="field-lbl">Your stylists</p>
-                <input type="text" id="custSty0" value="Amara" placeholder="Stylist 1" autocomplete="off" />
-                <input type="text" id="custSty1" value="Sofia" placeholder="Stylist 2" autocomplete="off" />
-                <input type="text" id="custSty2" value="Lena" placeholder="Stylist 3" autocomplete="off" />
+                <input type="text" id="custSty0" aria-label="Stylist 1" value="Amara" placeholder="Stylist 1" autocomplete="off" />
+                <input type="text" id="custSty1" aria-label="Stylist 2" value="Sofia" placeholder="Stylist 2" autocomplete="off" />
+                <input type="text" id="custSty2" aria-label="Stylist 3" value="Lena" placeholder="Stylist 3" autocomplete="off" />
               </div>
             </div>
             <div class="cta-row" style="margin-top:8px">
@@ -456,7 +457,7 @@
               <div class="chip-row" id="styRow"></div>
               <p class="field-lbl">3 · Saturday time</p>
               <div class="slot-grid" id="slotGrid"></div>
-              <p class="field-lbl">4 · Your name</p>
+              <label class="field-lbl" for="inpName">4 · Your name</label>
               <input type="text" id="inpName" placeholder="e.g. Ayesha" autocomplete="off" />
               <button class="btn btn-gold" id="btnBook" type="button">Book my appointment</button>
               <p class="book-msg" id="bookMsg" role="status"></p>
