@@ -196,6 +196,12 @@
       @keyframes draw{to{stroke-dashoffset:0}}
       @media (prefers-reduced-motion: reduce){.check-anim circle,.check-anim path{stroke-dashoffset:0;animation:none}}
       @media (prefers-reduced-motion: reduce){.shimmer-bar{animation:none}}
+      /* D043: honour reduced motion for smooth scrolling, the booking pop and transitions */
+      @media (prefers-reduced-motion: reduce){
+        html{scroll-behavior:auto}
+        .slot.newbook{animation:none}
+        .btn,.ctl,.chip,.slot-btn,.bubble,.log-line{transition:none}
+      }
       @media (max-width:560px){.cal-table{grid-template-columns:52px repeat(5,1fr);font-size:.68rem}.slot{padding:4px 2px;min-height:40px}.slot b{font-size:.62rem}}
       .confirmed{display:none;margin-top:16px;border:1.5px solid var(--green);background:var(--green-soft);border-radius:var(--r);padding:14px 16px}
       .confirmed.show{display:block}
@@ -821,7 +827,7 @@
         restart();
         renderCalendar(); renderBookings(); renderStats();
         var m = $("custMsg"); m.className = "book-msg ok"; m.textContent = msgText;
-        document.getElementById("demo").scrollIntoView({behavior:"smooth", block:"start"});
+        document.getElementById("demo").scrollIntoView({behavior:(typeof reduce!=="undefined"&&reduce)?"auto":"smooth", block:"start"}); /* D043: no smooth scroll under reduced motion */
         if(!reduce) play();
       }
       function cfgFromForm(){
