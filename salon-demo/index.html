@@ -771,6 +771,18 @@
         });
       }
 
+      /* D039: arrow keys move focus between chips and time slots, so the whole booking flow works by keyboard */
+      document.addEventListener("keydown", function(e){
+        if(e.key!=="ArrowRight"&&e.key!=="ArrowLeft"&&e.key!=="ArrowDown"&&e.key!=="ArrowUp") return;
+        var t=e.target;
+        if(!t.classList||(!t.classList.contains("chip")&&!t.classList.contains("slot-btn"))) return;
+        var sibs=Array.prototype.filter.call(t.parentNode.children,function(el){return !el.disabled;});
+        var i=sibs.indexOf(t); if(i<0) return;
+        var step=(e.key==="ArrowRight"||e.key==="ArrowDown")?1:-1;
+        var n=sibs[(i+step+sibs.length)%sibs.length];
+        if(n){ e.preventDefault(); n.focus(); }
+      });
+
       $("btnBook").addEventListener("click", function(){
         var name=$("inpName").value.trim();
         var msg=$("bookMsg");
