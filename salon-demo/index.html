@@ -52,6 +52,10 @@
       .brand{font-family:"Playfair Display",Georgia,serif;font-style:italic;font-weight:700;
         letter-spacing:.14em;font-size:1.05rem;color:var(--ink);text-decoration:none;white-space:nowrap}
       .brand i{color:var(--gold);font-style:italic}
+      /* D040: skip link, hidden until keyboard focus */
+      .skip-link{position:absolute;left:-999px;top:0;z-index:100;background:var(--navy);color:#fff;
+        font-weight:700;font-size:.9rem;padding:12px 18px;border-radius:0 0 12px 0;text-decoration:none}
+      .skip-link:focus{left:0}
       /* top bar */
       .topbar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 88%,transparent);
         backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line-soft)}
@@ -288,6 +292,7 @@
     </style>
   </head>
   <body>
+    <a class="skip-link" href="#top">Skip to main content</a>
     <header class="topbar">
       <div class="wrap topbar-in">
         <a class="brand" href="#top">AHMAD<i>.</i></a>
@@ -300,7 +305,7 @@
       </div>
     </header>
 
-    <main id="top">
+    <main id="top" tabindex="-1">
       <!-- HERO -->
       <div class="wrap hero">
         <div class="hero-grid">
