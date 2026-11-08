@@ -322,6 +322,14 @@
       @media (prefers-color-scheme: dark){.step .sn{background:var(--gold-bright);color:var(--on-gold)}}
       .step h3{margin:12px 0 5px;font-size:.98rem}
       .step p{margin:0;color:var(--muted);font-size:.88rem}
+      /* D054: services menu price list */
+      .menu-panel{padding:8px 26px}
+      .menu-list{list-style:none;margin:0;padding:0}
+      .menu-list li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:16px 0;border-bottom:1px solid var(--line-soft)}
+      .menu-list li:last-child{border-bottom:0}
+      .menu-list b{font-size:.98rem}
+      .menu-list span{display:block;font-size:.85rem;color:var(--muted);margin-top:2px}
+      .menu-price{font-size:1.05rem;color:var(--gold);white-space:nowrap}
       /* hero image fallback (shown only if the photo file can't load, e.g. single-file deploy) */
       .hero-media{background:var(--bg-soft);border-radius:var(--r-lg)}
       .hero-fallback{display:none;aspect-ratio:4/3;height:auto;border-radius:var(--r-lg);background:var(--navy-deep);
@@ -568,6 +576,25 @@
             <div class="step"><span class="sn">2</span><h3>Checks the live calendar</h3><p>She only offers slots that are actually free, with the right stylist and enough time for the service.</p></div>
             <div class="step"><span class="sn">3</span><h3>Books &amp; confirms</h3><p>The appointment lands on the calendar and the client gets an SMS confirmation on the spot.</p></div>
             <div class="step"><span class="sn">4</span><h3>Reminds, so they show up</h3><p>A reminder goes out the day before. Empty chairs from forgotten bookings quietly disappear.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SERVICES MENU -->
+      <section id="services">
+        <div class="wrap">
+          <div class="sec-head">
+            <h2>Services &amp; prices</h2>
+            <p>What a Saturday at Lumi&egrave;re Salon looks like — the same menu Noor books from on every call.</p>
+          </div>
+          <div class="panel menu-panel">
+            <ul class="menu-list">
+              <li><div><b>Balayage</b><span>Full colour, toned and finished &middot; 2 hours</span></div><b class="menu-price">$140</b></li>
+              <li><div><b>Signature Haircut</b><span>Cut, wash and blow-dry finish &middot; 1 hour</span></div><b class="menu-price">$65</b></li>
+              <li><div><b>Gel Manicure</b><span>Shape, gel colour and cuticle care &middot; 45 minutes</span></div><b class="menu-price">$45</b></li>
+              <li><div><b>Bridal Trial</b><span>Trial style and consultation before the big day &middot; 1.5 hours</span></div><b class="menu-price">$95</b></li>
+            </ul>
+            <p class="cust-note">These are the demo salon&rsquo;s prices — change them in &ldquo;Make it yours&rdquo; and Noor quotes your prices instead.</p>
           </div>
         </div>
       </section>
