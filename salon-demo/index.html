@@ -59,6 +59,29 @@
           --shadow-sm:0 6px 22px rgba(0,0,0,.35);
         }
       }
+      /* D053: manual theme toggle — attribute selector beats the media query, so the visitor's choice wins */
+      :root[data-theme="dark"]{
+        --bg:#0a1421; --bg-soft:#0e1a2b; --surface:#101f33; --surface-2:#0d1a2c;
+        --ink:#f0ede6; --navy:#dce7f5; --navy-deep:#e9eef6;
+        --muted:#a3b4c8; --faint:#7186a0;
+        --gold:#d3ab52; --gold-bright:#d9b45c; --gold-soft:#2b2413; --on-gold:#131f31;
+        --line:#243650; --line-soft:#1d2f49;
+        --green:#4cc084; --green-soft:#123324;
+        --red:#e08a76; --red-soft:#3a1f18;
+        --shadow:0 18px 50px rgba(0,0,0,.45);
+        --shadow-sm:0 6px 22px rgba(0,0,0,.35);
+      }
+      :root[data-theme="light"]{
+        --bg:#ffffff; --bg-soft:#f7f5f1; --surface:#ffffff; --surface-2:#fbfaf7;
+        --ink:#0d1f38; --navy:#10263f; --navy-deep:#0a1a2e;
+        --muted:#54687f; --faint:#5d6f83;
+        --gold:#7d5a10; --gold-bright:#c9a227; --gold-soft:#f4ead2; --on-gold:#131f31;
+        --line:#e8e3d8; --line-soft:#efece4;
+        --green:#1e7d4f; --green-soft:#e3f2e9;
+        --red:#b3402e; --red-soft:#f9e7e2;
+        --shadow:0 18px 50px rgba(13,31,56,.10);
+        --shadow-sm:0 6px 22px rgba(13,31,56,.08);
+      }
       *{box-sizing:border-box}
       html{scroll-behavior:smooth}
       /* D029: never allow horizontal scroll; clip keeps position:sticky working */
@@ -87,6 +110,7 @@
       .topnav a:hover{color:var(--ink)}
       @media (max-width:560px){.topnav{gap:14px;font-size:.8rem}}
       @media (max-width:480px){.topnav .nav-problem{display:none}.topnav{gap:12px}}
+      @media (max-width:480px){.theme-toggle .theme-lbl{display:none}}
       /* D029: keep the top bar inside very narrow screens */
       @media (max-width:380px){.topbar-in{gap:10px}.topnav{gap:10px;font-size:.76rem}.cal-table{grid-template-columns:44px repeat(5,1fr);font-size:.62rem}}
       /* hero */
@@ -330,6 +354,7 @@
           <a href="#book">Try It</a>
           <a href="#problem" class="nav-problem">The Problem</a>
         </nav>
+        <button class="ctl theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">🌙 <span class="theme-lbl">Dark</span></button>
       </div>
     </header>
 
@@ -560,6 +585,25 @@
     (function(){
       "use strict";
       var $ = function(id){ return document.getElementById(id); };
+
+      /* D053: dark mode toggle — manual choice beats the OS preference, remembered per browser */
+      var themeBtn = $("themeToggle");
+      function applyTheme(t){
+        document.documentElement.setAttribute("data-theme", t);
+        themeBtn.setAttribute("aria-pressed", t === "dark" ? "true" : "false");
+        themeBtn.setAttribute("aria-label", t === "dark" ? "Switch to light mode" : "Switch to dark mode");
+        themeBtn.querySelector(".theme-lbl").textContent = t === "dark" ? "Light" : "Dark";
+      }
+      var savedTheme = null;
+      try { savedTheme = localStorage.getItem("noor-theme"); } catch(e) {}
+      var startTheme = (savedTheme === "dark" || savedTheme === "light") ? savedTheme
+        : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      applyTheme(startTheme);
+      themeBtn.addEventListener("click", function(){
+        var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        try { localStorage.setItem("noor-theme", next); } catch(e) {}
+        applyTheme(next);
+      });
 
       /* ---------- Data (replaced live by the "Make it yours" panel) ---------- */
       var TIMES = ["10:00","11:30","13:00","14:30","16:00"];
