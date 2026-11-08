@@ -330,6 +330,14 @@
       .menu-list b{font-size:.98rem}
       .menu-list span{display:block;font-size:.85rem;color:var(--muted);margin-top:2px}
       .menu-price{font-size:1.05rem;color:var(--gold);white-space:nowrap}
+      /* D055: FAQ accordion */
+      .faq{max-width:44rem}
+      .faq details{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 20px;margin-bottom:10px;box-shadow:var(--shadow-sm)}
+      .faq summary{font-weight:700;font-size:.98rem;cursor:pointer;list-style:none}
+      .faq summary::-webkit-details-marker{display:none}
+      .faq summary::after{content:"+";float:right;color:var(--gold);font-size:1.2rem;line-height:1}
+      .faq details[open] summary::after{content:"\2212"}
+      .faq p{margin:10px 0 0;color:var(--muted);font-size:.93rem}
       /* hero image fallback (shown only if the photo file can't load, e.g. single-file deploy) */
       .hero-media{background:var(--bg-soft);border-radius:var(--r-lg)}
       .hero-fallback{display:none;aspect-ratio:4/3;height:auto;border-radius:var(--r-lg);background:var(--navy-deep);
@@ -595,6 +603,38 @@
               <li><div><b>Bridal Trial</b><span>Trial style and consultation before the big day &middot; 1.5 hours</span></div><b class="menu-price">$95</b></li>
             </ul>
             <p class="cust-note">These are the demo salon&rsquo;s prices — change them in &ldquo;Make it yours&rdquo; and Noor quotes your prices instead.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section id="faq">
+        <div class="wrap">
+          <div class="sec-head">
+            <h2>Questions salon owners ask</h2>
+            <p>Straight answers about how Noor works on a real salon phone line.</p>
+          </div>
+          <div class="faq">
+            <details>
+              <summary>Does Noor really answer the phone herself?</summary>
+              <p>Yes. Every call is picked up in under a second, 24/7 — even mid-rush when every stylist has a client in the chair. Try it in the live demo above.</p>
+            </details>
+            <details>
+              <summary>What happens if a client calls after closing time?</summary>
+              <p>She books them anyway. People plan their hair at 9 PM on the sofa, and Noor takes the booking, checks the live calendar and sends the SMS confirmation — no missed call, no lost client.</p>
+            </details>
+            <details>
+              <summary>Can Noor take bookings for my own salon, services and prices?</summary>
+              <p>Yes. Use &ldquo;Make it yours&rdquo; at the top of this page: type in your salon name, services, prices and stylists, and Noor quotes your details on the next call.</p>
+            </details>
+            <details>
+              <summary>What if two clients want the same slot?</summary>
+              <p>It can&rsquo;t happen. Noor checks the live calendar before offering a time, so a booked slot is locked instantly and never offered twice.</p>
+            </details>
+            <details>
+              <summary>Do clients get a confirmation?</summary>
+              <p>Yes — an SMS confirmation goes out on the spot, and a reminder is scheduled for the day before, so forgotten bookings and empty chairs quietly disappear.</p>
+            </details>
           </div>
         </div>
       </section>
