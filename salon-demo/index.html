@@ -338,6 +338,13 @@
       .faq summary::after{content:"+";float:right;color:var(--gold);font-size:1.2rem;line-height:1}
       .faq details[open] summary::after{content:"\2212"}
       .faq p{margin:10px 0 0;color:var(--muted);font-size:.93rem}
+      /* D056: testimonial cards */
+      .quote{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow-sm)}
+      .quote blockquote{margin:0;font-size:.98rem;line-height:1.55}
+      .quote blockquote::before{content:"\201C";font-family:"Playfair Display",Georgia,serif;font-size:1.8rem;color:var(--gold);line-height:0;vertical-align:-.35em;margin-right:2px}
+      .quote figcaption{margin-top:14px;font-size:.85rem;color:var(--muted)}
+      .quote figcaption b{display:block;color:var(--ink);font-size:.92rem}
+      .quote .stars{color:var(--gold);letter-spacing:.1em;font-size:.85rem}
       /* hero image fallback (shown only if the photo file can't load, e.g. single-file deploy) */
       .hero-media{background:var(--bg-soft);border-radius:var(--r-lg)}
       .hero-fallback{display:none;aspect-ratio:4/3;height:auto;border-radius:var(--r-lg);background:var(--navy-deep);
@@ -635,6 +642,33 @@
               <summary>Do clients get a confirmation?</summary>
               <p>Yes — an SMS confirmation goes out on the spot, and a reminder is scheduled for the day before, so forgotten bookings and empty chairs quietly disappear.</p>
             </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- TESTIMONIALS -->
+      <section id="stories">
+        <div class="wrap">
+          <div class="sec-head">
+            <h2>What salon owners say about Noor</h2>
+            <p>Sample stories from the demo — the kind of Saturday every salon owner recognises.</p>
+          </div>
+          <div class="cards3">
+            <figure class="quote">
+              <div class="stars" aria-label="5 out of 5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+              <blockquote>Saturday used to mean ten missed calls by lunchtime. Now every call gets answered, even when my hands are in someone&rsquo;s hair.</blockquote>
+              <figcaption><b>Amara</b>Owner, boutique colour salon</figcaption>
+            </figure>
+            <figure class="quote">
+              <div class="stars" aria-label="5 out of 5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+              <blockquote>Most of our bookings used to come in after we closed. Noor takes them at 9 PM and the chair is full before we open.</blockquote>
+              <figcaption><b>Sofia</b>Owner, high-street hair &amp; beauty salon</figcaption>
+            </figure>
+            <figure class="quote">
+              <div class="stars" aria-label="5 out of 5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+              <blockquote>The reminder texts alone paid for it. Clients actually show up now — the empty-chair Saturdays are gone.</blockquote>
+              <figcaption><b>Lena</b>Owner, bridal &amp; styling studio</figcaption>
+            </figure>
           </div>
         </div>
       </section>
