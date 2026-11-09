@@ -362,6 +362,18 @@
       .cust-panel input[type=text],.cust-panel input[type=number]{margin:8px 0 10px}
       .cust-note{font-size:.85rem;color:var(--faint);margin:12px 0 0}
       footer{border-top:1px solid var(--line-soft);padding:28px 0 40px;margin-top:20px}
+      /* D057: sticky mobile CTA bar — fixed bottom bar on small screens only */
+      .mobile-cta{display:none}
+      @media (max-width:640px){
+        .mobile-cta{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;
+          gap:10px;align-items:center;justify-content:space-between;
+          padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+          background:color-mix(in srgb,var(--surface) 96%,transparent);
+          border-top:1px solid var(--line);box-shadow:0 -6px 24px rgba(13,31,56,.10)}
+        .mobile-cta .btn{flex:1}
+        .mobile-cta .cta-note{font-size:.78rem;color:var(--muted);font-weight:600;white-space:nowrap}
+        body{padding-bottom:76px}
+      }
       .foot-in{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center}
       footer p{color:var(--faint);font-size:.85rem;margin:0}
     </style>
@@ -681,6 +693,12 @@
         <p><span id="footSalon">Lumière Salon</span> · Noor, the AI booking agent · A live product demo — call her above and watch her book.</p>
       </div>
     </footer>
+
+    <!-- D057: sticky mobile CTA bar -->
+    <div class="mobile-cta" role="region" aria-label="Book a demo">
+      <span class="cta-note">Noor answers 24/7</span>
+      <a class="btn btn-gold" href="#demo">&#9654; Try the live demo</a>
+    </div>
 
     <script>
     (function(){
