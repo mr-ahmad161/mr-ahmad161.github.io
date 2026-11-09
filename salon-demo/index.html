@@ -253,7 +253,9 @@
       .confirmed.show{display:block}
       .confirmed b{color:var(--green)}
       .confirmed p{margin:3px 0 0;font-size:.88rem}
-      .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:24px}
+      /* D060: stats row now covers calls answered, bookings, reminders, revenue and no-shows cut */
+      .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:24px}
+      @media (max-width:900px){.stats{grid-template-columns:repeat(3,1fr)}}
       @media (max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}}
       /* D027: stat cards stack to one column on small screens */
       @media (max-width:480px){.stats{grid-template-columns:1fr}}
@@ -537,6 +539,7 @@
               <div class="stat"><div class="num" id="stBookings">6</div><div class="lbl">Bookings on the calendar</div><div class="delta" id="stBookingsD"></div></div>
               <div class="stat"><div class="num" id="stReminders">6</div><div class="lbl">Reminders scheduled</div><div class="delta" id="stRemindersD"></div></div>
               <div class="stat"><div class="num" id="stRevenue">$455</div><div class="lbl">Booked revenue today</div><div class="delta" id="stRevenueD"></div></div>
+              <div class="stat"><div class="num" id="stNoshows">63%</div><div class="lbl">Fewer no-shows</div><div class="delta" id="stNoshowsD">vs. phone-only booking</div></div>
             </div>
           </div>
         </div>
@@ -774,7 +777,7 @@
 
       // calendar[stylist][time] = null | {client, service, price, demo, byUser}
       var calendar = {};
-      var baseStats = {calls:6, bookings:6, reminders:6, revenue:455};
+      var baseStats = {calls:6, bookings:6, reminders:6, revenue:455, noshows:63};
       function resetCalendar(){
         calendar = {};
         STYLISTS.forEach(function(st){ calendar[st]={}; TIMES.forEach(function(tm){ calendar[st][tm]=null; }); });
@@ -792,7 +795,7 @@
           calendar[STYLISTS[sd.s]][sd.t] = {client:sd.client, service:sv.name, price:sv.price};
           rev += sv.price;
         });
-        baseStats = {calls:seeds.length, bookings:seeds.length, reminders:seeds.length, revenue:rev};
+        baseStats = {calls:seeds.length, bookings:seeds.length, reminders:seeds.length, revenue:rev, noshows:63};
       }
       resetCalendar();
       var userBookings = []; // {client, service, stylist, time, price}
@@ -839,6 +842,7 @@
         $("stBookings").textContent = baseStats.bookings + demoDelta.bookings + uCount;
         $("stReminders").textContent = baseStats.reminders + demoDelta.reminders + uCount;
         $("stRevenue").textContent = "$" + (baseStats.revenue + demoDelta.revenue + uRev).toLocaleString();
+        $("stNoshows").textContent = baseStats.noshows + "%";
         $("stCallsD").textContent = demoDelta.calls ? "+1 from the live call" : "";
         $("stBookingsD").textContent = (demoDelta.bookings||uCount) ? "+"+(demoDelta.bookings+uCount)+" during this demo" : "";
         $("stRemindersD").textContent = demoDelta.reminders ? "+1 reminder scheduled" : (uCount?"+ "+uCount+" from your bookings":"");
