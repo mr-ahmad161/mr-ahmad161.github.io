@@ -375,6 +375,9 @@
         body{padding-bottom:76px}
       }
       .foot-in{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center}
+      /* D058: opening hours line in the footer */
+      .foot-hours{padding-top:12px}
+      .foot-hours p{margin:0}
       footer p{color:var(--faint);font-size:.85rem;margin:0}
     </style>
   </head>
@@ -691,6 +694,10 @@
       <div class="wrap foot-in">
         <a class="brand" href="#top" aria-label="Back to top">AHMAD<i>.</i></a>
         <p><span id="footSalon">Lumière Salon</span> · Noor, the AI booking agent · A live product demo — call her above and watch her book.</p>
+      </div>
+      <!-- D058: opening hours — Noor keeps booking even after closing -->
+      <div class="wrap foot-hours">
+        <p>&#128336; Opening hours: Mon&ndash;Sat 9:00 AM &ndash; 8:00 PM &middot; Sun 10:00 AM &ndash; 5:00 PM &mdash; Noor answers calls and books clients even after closing.</p>
       </div>
     </footer>
 
