@@ -253,6 +253,10 @@
       .confirmed.show{display:block}
       .confirmed b{color:var(--green)}
       .confirmed p{margin:3px 0 0;font-size:.88rem}
+      /* D061: SMS preview bubble inside the booking confirmation */
+      .sms-preview{margin-top:12px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-md);padding:11px 14px}
+      .sms-preview .sms-from{display:block;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+      .sms-preview p{margin:0;font-size:.88rem}
       /* D060: stats row now covers calls answered, bookings, reminders, revenue and no-shows cut */
       .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:24px}
       @media (max-width:900px){.stats{grid-template-columns:repeat(3,1fr)}}
@@ -531,6 +535,11 @@
                   <b><span class="check-anim" aria-hidden="true"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="20"/><path d="M14 22.5l6 6 11-12"/></svg></span>Booking confirmed — <span id="confirmedSalon">Lumière Salon</span></b>
                   <p id="confirmedText">Sarah — Balayage with Amara, Saturday 2:30 PM · $140</p>
                   <p>SMS confirmation sent now · Reminder scheduled for Friday 6:00 PM, so the chair never sits empty.</p>
+                  <!-- D061: preview of the confirmation text the client receives -->
+                  <div class="sms-preview" aria-label="Preview of the confirmation text message">
+                    <span class="sms-from">&#128241; Text to Sarah &middot; now</span>
+                    <p id="smsPreviewText">Hi Sarah! You&rsquo;re booked at Lumi&egrave;re Salon &mdash; Balayage with Amara, Saturday 2:30 PM. Reminder coming Friday 6:00 PM. Reply C to cancel, R to reschedule.</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -914,6 +923,7 @@
           demoBooking={stylist:featuredSty(), time:FEATURED_TIME};
           $("confirmedSalon").textContent = CFG.salon;
           $("confirmedText").textContent = "Sarah — " + featuredSvc().name + " with " + featuredSty() + ", Saturday " + FEATURED_TIME_LABEL + " · " + money(featuredSvc().price);
+          $("smsPreviewText").textContent = "Hi Sarah! You're booked at " + CFG.salon + " — " + featuredSvc().name + " with " + featuredSty() + ", Saturday " + FEATURED_TIME_LABEL + ". Reminder coming Friday 6:00 PM. Reply C to cancel, R to reschedule.";
           renderCalendar({stylist:featuredSty(),time:FEATURED_TIME}); renderBookings();
           $("confirmedCard").classList.add("show");
           setStatus("Booked ✓","booked");
