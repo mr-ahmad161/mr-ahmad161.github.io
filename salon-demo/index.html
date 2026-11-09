@@ -257,6 +257,9 @@
       .sms-preview{margin-top:12px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-md);padding:11px 14px}
       .sms-preview .sms-from{display:block;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
       .sms-preview p{margin:0;font-size:.88rem}
+      /* D062: booking reference code shown on confirmation */
+      .booking-ref{font-size:.85rem;color:var(--muted)}
+      .booking-ref b{color:var(--ink);letter-spacing:.05em}
       /* D060: stats row now covers calls answered, bookings, reminders, revenue and no-shows cut */
       .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:24px}
       @media (max-width:900px){.stats{grid-template-columns:repeat(3,1fr)}}
@@ -540,6 +543,8 @@
                     <span class="sms-from">&#128241; Text to Sarah &middot; now</span>
                     <p id="smsPreviewText">Hi Sarah! You&rsquo;re booked at Lumi&egrave;re Salon &mdash; Balayage with Amara, Saturday 2:30 PM. Reminder coming Friday 6:00 PM. Reply C to cancel, R to reschedule.</p>
                   </div>
+                  <!-- D062: booking reference code -->
+                  <p class="booking-ref">Booking ref: <b id="bookingRef">LUM-000000</b> &mdash; quote it if you need to change or cancel.</p>
                 </div>
               </div>
             </div>
@@ -925,6 +930,7 @@
           $("confirmedText").textContent = "Sarah — " + featuredSvc().name + " with " + featuredSty() + ", Saturday " + FEATURED_TIME_LABEL + " · " + money(featuredSvc().price);
           $("smsPreviewText").textContent = "Hi Sarah! You're booked at " + CFG.salon + " — " + featuredSvc().name + " with " + featuredSty() + ", Saturday " + FEATURED_TIME_LABEL + ". Reminder coming Friday 6:00 PM. Reply C to cancel, R to reschedule.";
           renderCalendar({stylist:featuredSty(),time:FEATURED_TIME}); renderBookings();
+          $("bookingRef").textContent = "LUM-" + Math.random().toString(36).slice(2, 8).toUpperCase();
           $("confirmedCard").classList.add("show");
           setStatus("Booked ✓","booked");
           demoDelta.bookings=1; demoDelta.revenue=featuredSvc().price; renderStats();
