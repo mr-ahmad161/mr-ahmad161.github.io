@@ -301,6 +301,8 @@
       .book-msg{font-size:.88rem;margin-top:12px;min-height:1.3em}
       .book-msg.ok{color:var(--green);font-weight:600}
       .book-msg.err{color:var(--red);font-weight:600}
+      /* D066: live price estimate while picking a booking */
+      .est-line{font-size:.92rem;font-weight:700;margin:0 0 14px}
       .bk-list{display:flex;flex-direction:column;gap:10px}
       /* D032: booking items never overflow on narrow screens — long client/service names wrap */
       .bk-item{border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 14px;background:var(--surface-2);min-width:0;overflow-wrap:break-word}
@@ -583,6 +585,7 @@
               <div class="chip-row" id="styRow"></div>
               <p class="field-lbl">3 · Saturday time</p>
               <div class="slot-grid" id="slotGrid"></div>
+              <p class="est-line" id="priceEst"></p>
               <label class="field-lbl" for="inpName">4 · Your name</label>
               <input type="text" id="inpName" placeholder="e.g. Ayesha" autocomplete="off" />
               <button class="btn btn-gold" id="btnBook" type="button">Book my appointment</button>
@@ -1070,6 +1073,13 @@
         renderSlotGrid();
       }
 
+      /* D066: live price estimate for the booking being built */
+      function renderPriceEst(){
+        var el=$("priceEst"); if(!el) return;
+        var base="Estimated total: "+money(selService.price)+" — "+selService.name+" ("+selService.dur+") with "+selStylist;
+        el.textContent = selTime ? base+", Saturday "+selTime+". No deposit, pay at the salon." : base+". Pick a free time to lock it in.";
+      }
+
       function renderSlotGrid(){
         var g=$("slotGrid"); g.innerHTML="";
         TIMES.forEach(function(tm){
@@ -1081,6 +1091,7 @@
           b.addEventListener("click", function(){ selTime=tm; renderSlotGrid(); });
           g.appendChild(b);
         });
+        renderPriceEst();
       }
 
       /* D039: arrow keys move focus between chips and time slots, so the whole booking flow works by keyboard */
