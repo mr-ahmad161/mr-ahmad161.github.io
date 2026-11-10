@@ -157,6 +157,8 @@
       .ctl.primary{background:var(--navy);border-color:var(--navy);color:#fff}
       @media (prefers-color-scheme: dark){.ctl.primary{background:var(--gold-bright);border-color:var(--gold-bright);color:var(--on-gold)}}
       .ctl select{border:0;background:transparent;font:inherit;font-weight:600;color:inherit;cursor:pointer}
+      /* D069: caller-name input inside the demo controls pill */
+      .ctl input[type=text]{width:96px;min-height:0;margin:0;padding:4px 6px;border:0;background:transparent;font:inherit;font-weight:600;color:inherit}
       .step-track{display:flex;gap:6px;margin-left:auto;align-items:center}
       .step-dot{width:26px;height:5px;border-radius:var(--r-pill);background:var(--line);transition:background .3s}
       .step-dot.on{background:var(--gold)}
@@ -520,6 +522,10 @@
               <label class="ctl">Book with
                 <select id="selDemoSty" aria-label="Stylist for the live demo call"></select>
               </label>
+              <!-- D069: the visitor's name, so Noor greets them personally -->
+              <label class="ctl">Call as
+                <input type="text" id="inpCaller" value="Sarah" aria-label="Caller name for the live demo" autocomplete="off" />
+              </label>
               <div class="step-track" id="stepTrack" aria-hidden="true"></div>
             </div>
             <div class="demo-grid">
@@ -527,7 +533,7 @@
                 <div class="call-top">
                   <div>
                     <h3>📞 Incoming call — <span id="callSalon">Lumière Salon</span></h3>
-                    <p class="sub">Caller: Sarah · Saturday 11:42 AM · All stylists busy</p>
+                    <p class="sub" id="callSub">Caller: Sarah · Saturday 11:42 AM · All stylists busy</p>
                   </div>
                   <span class="status-pill" id="statusPill">Ringing…</span>
                 </div>
@@ -823,6 +829,11 @@
           s.appendChild(o);
         });
       }
+      /* D069: the visitor's name personalizes Noor's greeting and the whole call */
+      function callerName(){
+        var v=$("inpCaller") && $("inpCaller").value.trim();
+        return v || "Sarah";
+      }
       function money(n){ return "$" + (Math.round(n*100)/100).toLocaleString(); }
       function durLong(d){ return {"2 hrs":"2 hours","1 hr":"1 hour","45 min":"45 minutes","1.5 hrs":"1.5 hours"}[d] || d; }
 
@@ -969,10 +980,10 @@
         }},
         {d:1500, fn:function(){
           setStatus("Live · 0:03","live"); speaking(true);
-          bubble("agent","Noor · AI agent","Hello, thanks for calling " + CFG.salon + "! This is Noor. How can I help today — looking to book an appointment?");
+          bubble("agent","Noor · AI agent","Hello " + callerName() + ", thanks for calling " + CFG.salon + "! This is Noor. How can I help today — looking to book an appointment?");
         }},
         {d:2100, fn:function(){
-          bubble("caller","Sarah · Caller","Hi! I need a " + featuredSvc().name.toLowerCase() + " this Saturday if possible — my regular salon is fully booked.");
+          bubble("caller",callerName()+" · Caller","Hi! I need a " + featuredSvc().name.toLowerCase() + " this Saturday if possible — my regular salon is fully booked.");
           logLine("Request understood: " + featuredSvc().name + " · Saturday · any stylist");
         }},
         {d:1700, fn:function(){
@@ -987,21 +998,21 @@
           }, 900/Math.max(speed,0.1));
         }},
         {d:1900, fn:function(){
-          bubble("caller","Sarah · Caller","Perfect, yes please! It's Sarah.");
+          bubble("caller",callerName()+" · Caller","Perfect, yes please! It's "+callerName()+".");
           logLine("Client confirmed the slot — creating the booking", true);
         }},
         {d:1800, fn:function(){
           speaking(true);
-          bubble("agent","Noor · AI agent","Done, Sarah — you're booked with " + featuredSty() + ", Saturday at " + timeLabel(featuredTime()) + ". I've sent a confirmation text, and I'll remind you the day before. See you Saturday!");
+          bubble("agent","Noor · AI agent","Done, " + callerName() + " — you're booked with " + featuredSty() + ", Saturday at " + timeLabel(featuredTime()) + ". I've sent a confirmation text, and I'll remind you the day before. See you Saturday!");
         }},
         {d:1200, fn:function(){
           speaking(false);
           var ft=featuredTime();
-          calendar[featuredSty()][ft]={client:"Sarah",service:featuredSvc().name,price:featuredSvc().price,demo:true};
+          calendar[featuredSty()][ft]={client:callerName(),service:featuredSvc().name,price:featuredSvc().price,demo:true};
           demoBooking={stylist:featuredSty(), time:ft};
           $("confirmedSalon").textContent = CFG.salon;
-          $("confirmedText").textContent = "Sarah — " + featuredSvc().name + " with " + featuredSty() + ", Saturday " + timeLabel(ft) + " · " + money(featuredSvc().price) + " · " + featuredSvc().dur;
-          $("smsPreviewText").textContent = "Hi Sarah! You're booked at " + CFG.salon + " — " + featuredSvc().name + " with " + featuredSty() + ", Saturday " + timeLabel(ft) + ". Reminder coming Friday 6:00 PM. Reply C to cancel, R to reschedule.";
+          $("confirmedText").textContent = callerName() + " — " + featuredSvc().name + " with " + featuredSty() + ", Saturday " + timeLabel(ft) + " · " + money(featuredSvc().price) + " · " + featuredSvc().dur;
+          $("smsPreviewText").textContent = "Hi " + callerName() + "! You're booked at " + CFG.salon + " — " + featuredSvc().name + " with " + featuredSty() + ", Saturday " + timeLabel(ft) + ". Reminder coming Friday 6:00 PM. Reply C to cancel, R to reschedule.";
           renderCalendar({stylist:featuredSty(),time:ft}); renderBookings();
           $("bookingRef").textContent = "LUM-" + Math.random().toString(36).slice(2, 8).toUpperCase();
           $("confirmedCard").classList.add("show");
@@ -1039,6 +1050,7 @@
         demoDelta={calls:0,bookings:0,reminders:0,revenue:0};
         if(demoBooking && calendar[demoBooking.stylist] && calendar[demoBooking.stylist][demoBooking.time] && calendar[demoBooking.stylist][demoBooking.time].demo) calendar[demoBooking.stylist][demoBooking.time]=null;
         demoBooking=null;
+        $("callSub").textContent = "Caller: " + callerName() + " · Saturday 11:42 AM · All stylists busy";
         setStatus("Ringing…","");
         renderCalendar(); renderBookings(); renderStats();
       }
@@ -1053,6 +1065,8 @@
       $("selSpeed").addEventListener("change", function(){ speed=parseFloat(this.value)||1; });
       /* D064: changing the demo stylist restarts the call with the new pick */
       $("selDemoSty").addEventListener("change", function(){ demoStylist=this.value; restart(); play(); });
+      /* D069: a new caller name restarts the call so Noor greets them by name */
+      $("inpCaller").addEventListener("change", function(){ restart(); play(); });
 
       /* ---------- Manual booking ---------- */
       var selService=SERVICES[0], selStylist=STYLISTS[0], selTime=null;
