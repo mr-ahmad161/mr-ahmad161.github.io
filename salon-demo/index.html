@@ -315,6 +315,11 @@
       .bk-item .tag{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
         background:var(--green-soft);color:var(--green);border-radius:var(--r-pill);padding:2px 8px;margin-top:5px}
       .bk-item .tag.you{background:var(--gold-soft);color:var(--gold)}
+      /* D063: cancel/reschedule actions on your own bookings */
+      .bk-actions{display:flex;gap:8px;margin-top:8px}
+      .bk-act{border:1px solid var(--line);background:var(--surface);color:var(--muted);font:inherit;font-size:.78rem;font-weight:700;padding:6px 12px;border-radius:var(--r-pill);cursor:pointer;min-height:34px}
+      .bk-act:hover{border-color:var(--gold);color:var(--ink)}
+      .bk-act.danger:hover{border-color:var(--red);color:var(--red)}
       /* pain + how */
       .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
       @media (max-width:860px){.cards3{grid-template-columns:1fr}}
@@ -846,8 +851,40 @@
           var d=document.createElement("div"); d.className="bk-item";
           d.innerHTML="<b>"+it.client+" — "+it.service+"</b><span>with "+it.stylist+" · Saturday "+it.time+"</span>"+
             '<span class="tag'+(it.byUser?" you":"")+'">'+(it.byUser?"Booked by you just now":"Confirmed · reminder set")+"</span>";
+          if(it.byUser){
+            var acts=document.createElement("div"); acts.className="bk-actions";
+            var cBtn=document.createElement("button"); cBtn.type="button"; cBtn.className="bk-act danger"; cBtn.textContent="Cancel";
+            cBtn.addEventListener("click", function(){ cancelBooking(it.stylist, it.time); });
+            var rBtn=document.createElement("button"); rBtn.type="button"; rBtn.className="bk-act"; rBtn.textContent="Reschedule";
+            rBtn.addEventListener("click", function(){ rescheduleBooking(it.stylist, it.time); });
+            acts.appendChild(cBtn); acts.appendChild(rBtn); d.appendChild(acts);
+          }
           list.appendChild(d);
         });
+      }
+
+      /* D063: cancel or reschedule a booking you made in the Try It panel */
+      function removeUserBooking(st, tm){
+        var b = calendar[st] ? calendar[st][tm] : null;
+        if(!b) return null;
+        calendar[st][tm] = null;
+        userBookings = userBookings.filter(function(u){ return !(u.stylist===st && u.time===tm); });
+        return b;
+      }
+      function cancelBooking(st, tm){
+        var b = removeUserBooking(st, tm); if(!b) return;
+        renderCalendar(); renderBookings(); renderStats(); renderSlotGrid();
+        var m=$("bookMsg"); m.className="book-msg ok";
+        m.textContent="Cancelled — "+b.client+"'s "+b.service+" with "+st+" on Saturday "+tm+" is off the calendar. The slot is free again.";
+      }
+      function rescheduleBooking(st, tm){
+        var b = removeUserBooking(st, tm); if(!b) return;
+        var svc=null; SERVICES.forEach(function(s){ if(s.name===b.service) svc=s; });
+        if(svc) selService=svc; selStylist=st; selTime=null;
+        renderCalendar(); renderBookings(); renderStats(); buildBookingForm();
+        var m=$("bookMsg"); m.className="book-msg ok";
+        m.textContent="Pick a new time for "+b.client+" — "+b.service+" with "+st+". Your old slot is free again.";
+        document.getElementById("book").scrollIntoView({behavior:(typeof reduce!=="undefined"&&reduce)?"auto":"smooth", block:"start"});
       }
 
       function renderStats(){
@@ -981,10 +1018,10 @@
 
       /* ---------- Manual booking ---------- */
       var selService=SERVICES[0], selStylist=STYLISTS[0], selTime=null;
-      function chips(containerId, items, labelFn, onPick){
+      function chips(containerId, items, labelFn, onPick, isSel){
         var c=$(containerId); c.innerHTML="";
         items.forEach(function(it, i){
-          var b=document.createElement("button"); b.type="button"; b.className="chip"+(i===0?" sel":"");
+          var b=document.createElement("button"); b.type="button"; b.className="chip"+((isSel?isSel(it,i):i===0)?" sel":"");
           b.innerHTML=labelFn(it);
           b.addEventListener("click", function(){
             var kids=c.children; for(var k=0;k<kids.length;k++) kids[k].classList.remove("sel");
@@ -994,9 +1031,12 @@
         });
       }
       function buildBookingForm(){
-        selService=SERVICES[0]; selStylist=STYLISTS[0]; selTime=null;
-        chips("svcRow", SERVICES, function(s){ return s.name+" <small>· "+money(s.price)+" · "+s.dur+"</small>"; }, function(s){ selService=s; renderSlotGrid(); });
-        chips("styRow", STYLISTS, function(s){ return s; }, function(s){ selStylist=s; selTime=null; renderSlotGrid(); });
+        /* D063: keep the current service/stylist when rescheduling; default only if the old pick no longer exists */
+        if(SERVICES.indexOf(selService)<0) selService=SERVICES[0];
+        if(STYLISTS.indexOf(selStylist)<0) selStylist=STYLISTS[0];
+        selTime=null;
+        chips("svcRow", SERVICES, function(s){ return s.name+" <small>· "+money(s.price)+" · "+s.dur+"</small>"; }, function(s){ selService=s; renderSlotGrid(); }, function(s){ return s===selService; });
+        chips("styRow", STYLISTS, function(s){ return s; }, function(s){ selStylist=s; selTime=null; renderSlotGrid(); }, function(s){ return s===selStylist; });
         renderSlotGrid();
       }
 
