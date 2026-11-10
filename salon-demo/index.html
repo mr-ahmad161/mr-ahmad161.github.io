@@ -512,6 +512,10 @@
                   <option value="2.4">2.4×</option>
                 </select>
               </label>
+              <!-- D064: pick which stylist the live demo call books with -->
+              <label class="ctl">Book with
+                <select id="selDemoSty" aria-label="Stylist for the live demo call"></select>
+              </label>
               <div class="step-track" id="stepTrack" aria-hidden="true"></div>
             </div>
             <div class="demo-grid">
@@ -790,7 +794,27 @@
       var SERVICES = CFG.services;
       var FEATURED_TIME = "14:30", FEATURED_TIME_LABEL = "2:30 PM";
       function featuredSvc(){ return SERVICES[0]; }
-      function featuredSty(){ return STYLISTS[0]; }
+      /* D064: the visitor picks which stylist the live demo call books with */
+      var demoStylist = STYLISTS[0];
+      function featuredSty(){ return STYLISTS.indexOf(demoStylist)>=0 ? demoStylist : STYLISTS[0]; }
+      function featuredTime(){
+        var st=featuredSty();
+        for(var i=0;i<TIMES.length;i++){ if(!calendar[st][TIMES[i]]) return TIMES[i]; }
+        return FEATURED_TIME;
+      }
+      function timeLabel(tm){
+        var p=tm.split(":"); var h=parseInt(p[0],10);
+        return (h%12||12)+":"+p[1]+" "+(h>=12?"PM":"AM");
+      }
+      function refreshDemoStyPicker(){
+        var s=$("selDemoSty"); if(!s) return;
+        s.innerHTML="";
+        STYLISTS.forEach(function(st){
+          var o=document.createElement("option"); o.value=st; o.textContent=st;
+          if(st===featuredSty()) o.selected=true;
+          s.appendChild(o);
+        });
+      }
       function money(n){ return "$" + (Math.round(n*100)/100).toLocaleString(); }
       function durLong(d){ return {"2 hrs":"2 hours","1 hr":"1 hour","45 min":"45 minutes","1.5 hrs":"1.5 hours"}[d] || d; }
 
@@ -943,12 +967,13 @@
         }},
         {d:1700, fn:function(){
           speaking(true);
+          var ft=featuredTime();
           var tp=typingBubble();
           logLine("Checking the real Saturday calendar…");
           $("calWrap").classList.add("checking");
           setTimeout(function(){ tp.remove();
             $("calWrap").classList.remove("checking");
-            bubble("agent","Noor · AI agent","Good news — " + featuredSty() + " has <strong>" + FEATURED_TIME_LABEL + "</strong> open on Saturday. " + featuredSvc().name + " takes about " + durLong(featuredSvc().dur) + ", " + money(featuredSvc().price) + ". Shall I lock that in for you?");
+            bubble("agent","Noor · AI agent","Good news — " + featuredSty() + " has <strong>" + timeLabel(ft) + "</strong> open on Saturday. " + featuredSvc().name + " takes about " + durLong(featuredSvc().dur) + ", " + money(featuredSvc().price) + ". Shall I lock that in for you?");
           }, 900/Math.max(speed,0.1));
         }},
         {d:1900, fn:function(){
@@ -957,21 +982,22 @@
         }},
         {d:1800, fn:function(){
           speaking(true);
-          bubble("agent","Noor · AI agent","Done, Sarah — you're booked with " + featuredSty() + ", Saturday at " + FEATURED_TIME_LABEL + ". I've sent a confirmation text, and I'll remind you the day before. See you Saturday!");
+          bubble("agent","Noor · AI agent","Done, Sarah — you're booked with " + featuredSty() + ", Saturday at " + timeLabel(featuredTime()) + ". I've sent a confirmation text, and I'll remind you the day before. See you Saturday!");
         }},
         {d:1200, fn:function(){
           speaking(false);
-          calendar[featuredSty()][FEATURED_TIME]={client:"Sarah",service:featuredSvc().name,price:featuredSvc().price,demo:true};
-          demoBooking={stylist:featuredSty(), time:FEATURED_TIME};
+          var ft=featuredTime();
+          calendar[featuredSty()][ft]={client:"Sarah",service:featuredSvc().name,price:featuredSvc().price,demo:true};
+          demoBooking={stylist:featuredSty(), time:ft};
           $("confirmedSalon").textContent = CFG.salon;
-          $("confirmedText").textContent = "Sarah — " + featuredSvc().name + " with " + featuredSty() + ", Saturday " + FEATURED_TIME_LABEL + " · " + money(featuredSvc().price);
-          $("smsPreviewText").textContent = "Hi Sarah! You're booked at " + CFG.salon + " — " + featuredSvc().name + " with " + featuredSty() + ", Saturday " + FEATURED_TIME_LABEL + ". Reminder coming Friday 6:00 PM. Reply C to cancel, R to reschedule.";
-          renderCalendar({stylist:featuredSty(),time:FEATURED_TIME}); renderBookings();
+          $("confirmedText").textContent = "Sarah — " + featuredSvc().name + " with " + featuredSty() + ", Saturday " + timeLabel(ft) + " · " + money(featuredSvc().price);
+          $("smsPreviewText").textContent = "Hi Sarah! You're booked at " + CFG.salon + " — " + featuredSvc().name + " with " + featuredSty() + ", Saturday " + timeLabel(ft) + ". Reminder coming Friday 6:00 PM. Reply C to cancel, R to reschedule.";
+          renderCalendar({stylist:featuredSty(),time:ft}); renderBookings();
           $("bookingRef").textContent = "LUM-" + Math.random().toString(36).slice(2, 8).toUpperCase();
           $("confirmedCard").classList.add("show");
           setStatus("Booked ✓","booked");
           demoDelta.bookings=1; demoDelta.revenue=featuredSvc().price; renderStats();
-          logLine("Calendar updated — " + featuredSty() + " · Sat " + FEATURED_TIME_LABEL + " · " + featuredSvc().name, true);
+          logLine("Calendar updated — " + featuredSty() + " · Sat " + timeLabel(ft) + " · " + featuredSvc().name, true);
         }},
         {d:1500, fn:function(){
           demoDelta.calls=1; demoDelta.reminders=1; renderStats();
@@ -1015,6 +1041,8 @@
         steps[idx].fn(); idx++; markDots();
       });
       $("selSpeed").addEventListener("change", function(){ speed=parseFloat(this.value)||1; });
+      /* D064: changing the demo stylist restarts the call with the new pick */
+      $("selDemoSty").addEventListener("change", function(){ demoStylist=this.value; restart(); play(); });
 
       /* ---------- Manual booking ---------- */
       var selService=SERVICES[0], selStylist=STYLISTS[0], selTime=null;
@@ -1089,6 +1117,7 @@
       }
       function applyCfg(cfg, msgText){
         CFG = cfg; STYLISTS = CFG.stylists; SERVICES = CFG.services;
+        demoStylist = CFG.stylists[0]; refreshDemoStyPicker();
         userBookings = [];
         if(demoBooking) demoBooking = null;
         resetCalendar();
@@ -1134,7 +1163,7 @@
       });
 
       /* ---------- Init ---------- */
-      renderCalendar(); renderBookings(); renderStats(); buildBookingForm();
+      renderCalendar(); renderBookings(); renderStats(); buildBookingForm(); refreshDemoStyPicker();
       var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if(reduce){ $("btnPlay").textContent="▶ Play"; $("btnPlay").setAttribute("aria-label","Play live demo"); }
       else { play(); }
