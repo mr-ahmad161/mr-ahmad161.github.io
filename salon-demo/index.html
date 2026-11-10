@@ -303,6 +303,8 @@
       .book-msg.err{color:var(--red);font-weight:600}
       /* D066: live price estimate while picking a booking */
       .est-line{font-size:.92rem;font-weight:700;margin:0 0 14px}
+      /* D067: the Book button greys out on the closed day */
+      .btn:disabled{opacity:.5;cursor:not-allowed}
       .bk-list{display:flex;flex-direction:column;gap:10px}
       /* D032: booking items never overflow on narrow screens — long client/service names wrap */
       .bk-item{border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 14px;background:var(--surface-2);min-width:0;overflow-wrap:break-word}
@@ -583,10 +585,13 @@
               <div class="chip-row" id="svcRow"></div>
               <p class="field-lbl">2 · Stylist</p>
               <div class="chip-row" id="styRow"></div>
-              <p class="field-lbl">3 · Saturday time</p>
+              <p class="field-lbl">3 · Day</p>
+              <div class="chip-row" id="dayRow"></div>
+              <p class="sub" id="dayNote" style="margin:-8px 0 14px"></p>
+              <p class="field-lbl">4 · Saturday time</p>
               <div class="slot-grid" id="slotGrid"></div>
               <p class="est-line" id="priceEst"></p>
-              <label class="field-lbl" for="inpName">4 · Your name</label>
+              <label class="field-lbl" for="inpName">5 · Your name</label>
               <input type="text" id="inpName" placeholder="e.g. Ayesha" autocomplete="off" />
               <button class="btn btn-gold" id="btnBook" type="button">Book my appointment</button>
               <p class="book-msg" id="bookMsg" role="status"></p>
@@ -1051,6 +1056,7 @@
 
       /* ---------- Manual booking ---------- */
       var selService=SERVICES[0], selStylist=STYLISTS[0], selTime=null;
+      var selDay="Saturday";
       function chips(containerId, items, labelFn, onPick, isSel){
         var c=$(containerId); c.innerHTML="";
         items.forEach(function(it, i){
@@ -1063,6 +1069,19 @@
           c.appendChild(b);
         });
       }
+      /* D067: quick day chips — Saturday books, Sunday is closed */
+      function setDay(day){
+        selDay=day;
+        var note=$("dayNote");
+        if(day==="Sunday"){
+          note.textContent="We're closed on Sundays — Noor books Saturday appointments in this demo. Pick Saturday to book.";
+          $("btnBook").disabled=true;
+        } else {
+          note.textContent="";
+          $("btnBook").disabled=false;
+        }
+      }
+
       function buildBookingForm(){
         /* D063: keep the current service/stylist when rescheduling; default only if the old pick no longer exists */
         if(SERVICES.indexOf(selService)<0) selService=SERVICES[0];
@@ -1070,6 +1089,9 @@
         selTime=null;
         chips("svcRow", SERVICES, function(s){ return s.name+" <small>· "+money(s.price)+" · "+s.dur+"</small>"; }, function(s){ selService=s; renderSlotGrid(); }, function(s){ return s===selService; });
         chips("styRow", STYLISTS, function(s){ return s; }, function(s){ selStylist=s; selTime=null; renderSlotGrid(); }, function(s){ return s===selStylist; });
+        selDay="Saturday";
+        chips("dayRow", [{day:"Saturday",label:"Today · Saturday"},{day:"Sunday",label:"Tomorrow · Sunday — closed"}], function(d){ return d.label; }, function(d){ setDay(d.day); }, function(d){ return d.day===selDay; });
+        setDay(selDay);
         renderSlotGrid();
       }
 
@@ -1077,7 +1099,7 @@
       function renderPriceEst(){
         var el=$("priceEst"); if(!el) return;
         var base="Estimated total: "+money(selService.price)+" — "+selService.name+" ("+selService.dur+") with "+selStylist;
-        el.textContent = selTime ? base+", Saturday "+selTime+". No deposit, pay at the salon." : base+". Pick a free time to lock it in.";
+        el.textContent = selTime ? base+", "+selDay+" "+selTime+". No deposit, pay at the salon." : base+". Pick a free time to lock it in.";
       }
 
       function renderSlotGrid(){
@@ -1109,6 +1131,7 @@
       $("btnBook").addEventListener("click", function(){
         var name=$("inpName").value.trim();
         var msg=$("bookMsg");
+        if(selDay==="Sunday"){ msg.className="book-msg err"; msg.textContent="We're closed on Sundays — pick Saturday to book in this demo."; return; }
         if(!selTime){ msg.className="book-msg err"; msg.textContent="Almost there — just pick a free time slot first."; return; }
         if(!name){ msg.className="book-msg err"; msg.textContent="What's your name? The salon wants to know whose chair to prepare."; $("inpName").focus(); return; }
         if(calendar[selStylist][selTime]){ msg.className="book-msg err"; msg.textContent="Oops, someone just took that slot — grab a free one instead."; renderSlotGrid(); return; }
@@ -1116,7 +1139,7 @@
         userBookings.push({client:name, service:selService.name, stylist:selStylist, time:selTime, price:selService.price});
         renderCalendar({stylist:selStylist, time:selTime}); renderBookings(); renderStats(); renderSlotGrid();
         msg.className="book-msg ok";
-        msg.textContent="✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", Saturday "+selTime+" · "+money(selService.price)+" · "+selService.dur+". Confirmation sent, and a reminder is set for Friday 6:00 PM.";
+        msg.textContent="✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+selTime+" · "+money(selService.price)+" · "+selService.dur+". Confirmation sent, and a reminder is set for Friday 6:00 PM.";
         selTime=null; renderSlotGrid();
         $("inpName").value="";
       });
