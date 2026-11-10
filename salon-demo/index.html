@@ -873,7 +873,9 @@
         if(!items.length){ list.innerHTML='<p class="sub">No bookings yet today — try the live demo or the Try It panel to add one.</p>'; return; }
         items.forEach(function(it){
           var d=document.createElement("div"); d.className="bk-item";
-          d.innerHTML="<b>"+it.client+" — "+it.service+"</b><span>with "+it.stylist+" · Saturday "+it.time+"</span>"+
+          /* D065: show the service duration on every booking in the list */
+          var dur=""; SERVICES.forEach(function(sv){ if(sv.name===it.service) dur=sv.dur; });
+          d.innerHTML="<b>"+it.client+" — "+it.service+"</b><span>with "+it.stylist+" · Saturday "+it.time+(dur?" · "+dur:"")+"</span>"+
             '<span class="tag'+(it.byUser?" you":"")+'">'+(it.byUser?"Booked by you just now":"Confirmed · reminder set")+"</span>";
           if(it.byUser){
             var acts=document.createElement("div"); acts.className="bk-actions";
@@ -990,7 +992,7 @@
           calendar[featuredSty()][ft]={client:"Sarah",service:featuredSvc().name,price:featuredSvc().price,demo:true};
           demoBooking={stylist:featuredSty(), time:ft};
           $("confirmedSalon").textContent = CFG.salon;
-          $("confirmedText").textContent = "Sarah — " + featuredSvc().name + " with " + featuredSty() + ", Saturday " + timeLabel(ft) + " · " + money(featuredSvc().price);
+          $("confirmedText").textContent = "Sarah — " + featuredSvc().name + " with " + featuredSty() + ", Saturday " + timeLabel(ft) + " · " + money(featuredSvc().price) + " · " + featuredSvc().dur;
           $("smsPreviewText").textContent = "Hi Sarah! You're booked at " + CFG.salon + " — " + featuredSvc().name + " with " + featuredSty() + ", Saturday " + timeLabel(ft) + ". Reminder coming Friday 6:00 PM. Reply C to cancel, R to reschedule.";
           renderCalendar({stylist:featuredSty(),time:ft}); renderBookings();
           $("bookingRef").textContent = "LUM-" + Math.random().toString(36).slice(2, 8).toUpperCase();
@@ -1103,7 +1105,7 @@
         userBookings.push({client:name, service:selService.name, stylist:selStylist, time:selTime, price:selService.price});
         renderCalendar({stylist:selStylist, time:selTime}); renderBookings(); renderStats(); renderSlotGrid();
         msg.className="book-msg ok";
-        msg.textContent="✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", Saturday "+selTime+" · "+money(selService.price)+". Confirmation sent, and a reminder is set for Friday 6:00 PM.";
+        msg.textContent="✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", Saturday "+selTime+" · "+money(selService.price)+" · "+selService.dur+". Confirmation sent, and a reminder is set for Friday 6:00 PM.";
         selTime=null; renderSlotGrid();
         $("inpName").value="";
       });
