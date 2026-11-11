@@ -321,6 +321,13 @@
       .bk-item .tag{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
         background:var(--green-soft);color:var(--green);border-radius:var(--r-pill);padding:2px 8px;margin-top:5px}
       .bk-item .tag.you{background:var(--gold-soft);color:var(--gold)}
+      /* D071: print-friendly booking summary — only the bookings list prints */
+      @media print{
+        header.topbar,.hero,#customize,#demo,#problem,#how,#how-it-works,#services,#faq,#stories,footer,.mobile-cta,.no-print{display:none!important}
+        #book .book-grid{grid-template-columns:1fr}
+        #book .book-grid>.panel:first-child{display:none}
+        body{background:#fff}
+      }
       /* D063: cancel/reschedule actions on your own bookings */
       .bk-actions{display:flex;gap:8px;margin-top:8px}
       .bk-act{border:1px solid var(--line);background:var(--surface);color:var(--muted);font:inherit;font-size:.78rem;font-weight:700;padding:6px 12px;border-radius:var(--r-pill);cursor:pointer;min-height:34px}
@@ -610,6 +617,7 @@
             <div class="panel">
               <h3>Saturday's bookings</h3>
               <p class="sub" style="margin-bottom:14px">Everything on this list is locked into the calendar above.</p>
+              <button class="btn btn-ghost no-print" id="btnPrintBk" type="button" style="margin-bottom:14px">🖨 Print today's bookings</button>
               <div class="bk-list" id="bkList"></div>
             </div>
           </div>
@@ -1146,6 +1154,9 @@
         var n=sibs[(i+step+sibs.length)%sibs.length];
         if(n){ e.preventDefault(); n.focus(); }
       });
+
+      /* D071: print just the booking summary, not the whole demo page */
+      $("btnPrintBk").addEventListener("click", function(){ window.print(); });
 
       $("btnBook").addEventListener("click", function(){
         var name=$("inpName").value.trim();
