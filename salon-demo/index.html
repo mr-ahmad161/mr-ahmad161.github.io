@@ -213,6 +213,9 @@
       /* calendar */
       .cal-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:12px}
       .cal-table{display:grid;grid-template-columns:64px repeat(5,1fr);gap:6px;font-size:.78rem}
+      /* D075: week view squeezes the calendar into 7 day columns */
+      .cal-table.week{grid-template-columns:repeat(7,1fr)}
+      .cal-table.week .slot{min-height:74px}
       .cal-table .ch{font-weight:700;color:var(--muted);text-align:center;padding:4px 0}
       .cal-table .styl{font-weight:700;display:flex;align-items:center}
       .slot{border:1px solid var(--line-soft);border-radius:var(--r-xs);min-height:44px;padding:5px 6px;text-align:center;
@@ -556,9 +559,10 @@
               <div class="panel">
                 <div class="cal-head">
                   <div>
-                    <h3>Saturday's live calendar</h3>
+                    <h3 id="calTitle">Saturday's live calendar</h3>
                     <p class="sub">Noor checks this before offering a slot — double bookings are impossible.</p>
                   </div>
+                  <button class="ctl" id="btnWeekView" type="button" aria-pressed="false">Week view</button>
                 </div>
                 <div class="cal-wrap" id="calWrap">
                   <div class="cal-table" id="calTable"></div>
@@ -887,8 +891,29 @@
       var demoDelta = {calls:0, bookings:0, reminders:0, revenue:0};
 
       /* ---------- Calendar render ---------- */
+      /* D075: flip the dashboard calendar between Saturday detail and the whole week */
+      var weekView=false;
+      function renderWeekView(t){
+        var days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+        days.forEach(function(day){ var h=document.createElement("div"); h.className="ch"; h.textContent=day.slice(0,3); t.appendChild(h); });
+        days.forEach(function(day){
+          var cell=document.createElement("div");
+          if(day==="Sunday"){ cell.className="slot"; cell.textContent="Closed"; }
+          else if(day==="Saturday"){
+            var booked=[];
+            STYLISTS.forEach(function(st){ TIMES.forEach(function(tm){ var b=calendar[st][tm]; if(b) booked.push(timeLabel(tm)+" · "+b.client); }); });
+            cell.className="slot taken";
+            cell.innerHTML = booked.length ? "<b>"+booked.length+" booked</b>"+booked.join("<br>") : "Open";
+          }
+          else { cell.className="slot"; cell.textContent="Open — demo covers Saturday"; }
+          t.appendChild(cell);
+        });
+      }
       function renderCalendar(highlight){
         var t = $("calTable"); t.innerHTML = "";
+        t.classList.toggle("week", weekView);
+        $("calTitle").textContent = weekView ? "This week's calendar" : "Saturday's live calendar";
+        if(weekView){ renderWeekView(t); return; }
         var corner = document.createElement("div"); t.appendChild(corner);
         TIMES.forEach(function(tm){ var h=document.createElement("div"); h.className="ch"; h.textContent=tm; t.appendChild(h); });
         STYLISTS.forEach(function(st){
@@ -1089,6 +1114,12 @@
         pause();
         if(idx>=steps.length){ restart(); return; }
         steps[idx].fn(); idx++; markDots();
+      });
+      $("btnWeekView").addEventListener("click", function(){
+        weekView=!weekView;
+        this.textContent = weekView ? "Day view" : "Week view";
+        this.setAttribute("aria-pressed", weekView ? "true" : "false");
+        renderCalendar();
       });
       $("selSpeed").addEventListener("change", function(){ speed=parseFloat(this.value)||1; });
       /* D064: changing the demo stylist restarts the call with the new pick */
