@@ -619,6 +619,7 @@
               <p class="sub" style="margin-bottom:14px">Everything on this list is locked into the calendar above.</p>
               <button class="btn btn-ghost no-print" id="btnPrintBk" type="button" style="margin-bottom:14px">🖨 Print today's bookings</button>
               <button class="btn btn-ghost no-print" id="btnCsvBk" type="button" style="margin-bottom:14px">⬇ Export day bookings (CSV)</button>
+              <input type="text" id="bkSearch" class="no-print" placeholder="Search bookings by client name…" aria-label="Search bookings by client name" autocomplete="off" style="margin-bottom:12px" />
               <div class="bk-list" id="bkList"></div>
             </div>
           </div>
@@ -898,12 +899,15 @@
         });
       }
 
+      /* D073: search the day's bookings by client name */
+      var bkQuery="";
       function renderBookings(){
         var list=$("bkList"); list.innerHTML="";
         var items=[];
         STYLISTS.forEach(function(st){ TIMES.forEach(function(tm){ var b=calendar[st][tm]; if(b) items.push({client:b.client,service:b.service,stylist:st,time:tm,byUser:!!b.byUser}); }); });
         items.sort(function(a,b){ return TIMES.indexOf(a.time)-TIMES.indexOf(b.time); });
-        if(!items.length){ list.innerHTML='<p class="sub">No bookings yet today — try the live demo or the Try It panel to add one.</p>'; return; }
+        if(bkQuery){ var q=bkQuery.toLowerCase(); items=items.filter(function(it){ return it.client.toLowerCase().indexOf(q)>=0; }); }
+        if(!items.length){ list.innerHTML = bkQuery ? '<p class="sub">No bookings match &ldquo;'+bkQuery.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+'&rdquo; — try another name.</p>' : '<p class="sub">No bookings yet today — try the live demo or the Try It panel to add one.</p>'; return; }
         items.forEach(function(it){
           var d=document.createElement("div"); d.className="bk-item";
           /* D065: show the service duration on every booking in the list */
@@ -1158,6 +1162,8 @@
 
       /* D071: print just the booking summary, not the whole demo page */
       $("btnPrintBk").addEventListener("click", function(){ window.print(); });
+
+      $("bkSearch").addEventListener("input", function(){ bkQuery=this.value.trim(); renderBookings(); });
 
       /* D072: export the day's bookings as a CSV file, built in the browser */
       function dayBookings(){
