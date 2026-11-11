@@ -618,6 +618,7 @@
               <h3>Saturday's bookings</h3>
               <p class="sub" style="margin-bottom:14px">Everything on this list is locked into the calendar above.</p>
               <button class="btn btn-ghost no-print" id="btnPrintBk" type="button" style="margin-bottom:14px">🖨 Print today's bookings</button>
+              <button class="btn btn-ghost no-print" id="btnCsvBk" type="button" style="margin-bottom:14px">⬇ Export day bookings (CSV)</button>
               <div class="bk-list" id="bkList"></div>
             </div>
           </div>
@@ -1157,6 +1158,30 @@
 
       /* D071: print just the booking summary, not the whole demo page */
       $("btnPrintBk").addEventListener("click", function(){ window.print(); });
+
+      /* D072: export the day's bookings as a CSV file, built in the browser */
+      function dayBookings(){
+        var items=[];
+        STYLISTS.forEach(function(st){ TIMES.forEach(function(tm){ var b=calendar[st][tm];
+          if(b) items.push({client:b.client, service:b.service, stylist:st, time:tm, price:b.price, byUser:!!b.byUser});
+        }); });
+        items.sort(function(a,b){ return TIMES.indexOf(a.time)-TIMES.indexOf(b.time); });
+        return items;
+      }
+      $("btnCsvBk").addEventListener("click", function(){
+        var items = dayBookings();
+        var rows = [["Client","Service","Stylist","Day","Time","Price","Booked by"]];
+        items.forEach(function(it){
+          rows.push([it.client, it.service, it.stylist, "Saturday", it.time, it.price, it.byUser ? "You (demo)" : "Noor (call)"]);
+        });
+        var csv = rows.map(function(r){ return r.map(function(v){ return '"' + String(v).replace(/"/g,'""') + '"'; }).join(","); }).join("\r\n");
+        var blob = new Blob([csv], {type:"text/csv"});
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "noor-saturday-bookings.csv";
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+      });
 
       $("btnBook").addEventListener("click", function(){
         var name=$("inpName").value.trim();
