@@ -620,6 +620,12 @@
               <button class="btn btn-ghost no-print" id="btnPrintBk" type="button" style="margin-bottom:14px">🖨 Print today's bookings</button>
               <button class="btn btn-ghost no-print" id="btnCsvBk" type="button" style="margin-bottom:14px">⬇ Export day bookings (CSV)</button>
               <input type="text" id="bkSearch" class="no-print" placeholder="Search bookings by client name…" aria-label="Search bookings by client name" autocomplete="off" style="margin-bottom:12px" />
+              <label class="field-lbl no-print" for="bkFilter" style="margin-bottom:4px">Show</label>
+              <select id="bkFilter" class="no-print" aria-label="Filter bookings by status" style="margin-bottom:12px">
+                <option value="all">All bookings</option>
+                <option value="you">Booked by you</option>
+                <option value="confirmed">Confirmed by Noor</option>
+              </select>
               <div class="bk-list" id="bkList"></div>
             </div>
           </div>
@@ -901,12 +907,16 @@
 
       /* D073: search the day's bookings by client name */
       var bkQuery="";
+      /* D074: filter the day's bookings by status */
+      var bkFilter="all";
       function renderBookings(){
         var list=$("bkList"); list.innerHTML="";
         var items=[];
         STYLISTS.forEach(function(st){ TIMES.forEach(function(tm){ var b=calendar[st][tm]; if(b) items.push({client:b.client,service:b.service,stylist:st,time:tm,byUser:!!b.byUser}); }); });
         items.sort(function(a,b){ return TIMES.indexOf(a.time)-TIMES.indexOf(b.time); });
         if(bkQuery){ var q=bkQuery.toLowerCase(); items=items.filter(function(it){ return it.client.toLowerCase().indexOf(q)>=0; }); }
+        if(bkFilter==="you") items=items.filter(function(it){ return it.byUser; });
+        if(bkFilter==="confirmed") items=items.filter(function(it){ return !it.byUser; });
         if(!items.length){ list.innerHTML = bkQuery ? '<p class="sub">No bookings match &ldquo;'+bkQuery.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+'&rdquo; — try another name.</p>' : '<p class="sub">No bookings yet today — try the live demo or the Try It panel to add one.</p>'; return; }
         items.forEach(function(it){
           var d=document.createElement("div"); d.className="bk-item";
@@ -1164,6 +1174,7 @@
       $("btnPrintBk").addEventListener("click", function(){ window.print(); });
 
       $("bkSearch").addEventListener("input", function(){ bkQuery=this.value.trim(); renderBookings(); });
+      $("bkFilter").addEventListener("change", function(){ bkFilter=this.value; renderBookings(); });
 
       /* D072: export the day's bookings as a CSV file, built in the browser */
       function dayBookings(){
