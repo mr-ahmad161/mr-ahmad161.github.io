@@ -374,6 +374,8 @@
         align-items:center;justify-content:center;box-shadow:var(--shadow)}
       .hero-media img.img-failed{display:none}
       .hero-media img.img-failed + .hero-fallback{display:flex}
+      /* D070: preset salon switcher in "Make it yours" */
+      .preset-note{font-size:.82rem;color:var(--muted);margin:0 0 10px}
       /* make it yours */
       .cust-panel{padding:26px}
       @media (max-width:560px){.cust-panel{padding:18px}}
@@ -460,6 +462,9 @@
             <p>See it on your salon, not ours. Type in your salon's real name, your services, prices and stylists — then watch Noor answer the call, check your calendar and confirm the booking with your name on it.</p>
           </div>
           <div class="panel cust-panel">
+            <p class="field-lbl">Try a sample salon</p>
+            <div class="chip-row" id="presetRow"></div>
+            <p class="preset-note">One tap loads a sample salon's name, services, prices and stylists — or type your own below.</p>
             <label class="field-lbl" for="custSalon">Your salon name</label>
             <input type="text" id="custSalon" value="Lumière Salon" placeholder="e.g. Glow Studio" autocomplete="off" />
             <div class="cust-grid">
@@ -1159,6 +1164,28 @@
       });
 
       /* ---------- Make it yours ---------- */
+      /* D070: one-tap sample salons, so owners see Noor on a salon like theirs */
+      var PRESETS = [
+        cloneCfg(DEFAULT_CFG),
+        {salon:"Glow Studio", services:[
+          {name:"Full Colour", price:120, dur:"2 hrs"},
+          {name:"Blow Dry", price:40, dur:"45 min"},
+          {name:"Bridal Hair", price:110, dur:"1.5 hrs"},
+          {name:"Brow & Lash Tint", price:30, dur:"30 min"}
+        ], stylists:["Zara","Priya","Noor"]},
+        {salon:"Rose & Co. Salon", services:[
+          {name:"Balayage", price:150, dur:"2 hrs"},
+          {name:"Precision Cut", price:70, dur:"1 hr"},
+          {name:"Gel Extensions", price:60, dur:"1 hr"},
+          {name:"Bridal Trial", price:100, dur:"1.5 hrs"}
+        ], stylists:["Mia","Elena","Jade"]}
+      ];
+      function renderPresets(){
+        chips("presetRow", PRESETS, function(p){ return p.salon; }, function(p){
+          var cfg = cloneCfg(p); fillForm(cfg);
+          applyCfg(cfg, "✓ Noor is now running on " + cfg.salon + " — watch the live call below: your salon name, your services, your stylists, your prices.");
+        }, function(p){ return p.salon === CFG.salon; });
+      }
       function setSalonTexts(){
         $("introSalon").textContent = CFG.salon;
         $("callSalon").textContent = CFG.salon;
@@ -1175,6 +1202,7 @@
         buildBookingForm();
         restart();
         renderCalendar(); renderBookings(); renderStats();
+        renderPresets();
         var m = $("custMsg"); m.className = "book-msg ok"; m.textContent = msgText;
         document.getElementById("demo").scrollIntoView({behavior:(typeof reduce!=="undefined"&&reduce)?"auto":"smooth", block:"start"}); /* D043: no smooth scroll under reduced motion */
         if(!reduce) play();
@@ -1213,7 +1241,7 @@
       });
 
       /* ---------- Init ---------- */
-      renderCalendar(); renderBookings(); renderStats(); buildBookingForm(); refreshDemoStyPicker();
+      renderCalendar(); renderBookings(); renderStats(); buildBookingForm(); refreshDemoStyPicker(); renderPresets();
       var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if(reduce){ $("btnPlay").textContent="▶ Play"; $("btnPlay").setAttribute("aria-label","Play live demo"); }
       else { play(); }
