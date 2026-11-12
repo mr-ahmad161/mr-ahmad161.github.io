@@ -619,6 +619,8 @@
               <p class="sub" id="dayNote" style="margin:-8px 0 14px"></p>
               <p class="field-lbl">4 · Saturday time</p>
               <div class="slot-grid" id="slotGrid"></div>
+              <!-- D078: visible double-booking guard — a booked slot locks instantly for everyone -->
+              <p class="sub" id="guardNote">&#128275; Double-booking guard &mdash; the moment a slot is booked it locks for everyone. Two clients can never take the same stylist at the same time.</p>
               <p class="est-line" id="priceEst"></p>
               <label class="field-lbl" for="inpName">5 · Your name</label>
               <input type="text" id="inpName" placeholder="e.g. Ayesha" autocomplete="off" />
@@ -1199,7 +1201,7 @@
           var b=document.createElement("button"); b.type="button"; b.className="slot-btn";
           var taken=calendar[selStylist][tm];
           b.innerHTML=tm+"<small>"+(taken?("Booked · "+taken.client):(selStylist+" is free"))+"</small>";
-          if(taken) b.disabled=true;
+          if(taken){ b.disabled=true; b.title="Already booked — Noor never double-books a slot"; }
           if(selTime===tm) b.classList.add("sel");
           b.addEventListener("click", function(){ selTime=tm; renderSlotGrid(); });
           g.appendChild(b);
