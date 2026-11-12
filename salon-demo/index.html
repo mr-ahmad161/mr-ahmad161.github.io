@@ -1166,7 +1166,10 @@
       function setDay(day){
         selDay=day;
         var note=$("dayNote");
-        if(day==="Sunday"){
+        if(day==="Friday"){
+          note.textContent="Friday is already past — Noor never books a date that's gone. Pick Saturday to book.";
+          $("btnBook").disabled=true;
+        } else if(day==="Sunday"){
           note.textContent="We're closed on Sundays — Noor books Saturday appointments in this demo. Pick Saturday to book.";
           $("btnBook").disabled=true;
         } else {
@@ -1183,7 +1186,8 @@
         chips("svcRow", SERVICES, function(s){ return s.name+" <small>· "+money(s.price)+" · "+s.dur+"</small>"; }, function(s){ selService=s; renderSlotGrid(); }, function(s){ return s===selService; });
         chips("styRow", STYLISTS, function(s){ return s; }, function(s){ selStylist=s; selTime=null; renderSlotGrid(); }, function(s){ return s===selStylist; });
         selDay="Saturday";
-        chips("dayRow", [{day:"Saturday",label:"Today · Saturday"},{day:"Sunday",label:"Tomorrow · Sunday — closed"}], function(d){ return d.label; }, function(d){ setDay(d.day); }, function(d){ return d.day===selDay; });
+        /* D079: a past day is listed so visitors can see it is blocked, not bookable */
+        chips("dayRow", [{day:"Saturday",label:"Today · Saturday"},{day:"Sunday",label:"Tomorrow · Sunday — closed"},{day:"Friday",label:"Yesterday · Friday — past"}], function(d){ return d.label; }, function(d){ setDay(d.day); }, function(d){ return d.day===selDay; });
         setDay(selDay);
         renderSlotGrid();
       }
@@ -1255,6 +1259,7 @@
         var name=$("inpName").value.trim();
         var msg=$("bookMsg");
         if(selDay==="Sunday"){ msg.className="book-msg err"; msg.textContent="We're closed on Sundays — pick Saturday to book in this demo."; return; }
+        if(selDay==="Friday"){ msg.className="book-msg err"; msg.textContent="That date is in the past — Noor only books today and ahead. Pick Saturday."; return; }
         if(!selTime){ msg.className="book-msg err"; msg.textContent="Almost there — just pick a free time slot first."; return; }
         if(!name){ msg.className="book-msg err"; msg.textContent="What's your name? The salon wants to know whose chair to prepare."; $("inpName").focus(); return; }
         if(calendar[selStylist][selTime]){ msg.className="book-msg err"; msg.textContent="Oops, someone just took that slot — grab a free one instead."; renderSlotGrid(); return; }
