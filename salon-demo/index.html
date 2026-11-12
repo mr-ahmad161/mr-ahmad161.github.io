@@ -324,6 +324,11 @@
       .bk-item .tag{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
         background:var(--green-soft);color:var(--green);border-radius:var(--r-pill);padding:2px 8px;margin-top:5px}
       .bk-item .tag.you{background:var(--gold-soft);color:var(--gold)}
+      /* D076: no-show risk badge — Noor's simple heuristic, shown on every booking */
+      .bk-item .risk{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+        border-radius:var(--r-pill);padding:2px 8px;margin:5px 0 0 6px}
+      .bk-item .risk.low{background:var(--green-soft);color:var(--green)}
+      .bk-item .risk.high{background:var(--red-soft);color:var(--red)}
       /* D071: print-friendly booking summary — only the bookings list prints */
       @media print{
         header.topbar,.hero,#customize,#demo,#problem,#how,#how-it-works,#services,#faq,#stories,footer,.mobile-cta,.no-print{display:none!important}
@@ -620,7 +625,7 @@
             </div>
             <div class="panel">
               <h3>Saturday's bookings</h3>
-              <p class="sub" style="margin-bottom:14px">Everything on this list is locked into the calendar above.</p>
+              <p class="sub" style="margin-bottom:14px">Everything on this list is locked into the calendar above. Noor flags each booking&rsquo;s no-show risk: new clients with no history are higher risk, confirmed regulars are low risk.</p>
               <button class="btn btn-ghost no-print" id="btnPrintBk" type="button" style="margin-bottom:14px">🖨 Print today's bookings</button>
               <button class="btn btn-ghost no-print" id="btnCsvBk" type="button" style="margin-bottom:14px">⬇ Export day bookings (CSV)</button>
               <input type="text" id="bkSearch" class="no-print" placeholder="Search bookings by client name…" aria-label="Search bookings by client name" autocomplete="off" style="margin-bottom:12px" />
@@ -948,7 +953,9 @@
           /* D065: show the service duration on every booking in the list */
           var dur=""; SERVICES.forEach(function(sv){ if(sv.name===it.service) dur=sv.dur; });
           d.innerHTML="<b>"+it.client+" — "+it.service+"</b><span>with "+it.stylist+" · Saturday "+it.time+(dur?" · "+dur:"")+"</span>"+
-            '<span class="tag'+(it.byUser?" you":"")+'">'+(it.byUser?"Booked by you just now":"Confirmed · reminder set")+"</span>";
+            '<span class="tag'+(it.byUser?" you":"")+'">'+(it.byUser?"Booked by you just now":"Confirmed · reminder set")+"</span>"+
+            /* D076: simple heuristic — a booking made by a brand-new client with no history is higher no-show risk; a confirmed booking with a reminder set is low risk */
+            '<span class="risk '+(it.byUser?"high":"low")+'">'+(it.byUser?"Higher no-show risk · new client":"Low no-show risk")+"</span>";
           if(it.byUser){
             var acts=document.createElement("div"); acts.className="bk-actions";
             var cBtn=document.createElement("button"); cBtn.type="button"; cBtn.className="bk-act danger"; cBtn.textContent="Cancel";
