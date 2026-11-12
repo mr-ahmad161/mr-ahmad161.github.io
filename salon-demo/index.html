@@ -621,6 +621,8 @@
               <div class="slot-grid" id="slotGrid"></div>
               <!-- D078: visible double-booking guard — a booked slot locks instantly for everyone -->
               <p class="sub" id="guardNote">&#128275; Double-booking guard &mdash; the moment a slot is booked it locks for everyone. Two clients can never take the same stylist at the same time.</p>
+              <!-- D080: 2-hour lead-time notice — Noor only offers slots with enough prep time -->
+              <p class="sub">&#9201; 2-hour lead time &mdash; Noor only offers slots at least 2 hours from now, so the chair is always prepared before the client arrives.</p>
               <p class="est-line" id="priceEst"></p>
               <label class="field-lbl" for="inpName">5 · Your name</label>
               <input type="text" id="inpName" placeholder="e.g. Ayesha" autocomplete="off" />
@@ -1199,13 +1201,18 @@
         el.textContent = selTime ? base+", "+selDay+" "+selTime+". No deposit, pay at the salon." : base+". Pick a free time to lock it in.";
       }
 
+      /* D080: the demo call happens at 11:42 AM, and Noor needs 2 hours' notice before a booking */
+      var DEMO_NOW_MIN = 11*60+42, LEAD_MIN = 120;
+      function toMin(tm){ var p=tm.split(":"); return parseInt(p[0],10)*60+parseInt(p[1],10); }
       function renderSlotGrid(){
         var g=$("slotGrid"); g.innerHTML="";
         TIMES.forEach(function(tm){
           var b=document.createElement("button"); b.type="button"; b.className="slot-btn";
           var taken=calendar[selStylist][tm];
-          b.innerHTML=tm+"<small>"+(taken?("Booked · "+taken.client):(selStylist+" is free"))+"</small>";
+          var tooSoon=!taken && toMin(tm) < DEMO_NOW_MIN + LEAD_MIN;
+          b.innerHTML=tm+"<small>"+(taken?("Booked · "+taken.client):(tooSoon?"Too soon · needs 2h notice":(selStylist+" is free")))+"</small>";
           if(taken){ b.disabled=true; b.title="Already booked — Noor never double-books a slot"; }
+          if(tooSoon){ b.disabled=true; b.title="Too soon — Noor needs at least 2 hours' notice before a booking"; }
           if(selTime===tm) b.classList.add("sel");
           b.addEventListener("click", function(){ selTime=tm; renderSlotGrid(); });
           g.appendChild(b);
