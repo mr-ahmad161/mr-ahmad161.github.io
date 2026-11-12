@@ -623,6 +623,8 @@
               <p class="sub" id="guardNote">&#128275; Double-booking guard &mdash; the moment a slot is booked it locks for everyone. Two clients can never take the same stylist at the same time.</p>
               <!-- D080: 2-hour lead-time notice — Noor only offers slots with enough prep time -->
               <p class="sub">&#9201; 2-hour lead time &mdash; Noor only offers slots at least 2 hours from now, so the chair is always prepared before the client arrives.</p>
+              <!-- D081: 15-minute buffer note — Noor resets the chair between bookings -->
+              <p class="sub">&#129529; 15-minute buffer &mdash; Noor leaves 15 minutes after every booking, so the chair is cleaned and reset before the next client sits down.</p>
               <p class="est-line" id="priceEst"></p>
               <label class="field-lbl" for="inpName">5 · Your name</label>
               <input type="text" id="inpName" placeholder="e.g. Ayesha" autocomplete="off" />
@@ -1274,7 +1276,7 @@
         userBookings.push({client:name, service:selService.name, stylist:selStylist, time:selTime, price:selService.price});
         renderCalendar({stylist:selStylist, time:selTime}); renderBookings(); renderStats(); renderSlotGrid();
         msg.className="book-msg ok";
-        msg.textContent="✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+selTime+" · "+money(selService.price)+" · "+selService.dur+". Confirmation sent, and a reminder is set for Friday 6:00 PM.";
+        msg.textContent="✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+selTime+" · "+money(selService.price)+" · "+selService.dur+". Confirmation sent, and a reminder is set for Friday 6:00 PM. A 15-minute buffer is set after your booking so the chair is reset.";
         selTime=null; renderSlotGrid();
         $("inpName").value="";
       });
