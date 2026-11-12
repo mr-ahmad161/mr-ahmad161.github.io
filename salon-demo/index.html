@@ -546,6 +546,8 @@
               <label class="ctl">Call as
                 <input type="text" id="inpCaller" value="Sarah" aria-label="Caller name for the live demo" autocomplete="off" />
               </label>
+              <!-- D077: switch Noor's greeting between English and Urdu -->
+              <button class="ctl" id="btnUrdu" type="button" aria-pressed="false">اردو greeting</button>
               <div class="step-track" id="stepTrack" aria-hidden="true"></div>
             </div>
             <div class="demo-grid">
@@ -859,6 +861,8 @@
           s.appendChild(o);
         });
       }
+      /* D077: greet the caller in Urdu when the toggle is on */
+      var urduGreet=false;
       /* D069: the visitor's name personalizes Noor's greeting and the whole call */
       function callerName(){
         var v=$("inpCaller") && $("inpCaller").value.trim();
@@ -1040,7 +1044,7 @@
         }},
         {d:1500, fn:function(){
           setStatus("Live · 0:03","live"); speaking(true);
-          bubble("agent","Noor · AI agent","Hello " + callerName() + ", thanks for calling " + CFG.salon + "! This is Noor. How can I help today — looking to book an appointment?");
+          bubble("agent","Noor · AI agent", urduGreet ? "Assalam-o-Alaikum, " + callerName() + "! Noor bol rahi hoon, " + CFG.salon + " se. Aaj kis cheez mein madad kar sakti hoon — appointment book karwana hai?" : "Hello " + callerName() + ", thanks for calling " + CFG.salon + "! This is Noor. How can I help today — looking to book an appointment?");
         }},
         {d:2100, fn:function(){
           bubble("caller",callerName()+" · Caller","Hi! I need a " + featuredSvc().name.toLowerCase() + " this Saturday if possible — my regular salon is fully booked.");
@@ -1133,6 +1137,13 @@
       $("selDemoSty").addEventListener("change", function(){ demoStylist=this.value; restart(); play(); });
       /* D069: a new caller name restarts the call so Noor greets them by name */
       $("inpCaller").addEventListener("change", function(){ restart(); play(); });
+      /* D077: flipping the greeting replays the call with the new greeting */
+      $("btnUrdu").addEventListener("click", function(){
+        urduGreet=!urduGreet;
+        this.setAttribute("aria-pressed", urduGreet ? "true" : "false");
+        this.textContent = urduGreet ? "English greeting" : "اردو greeting";
+        restart(); play();
+      });
 
       /* ---------- Manual booking ---------- */
       var selService=SERVICES[0], selStylist=STYLISTS[0], selTime=null;
