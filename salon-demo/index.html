@@ -309,6 +309,9 @@
       .book-msg{font-size:.88rem;margin-top:12px;min-height:1.3em}
       .book-msg.ok{color:var(--green);font-weight:600}
       .book-msg.err{color:var(--red);font-weight:600}
+      /* D087: closed-day notice — shown only when Sunday is picked */
+      .closed-note{display:none;border:1.5px solid var(--line);background:var(--gold-soft);border-radius:var(--r-sm);padding:10px 12px;font-size:.88rem;margin:0 0 14px}
+      .closed-note.show{display:block}
       /* D082: confirmation summary box */
       .summary-box{display:none;border:1.5px solid var(--gold);border-radius:var(--r-sm);padding:14px;margin-top:14px;background:var(--gold-soft)}
       .summary-box.show{display:block}
@@ -624,6 +627,8 @@
               <p class="field-lbl">3 · Day</p>
               <div class="chip-row" id="dayRow"></div>
               <p class="sub" id="dayNote" style="margin:-8px 0 14px"></p>
+              <!-- D087: closed-day notice — Sunday is a rest day, with Monday reopening hours -->
+              <p class="closed-note" id="closedNote">&#128275; Closed on Sundays — the salon reopens Monday at 9:00 AM. Noor takes Saturday bookings in this demo, or leave a message and we&rsquo;ll call you back Monday morning.</p>
               <p class="field-lbl">4 · Saturday time</p>
               <div class="slot-grid" id="slotGrid"></div>
               <!-- D078: visible double-booking guard — a booked slot locks instantly for everyone -->
@@ -1196,9 +1201,11 @@
           $("btnBook").disabled=true;
         } else if(day==="Sunday"){
           note.textContent="We're closed on Sundays — Noor books Saturday appointments in this demo. Pick Saturday to book.";
+          $("closedNote").classList.add("show");
           $("btnBook").disabled=true;
         } else {
           note.textContent="";
+          $("closedNote").classList.remove("show");
           $("btnBook").disabled=false;
         }
       }
