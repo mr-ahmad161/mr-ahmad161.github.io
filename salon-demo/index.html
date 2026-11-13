@@ -306,6 +306,10 @@
       .book-msg{font-size:.88rem;margin-top:12px;min-height:1.3em}
       .book-msg.ok{color:var(--green);font-weight:600}
       .book-msg.err{color:var(--red);font-weight:600}
+      /* D082: confirmation summary box */
+      .summary-box{display:none;border:1.5px solid var(--gold);border-radius:var(--r-sm);padding:14px;margin-top:14px;background:var(--gold-soft)}
+      .summary-box.show{display:block}
+      .summary-box p{margin:8px 0 12px}
       /* D066: live price estimate while picking a booking */
       .est-line{font-size:.92rem;font-weight:700;margin:0 0 14px}
       /* D067: the Book button greys out on the closed day */
@@ -629,6 +633,12 @@
               <label class="field-lbl" for="inpName">5 · Your name</label>
               <input type="text" id="inpName" placeholder="e.g. Ayesha" autocomplete="off" />
               <button class="btn btn-gold" id="btnBook" type="button">Book my appointment</button>
+              <!-- D082: confirmation summary — check the details before the booking is final -->
+              <div class="summary-box" id="confirmSummary" role="status">
+                <b>Check your booking</b>
+                <p id="summaryText"></p>
+                <button class="btn btn-gold" id="btnConfirmFinal" type="button">Confirm booking</button>
+              </div>
               <p class="book-msg" id="bookMsg" role="status"></p>
             </div>
             <div class="panel">
@@ -1272,14 +1282,27 @@
         if(!selTime){ msg.className="book-msg err"; msg.textContent="Almost there — just pick a free time slot first."; return; }
         if(!name){ msg.className="book-msg err"; msg.textContent="What's your name? The salon wants to know whose chair to prepare."; $("inpName").focus(); return; }
         if(calendar[selStylist][selTime]){ msg.className="book-msg err"; msg.textContent="Oops, someone just took that slot — grab a free one instead."; renderSlotGrid(); return; }
+        /* D082: show a confirmation summary first — nothing books until the client checks it */
+        pendingName=name;
+        $("summaryText").textContent=name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+selTime+" · "+money(selService.price)+" · "+selService.dur+".";
+        $("confirmSummary").classList.add("show");
+        $("btnConfirmFinal").focus();
+      });
+      var pendingName=null;
+      /* D082: the booking only lands when the client confirms the summary (slot re-checked — it may have gone while they were checking) */
+      function finalizeBooking(){
+        var name=pendingName; if(!name) return;
+        var msg=$("bookMsg");
+        if(calendar[selStylist][selTime]){ msg.className="book-msg err"; msg.textContent="Oops, someone just took that slot while you were checking — grab a free one instead."; $("confirmSummary").classList.remove("show"); renderSlotGrid(); return; }
         calendar[selStylist][selTime]={client:name, service:selService.name, price:selService.price, byUser:true};
         userBookings.push({client:name, service:selService.name, stylist:selStylist, time:selTime, price:selService.price});
         renderCalendar({stylist:selStylist, time:selTime}); renderBookings(); renderStats(); renderSlotGrid();
         msg.className="book-msg ok";
         msg.textContent="✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+selTime+" · "+money(selService.price)+" · "+selService.dur+". Confirmation sent, and a reminder is set for Friday 6:00 PM. A 15-minute buffer is set after your booking so the chair is reset.";
-        selTime=null; renderSlotGrid();
+        selTime=null; pendingName=null; $("confirmSummary").classList.remove("show"); renderSlotGrid();
         $("inpName").value="";
-      });
+      }
+      $("btnConfirmFinal").addEventListener("click", finalizeBooking);
 
       /* ---------- Make it yours ---------- */
       /* D070: one-tap sample salons, so owners see Noor on a salon like theirs */
