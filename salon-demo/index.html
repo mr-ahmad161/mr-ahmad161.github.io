@@ -638,6 +638,7 @@
                 <b>Check your booking</b>
                 <p id="summaryText"></p>
                 <button class="btn btn-gold" id="btnConfirmFinal" type="button">Confirm booking</button>
+                <button class="btn btn-ghost" id="btnEditSummary" type="button" style="margin-left:8px">Edit details</button>
               </div>
               <p class="book-msg" id="bookMsg" role="status"></p>
             </div>
@@ -1303,6 +1304,12 @@
         $("inpName").value="";
       }
       $("btnConfirmFinal").addEventListener("click", finalizeBooking);
+      /* D083: go back and change the details — nothing is lost, the summary just hides */
+      $("btnEditSummary").addEventListener("click", function(){
+        $("confirmSummary").classList.remove("show");
+        var m=$("bookMsg"); m.className="book-msg"; m.textContent="Details kept — change anything above, then book again.";
+        $("inpName").focus();
+      });
 
       /* ---------- Make it yours ---------- */
       /* D070: one-tap sample salons, so owners see Noor on a salon like theirs */
