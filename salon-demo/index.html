@@ -1285,6 +1285,14 @@
         setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
       });
 
+      /* D086: a name already on today's calendar — or booked earlier in this demo — is a returning client */
+      function isReturningClient(n){
+        var nl=n.toLowerCase();
+        var known=["Emma","Olivia","Mia","Grace","Ruby","Ella"];
+        for(var i=0;i<known.length;i++){ if(known[i].toLowerCase()===nl) return true; }
+        for(var j=0;j<userBookings.length;j++){ if(userBookings[j].client.toLowerCase()===nl) return true; }
+        return false;
+      }
       $("btnBook").addEventListener("click", function(){
         var name=$("inpName").value.trim();
         var msg=$("bookMsg");
@@ -1301,7 +1309,7 @@
         if(calendar[selStylist][selTime]){ msg.className="book-msg err"; msg.textContent="Oops, someone just took that slot — grab a free one instead."; renderSlotGrid(); return; }
         /* D082: show a confirmation summary first — nothing books until the client checks it */
         pendingName=name;
-        $("summaryText").textContent=name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+selTime+" · "+money(selService.price)+" · "+selService.dur+"." +(pendingNotes?" Note for stylist: "+pendingNotes:"");
+        $("summaryText").textContent=(isReturningClient(name)?"Welcome back, "+name+" — great to see you again. ":"")+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+selTime+" · "+money(selService.price)+" · "+selService.dur+"." +(pendingNotes?" Note for stylist: "+pendingNotes:"");
         $("confirmSummary").classList.add("show");
         $("btnConfirmFinal").focus();
       });
@@ -1309,13 +1317,14 @@
       /* D082: the booking only lands when the client confirms the summary (slot re-checked — it may have gone while they were checking) */
       function finalizeBooking(){
         var name=pendingName; if(!name) return;
+        var returning=isReturningClient(name);
         var msg=$("bookMsg");
         if(calendar[selStylist][selTime]){ msg.className="book-msg err"; msg.textContent="Oops, someone just took that slot while you were checking — grab a free one instead."; $("confirmSummary").classList.remove("show"); renderSlotGrid(); return; }
         calendar[selStylist][selTime]={client:name, service:selService.name, price:selService.price, byUser:true, phone:pendingPhone, notes:pendingNotes};
         userBookings.push({client:name, service:selService.name, stylist:selStylist, time:selTime, price:selService.price, phone:pendingPhone, notes:pendingNotes});
         renderCalendar({stylist:selStylist, time:selTime}); renderBookings(); renderStats(); renderSlotGrid();
         msg.className="book-msg ok";
-        msg.textContent="✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+selTime+" · "+money(selService.price)+" · "+selService.dur+". Confirmation sent, and a reminder is set for Friday 6:00 PM. A 15-minute buffer is set after your booking so the chair is reset.";
+        msg.textContent=(returning?"Welcome back, "+name+" — great to see you again. ":"")+"✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+selTime+" · "+money(selService.price)+" · "+selService.dur+". Confirmation sent, and a reminder is set for Friday 6:00 PM. A 15-minute buffer is set after your booking so the chair is reset.";
         selTime=null; pendingName=null; pendingPhone=""; pendingNotes=""; $("confirmSummary").classList.remove("show"); renderSlotGrid();
         $("inpName").value=""; $("inpPhone").value=""; $("inpNotes").value="";
       }
