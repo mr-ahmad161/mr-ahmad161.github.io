@@ -296,9 +296,9 @@
       .slot-btn.sel{border-color:var(--gold);background:var(--gold-soft)}
       .slot-btn:hover:not(:disabled){border-color:var(--gold);transform:translateY(-1px)}
       .slot-btn:disabled{opacity:.42;cursor:not-allowed;text-decoration:line-through}
-      input[type=text],input[type=number]{width:100%;font:inherit;padding:12px 14px;border:1.5px solid var(--line);border-radius:var(--r-sm);
+      input[type=text],input[type=number],input[type=tel]{width:100%;font:inherit;padding:12px 14px;border:1.5px solid var(--line);border-radius:var(--r-sm);
         background:var(--surface);color:var(--ink);margin:8px 0 16px}
-      input[type=text]:focus,input[type=number]:focus{outline:2px solid var(--gold);outline-offset:1px}
+      input[type=text]:focus,input[type=number]:focus,input[type=tel]:focus{outline:2px solid var(--gold);outline-offset:1px}
       .btn:focus-visible,.ctl:focus-visible,.chip:focus-visible,.slot-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
       /* D028: 44px minimum tap targets for touch users */
       .btn,.ctl,.chip,.slot-btn{min-height:44px;justify-content:center}
@@ -632,6 +632,9 @@
               <p class="est-line" id="priceEst"></p>
               <label class="field-lbl" for="inpName">5 · Your name</label>
               <input type="text" id="inpName" placeholder="e.g. Ayesha" autocomplete="off" />
+              <!-- D084: mobile number, so Noor's SMS confirmation actually reaches the client -->
+              <label class="field-lbl" for="inpPhone">6 · Your mobile (for the SMS confirmation)</label>
+              <input type="tel" id="inpPhone" placeholder="e.g. 07700 900123" autocomplete="tel" />
               <button class="btn btn-gold" id="btnBook" type="button">Book my appointment</button>
               <!-- D082: confirmation summary — check the details before the booking is final -->
               <div class="summary-box" id="confirmSummary" role="status">
@@ -1282,6 +1285,11 @@
         if(selDay==="Friday"){ msg.className="book-msg err"; msg.textContent="That date is in the past — Noor only books today and ahead. Pick Saturday."; return; }
         if(!selTime){ msg.className="book-msg err"; msg.textContent="Almost there — just pick a free time slot first."; return; }
         if(!name){ msg.className="book-msg err"; msg.textContent="What's your name? The salon wants to know whose chair to prepare."; $("inpName").focus(); return; }
+        /* D084: a valid mobile number — 7 to 15 digits, ignoring spaces, dashes and a leading + */
+        var phone=$("inpPhone").value.trim();
+        var digits=phone.replace(/[^0-9]/g,"");
+        if(digits.length<7 || digits.length>15){ msg.className="book-msg err"; msg.textContent="That mobile number doesn't look right — enter a number with 7 to 15 digits so Noor can text your confirmation."; $("inpPhone").focus(); return; }
+        pendingPhone=phone;
         if(calendar[selStylist][selTime]){ msg.className="book-msg err"; msg.textContent="Oops, someone just took that slot — grab a free one instead."; renderSlotGrid(); return; }
         /* D082: show a confirmation summary first — nothing books until the client checks it */
         pendingName=name;
@@ -1289,19 +1297,19 @@
         $("confirmSummary").classList.add("show");
         $("btnConfirmFinal").focus();
       });
-      var pendingName=null;
+      var pendingName=null, pendingPhone="";
       /* D082: the booking only lands when the client confirms the summary (slot re-checked — it may have gone while they were checking) */
       function finalizeBooking(){
         var name=pendingName; if(!name) return;
         var msg=$("bookMsg");
         if(calendar[selStylist][selTime]){ msg.className="book-msg err"; msg.textContent="Oops, someone just took that slot while you were checking — grab a free one instead."; $("confirmSummary").classList.remove("show"); renderSlotGrid(); return; }
-        calendar[selStylist][selTime]={client:name, service:selService.name, price:selService.price, byUser:true};
-        userBookings.push({client:name, service:selService.name, stylist:selStylist, time:selTime, price:selService.price});
+        calendar[selStylist][selTime]={client:name, service:selService.name, price:selService.price, byUser:true, phone:pendingPhone};
+        userBookings.push({client:name, service:selService.name, stylist:selStylist, time:selTime, price:selService.price, phone:pendingPhone});
         renderCalendar({stylist:selStylist, time:selTime}); renderBookings(); renderStats(); renderSlotGrid();
         msg.className="book-msg ok";
         msg.textContent="✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+selTime+" · "+money(selService.price)+" · "+selService.dur+". Confirmation sent, and a reminder is set for Friday 6:00 PM. A 15-minute buffer is set after your booking so the chair is reset.";
-        selTime=null; pendingName=null; $("confirmSummary").classList.remove("show"); renderSlotGrid();
-        $("inpName").value="";
+        selTime=null; pendingName=null; pendingPhone=""; $("confirmSummary").classList.remove("show"); renderSlotGrid();
+        $("inpName").value=""; $("inpPhone").value="";
       }
       $("btnConfirmFinal").addEventListener("click", finalizeBooking);
       /* D083: go back and change the details — nothing is lost, the summary just hides */
