@@ -9,7 +9,7 @@
 <!--
   CHANGELOG (latest first - full log lives with the project notes):
   2026-11-14: section markers; fonts load without blocking paint; header comment; version stamp.
-  2026-11-15: WhatsApp CTA button in the hero. Demo reset button. Captioned call simulation. Booking progress steps.
+  2026-11-15: WhatsApp CTA button in the hero. Demo reset button. Captioned call simulation. Booking progress steps. Estimated wait-time display.
   2026-11-13: booking summary screen; edit details; phone validation; notes field;
     returning-client greeting; closed-day notice for Sundays.
   2026-11-12: no-show risk badge; Urdu greeting toggle; double-booking guard;
@@ -678,6 +678,8 @@
               <p class="closed-note" id="closedNote">&#128275; Closed on Sundays — the salon reopens Monday at 9:00 AM. Noor takes Saturday bookings in this demo, or leave a message and we&rsquo;ll call you back Monday morning.</p>
               <p class="field-lbl">4 · Saturday time</p>
               <div class="slot-grid" id="slotGrid"></div>
+              <!-- D103: estimated wait — your slot is reserved, so there is no queue -->
+              <p class="sub" id="waitEst"></p>
               <!-- D078: visible double-booking guard — a booked slot locks instantly for everyone -->
               <p class="sub" id="guardNote">&#128275; Double-booking guard &mdash; the moment a slot is booked it locks for everyone. Two clients can never take the same stylist at the same time.</p>
               <!-- D080: 2-hour lead-time notice — Noor only offers slots with enough prep time -->
@@ -1316,6 +1318,14 @@
       /* D080: the demo call happens at 11:42 AM, and Noor needs 2 hours' notice before a booking */
       var DEMO_NOW_MIN = 11*60+42, LEAD_MIN = 120;
       function toMin(tm){ var p=tm.split(":"); return parseInt(p[0],10)*60+parseInt(p[1],10); }
+      /* D103: how long until the picked slot starts — counted from the demo's "now" (11:42 AM) */
+      function renderWaitEst(){
+        var el=$("waitEst"); if(!el) return;
+        if(!selTime){ el.textContent="\u23F1 Estimated wait: pick a free time \u2014 Noor reserves your slot, so there is no queue when you arrive."; return; }
+        var mins=toMin(selTime)-DEMO_NOW_MIN;
+        var when = mins<=0 ? "starting now" : "starts in about "+(mins>=60 ? Math.floor(mins/60)+"h "+(mins%60?mins%60+"m":"") : mins+"m");
+        el.textContent="\u23F1 Estimated wait: your slot "+when+" \u2014 arrive 5 minutes early and walk straight in, no queue.";
+      }
       function renderSlotGrid(){
         var g=$("slotGrid"); g.innerHTML="";
         TIMES.forEach(function(tm){
@@ -1331,6 +1341,7 @@
         });
         renderPriceEst();
         updateBookSteps();
+        renderWaitEst();
       }
 
       /* D039: arrow keys move focus between chips and time slots, so the whole booking flow works by keyboard */
