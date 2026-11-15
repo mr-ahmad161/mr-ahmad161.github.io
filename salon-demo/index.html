@@ -9,7 +9,7 @@
 <!--
   CHANGELOG (latest first - full log lives with the project notes):
   2026-11-14: section markers; fonts load without blocking paint; header comment; version stamp.
-  2026-11-15: WhatsApp CTA button in the hero.
+  2026-11-15: WhatsApp CTA button in the hero. Demo reset button.
   2026-11-13: booking summary screen; edit details; phone validation; notes field;
     returning-client greeting; closed-day notice for Sundays.
   2026-11-12: no-show risk badge; Urdu greeting toggle; double-booking guard;
@@ -569,6 +569,8 @@
             <div class="demo-controls">
               <button class="ctl primary" id="btnPlay" type="button" aria-label="Pause live demo">⏸ Pause</button>
               <button class="ctl" id="btnRestart" type="button" aria-label="Restart live demo">↺ Restart</button>
+              <!-- D100: full demo reset — fresh calendar, no bookings of yours -->
+              <button class="ctl" id="btnResetDemo" type="button" aria-label="Reset the whole demo">⟲ Reset demo</button>
               <button class="ctl" id="btnStep" type="button" aria-label="Play next step of the live demo">Step →</button>
               <label class="ctl">Speed
                 <select id="selSpeed" aria-label="Playback speed">
@@ -1186,6 +1188,18 @@
 
       $("btnPlay").addEventListener("click", function(){ playing?pause():play(); });
       $("btnRestart").addEventListener("click", function(){ restart(); play(); });
+      /* D100: reset the whole demo — fresh Saturday calendar, your bookings cleared, form emptied */
+      $("btnResetDemo").addEventListener("click", function(){
+        userBookings = [];
+        resetCalendar();
+        restart();
+        buildBookingForm();
+        renderStats();
+        $("inpName").value = ""; $("inpPhone").value = ""; $("inpNotes").value = "";
+        $("confirmSummary").classList.remove("show");
+        var m = $("bookMsg"); m.className = "book-msg";
+        m.textContent = "Demo reset — fresh Saturday calendar, no bookings of yours. Try the call or book again.";
+      });
       $("btnStep").addEventListener("click", function(){
         pause();
         if(idx>=steps.length){ restart(); return; }
