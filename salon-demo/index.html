@@ -9,7 +9,7 @@
 <!--
   CHANGELOG (latest first - full log lives with the project notes):
   2026-11-14: section markers; fonts load without blocking paint; header comment; version stamp.
-  2026-11-15: WhatsApp CTA button in the hero. Demo reset button. Captioned call simulation.
+  2026-11-15: WhatsApp CTA button in the hero. Demo reset button. Captioned call simulation. Booking progress steps.
   2026-11-13: booking summary screen; edit details; phone validation; notes field;
     returning-client greeting; closed-day notice for Sundays.
   2026-11-12: no-show risk badge; Urdu greeting toggle; double-booking guard;
@@ -305,6 +305,12 @@
       /* booking */
       .book-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:start}
       @media (max-width:900px){.book-grid{grid-template-columns:1fr}}
+      /* D102: booking progress — Service, Stylist, Day, Time, Details, Done */
+      .book-steps{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+      .book-steps span{font-size:.76rem;font-weight:700;padding:6px 11px;border-radius:var(--r-pill);
+        background:var(--surface-2);border:1px solid var(--line);color:var(--muted)}
+      .book-steps span.done{background:var(--green-soft);color:var(--green);border-color:var(--green)}
+      .book-steps span.now{background:var(--gold-soft);color:var(--gold);border-color:var(--gold)}
       .chip-row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 18px}
       .chip{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:.87rem;
         font-weight:600;padding:9px 15px;border-radius:var(--r-pill);cursor:pointer;transition:border-color .15s ease,transform .15s ease}
@@ -657,6 +663,10 @@
           </div>
           <div class="book-grid">
             <div class="panel">
+              <!-- D102: progress steps for the booking flow -->
+              <div class="book-steps" id="bookSteps" aria-label="Booking progress">
+                <span data-step="1">1 · Service</span><span data-step="2">2 · Stylist</span><span data-step="3">3 · Day</span><span data-step="4">4 · Time</span><span data-step="5">5 · Details</span><span data-step="6">6 · Done</span>
+              </div>
               <p class="field-lbl">1 · Service</p>
               <div class="chip-row" id="svcRow"></div>
               <p class="field-lbl">2 · Stylist</p>
@@ -1237,6 +1247,8 @@
 
       /* ---------- Manual booking ---------- */
       var selService=SERVICES[0], selStylist=STYLISTS[0], selTime=null;
+      /* D102: true once a booking is confirmed, so the progress bar can show Done */
+      var bookedJustNow=false;
       var selDay="Saturday";
       function chips(containerId, items, labelFn, onPick, isSel){
         var c=$(containerId); c.innerHTML="";
@@ -1269,17 +1281,29 @@
       }
 
       function buildBookingForm(){
+        bookedJustNow=false;
         /* D063: keep the current service/stylist when rescheduling; default only if the old pick no longer exists */
         if(SERVICES.indexOf(selService)<0) selService=SERVICES[0];
         if(STYLISTS.indexOf(selStylist)<0) selStylist=STYLISTS[0];
         selTime=null;
-        chips("svcRow", SERVICES, function(s){ return s.name+" <small>· "+money(s.price)+" · "+s.dur+"</small>"; }, function(s){ selService=s; renderSlotGrid(); }, function(s){ return s===selService; });
-        chips("styRow", STYLISTS, function(s){ return s; }, function(s){ selStylist=s; selTime=null; renderSlotGrid(); }, function(s){ return s===selStylist; });
+        chips("svcRow", SERVICES, function(s){ return s.name+" <small>· "+money(s.price)+" · "+s.dur+"</small>"; }, function(s){ selService=s; bookedJustNow=false; renderSlotGrid(); }, function(s){ return s===selService; });
+        chips("styRow", STYLISTS, function(s){ return s; }, function(s){ selStylist=s; selTime=null; bookedJustNow=false; renderSlotGrid(); }, function(s){ return s===selStylist; });
         selDay="Saturday";
         /* D079: a past day is listed so visitors can see it is blocked, not bookable */
         chips("dayRow", [{day:"Saturday",label:"Today · Saturday"},{day:"Sunday",label:"Tomorrow · Sunday — closed"},{day:"Friday",label:"Yesterday · Friday — past"}], function(d){ return d.label; }, function(d){ setDay(d.day); }, function(d){ return d.day===selDay; });
         setDay(selDay);
         renderSlotGrid();
+      }
+
+      /* D102: highlight the current booking step — 1-3 start done (they have defaults), Time is current until a slot is picked */
+      function updateBookSteps(){
+        var el=$("bookSteps"); if(!el) return;
+        var cur = bookedJustNow ? 6 : (selTime ? 5 : 4);
+        var kids=el.children;
+        for(var i=0;i<kids.length;i++){
+          var n=i+1;
+          kids[i].className = n<cur ? "done" : (n===cur ? "now" : "");
+        }
       }
 
       /* D066: live price estimate for the booking being built */
@@ -1302,10 +1326,11 @@
           if(taken){ b.disabled=true; b.title="Already booked — Noor never double-books a slot"; }
           if(tooSoon){ b.disabled=true; b.title="Too soon — Noor needs at least 2 hours' notice before a booking"; }
           if(selTime===tm) b.classList.add("sel");
-          b.addEventListener("click", function(){ selTime=tm; renderSlotGrid(); });
+          b.addEventListener("click", function(){ selTime=tm; bookedJustNow=false; renderSlotGrid(); });
           g.appendChild(b);
         });
         renderPriceEst();
+        updateBookSteps();
       }
 
       /* D039: arrow keys move focus between chips and time slots, so the whole booking flow works by keyboard */
@@ -1382,6 +1407,7 @@
       /* D082: the booking only lands when the client confirms the summary (slot re-checked — it may have gone while they were checking) */
       function finalizeBooking(){
         var name=pendingName; if(!name) return;
+        bookedJustNow=true;
         var returning=isReturningClient(name);
         var msg=$("bookMsg");
         if(calendar[selStylist][selTime]){ msg.className="book-msg err"; msg.textContent="Oops, someone just took that slot while you were checking — grab a free one instead."; $("confirmSummary").classList.remove("show"); renderSlotGrid(); return; }
