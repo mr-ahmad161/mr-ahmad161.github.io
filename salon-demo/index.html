@@ -5,10 +5,11 @@
   Built by AHMAD, AI Full Stack Developer. Bookings, calls and calendar
   data in this demo are simulated in the browser - nothing leaves the page.
 -->
-<!-- Noor demo version: 2026.11.14 - bumped with each daily improvement batch -->
+<!-- Noor demo version: 2026.11.15 - bumped with each daily improvement batch -->
 <!--
   CHANGELOG (latest first - full log lives with the project notes):
   2026-11-14: section markers; fonts load without blocking paint; header comment; version stamp.
+  2026-11-15: WhatsApp CTA button in the hero.
   2026-11-13: booking summary screen; edit details; phone validation; notes field;
     returning-client greeting; closed-day notice for Sundays.
   2026-11-12: no-show risk badge; Urdu greeting toggle; double-booking guard;
@@ -150,6 +151,9 @@
       .btn-gold{background:var(--gold-bright);color:var(--on-gold);box-shadow:0 8px 24px rgba(201,162,39,.35)}
       .btn-gold:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(201,162,39,.45)}
       .btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+      /* D099: WhatsApp CTA — dark green for contrast, opens WhatsApp with a prefilled enquiry */
+      .btn-wa{background:#128c4a;color:#fff}
+      .btn-wa:hover{box-shadow:0 12px 30px rgba(18,140,74,.35)}
       .btn-ghost:hover{border-color:var(--gold);background:var(--gold-soft);transform:translateY(-2px)}
       .btn:active{transform:translateY(0) scale(.97)}
       .hero-note{font-size:.85rem;color:var(--faint);margin-top:14px}
@@ -480,6 +484,8 @@
             <div class="cta-row">
               <a class="btn btn-gold" href="#demo">▶ Try the live demo</a>
               <a class="btn btn-ghost" href="#customize">Test Noor on your salon</a>
+              <!-- D099: WhatsApp CTA — opens WhatsApp with a prefilled enquiry for Noor -->
+              <a class="btn btn-wa" href="https://api.whatsapp.com/send?text=Hi%20Ahmad%2C%20I%20saw%20the%20Noor%20demo%20and%20I%27d%20like%20Noor%20for%20my%20salon." target="_blank" rel="noopener">💬 Chat on WhatsApp</a>
             </div>
             <p class="hero-note">Free demo, no signup. No app to install — the phone gets answered even at 9 PM on a Sunday.</p>
           </div>
