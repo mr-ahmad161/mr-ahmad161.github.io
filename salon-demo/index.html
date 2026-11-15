@@ -9,7 +9,7 @@
 <!--
   CHANGELOG (latest first - full log lives with the project notes):
   2026-11-14: section markers; fonts load without blocking paint; header comment; version stamp.
-  2026-11-15: WhatsApp CTA button in the hero. Demo reset button. Captioned call simulation. Booking progress steps. Estimated wait-time display.
+  2026-11-15: WhatsApp CTA button in the hero. Demo reset button. Captioned call simulation. Booking progress steps. Estimated wait-time display. One money() formatter for every price.
   2026-11-13: booking summary screen; edit details; phone validation; notes field;
     returning-client greeting; closed-day notice for Sundays.
   2026-11-12: no-show risk badge; Urdu greeting toggle; double-booking guard;
@@ -951,7 +951,8 @@
         var v=$("inpCaller") && $("inpCaller").value.trim();
         return v || "Sarah";
       }
-      function money(n){ return "$" + (Math.round(n*100)/100).toLocaleString(); }
+      /* D104: the one place prices are formatted — "$140", "$1,250", "$99.50"; locale pinned so grouping never varies by browser */
+      function money(n){ return "$" + Number(n).toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:2}); }
       function durLong(d){ return {"2 hrs":"2 hours","1 hr":"1 hour","45 min":"45 minutes","1.5 hrs":"1.5 hours"}[d] || d; }
 
       // calendar[stylist][time] = null | {client, service, price, demo, byUser}
@@ -1085,12 +1086,12 @@
         $("stCalls").textContent = baseStats.calls + demoDelta.calls;
         $("stBookings").textContent = baseStats.bookings + demoDelta.bookings + uCount;
         $("stReminders").textContent = baseStats.reminders + demoDelta.reminders + uCount;
-        $("stRevenue").textContent = "$" + (baseStats.revenue + demoDelta.revenue + uRev).toLocaleString();
+        $("stRevenue").textContent = money(baseStats.revenue + demoDelta.revenue + uRev);
         $("stNoshows").textContent = baseStats.noshows + "%";
         $("stCallsD").textContent = demoDelta.calls ? "+1 from the live call" : "";
         $("stBookingsD").textContent = (demoDelta.bookings||uCount) ? "+"+(demoDelta.bookings+uCount)+" during this demo" : "";
         $("stRemindersD").textContent = demoDelta.reminders ? "+1 reminder scheduled" : (uCount?"+ "+uCount+" from your bookings":"");
-        $("stRevenueD").textContent = (demoDelta.revenue||uRev) ? "+$"+(demoDelta.revenue+uRev)+" added live" : "";
+        $("stRevenueD").textContent = (demoDelta.revenue||uRev) ? "+"+money(demoDelta.revenue+uRev)+" added live" : "";
       }
 
       /* ---------- Waveform ---------- */
