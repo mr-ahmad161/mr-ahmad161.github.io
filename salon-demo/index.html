@@ -9,7 +9,7 @@
 <!--
   CHANGELOG (latest first - full log lives with the project notes):
   2026-11-14: section markers; fonts load without blocking paint; header comment; version stamp.
-  2026-11-15: WhatsApp CTA button in the hero. Demo reset button.
+  2026-11-15: WhatsApp CTA button in the hero. Demo reset button. Captioned call simulation.
   2026-11-13: booking summary screen; edit details; phone validation; notes field;
     returning-client greeting; closed-day notice for Sundays.
   2026-11-12: no-show risk badge; Urdu greeting toggle; double-booking guard;
@@ -204,6 +204,9 @@
       .wave.speaking span:nth-child(5n){animation:wv .9s ease-in-out infinite alternate}
       @keyframes wv{from{height:14%}to{height:92%}}
       @media (prefers-reduced-motion: reduce){.wave.speaking span{animation:none}}
+      /* D101: live caption line under the waveform — the call is silent, every line appears here as text */
+      .call-caption{font-size:.88rem;color:var(--muted);margin:0 0 12px;min-height:1.3em}
+      .call-caption b{color:var(--ink)}
       .transcript{display:flex;flex-direction:column;gap:10px;min-height:238px;max-height:340px;overflow-y:auto;padding-right:4px}
       .bubble{max-width:88%;padding:11px 14px;border-radius:var(--r-md);font-size:.92rem;line-height:1.45;
         opacity:0;transform:translateY(8px);transition:opacity .35s ease,transform .35s ease}
@@ -601,6 +604,8 @@
                   <span class="status-pill" id="statusPill">Ringing…</span>
                 </div>
                 <div class="wave" id="wave" aria-hidden="true"></div>
+                <!-- D101: captions — the call plays silently, every spoken line appears here -->
+                <p class="call-caption" id="callCaption" aria-live="polite">Captions on — the call plays silently, and every line appears here as text.</p>
                 <div class="transcript" id="transcript" aria-live="polite"></div>
                 <div class="log" id="agentLog"></div>
               </div>
@@ -1086,6 +1091,9 @@
       function bubble(who, name, text){
         var d=document.createElement("div"); d.className="bubble "+who;
         d.innerHTML='<span class="who">'+name+'</span>'+text;
+        /* D101: mirror every spoken line into the caption bar, tags stripped */
+        var cap=$("callCaption");
+        if(cap) cap.innerHTML="<b>"+name+":</b> "+text.replace(/<[^>]+>/g,"");
         transcript.appendChild(d);
         requestAnimationFrame(function(){ d.classList.add("show"); });
         transcript.scrollTop=transcript.scrollHeight;
@@ -1176,6 +1184,9 @@
       function restart(){
         pause(); idx=0; markDots();
         transcript.innerHTML=""; logEl.innerHTML="";
+        /* D101: captions back to the idle line on restart */
+        var cap=$("callCaption");
+        if(cap) cap.textContent="Captions on — the call plays silently, and every line appears here as text.";
         $("calWrap").classList.remove("checking");
         $("confirmedCard").classList.remove("show");
         demoDelta={calls:0,bookings:0,reminders:0,revenue:0};
