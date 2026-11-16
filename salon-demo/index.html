@@ -5,11 +5,12 @@
   Built by AHMAD, AI Full Stack Developer. Bookings, calls and calendar
   data in this demo are simulated in the browser - nothing leaves the page.
 -->
-<!-- Noor demo version: 2026.11.15 - bumped with each daily improvement batch -->
+<!-- Noor demo version: 2026.11.16 - bumped with each daily improvement batch -->
 <!--
   CHANGELOG (latest first - full log lives with the project notes):
   2026-11-14: section markers; fonts load without blocking paint; header comment; version stamp.
   2026-11-15: WhatsApp CTA button in the hero. Demo reset button. Captioned call simulation. Booking progress steps. Estimated wait-time display. One money() formatter for every price.
+  2026-11-16: 12-hour times everywhere; new/returning client toggle; promo codes (NOOR10); loyalty note on confirmation; .ics calendar download; share booking on WhatsApp.
   2026-11-13: booking summary screen; edit details; phone validation; notes field;
     returning-client greeting; closed-day notice for Sundays.
   2026-11-12: no-show risk badge; Urdu greeting toggle; double-booking guard;
@@ -721,6 +722,8 @@
               <!-- D109: download the confirmed booking as a calendar file -->
               <div id="bookingShareRow" style="display:none;margin-top:12px;gap:8px;flex-wrap:wrap">
                 <button class="btn btn-ghost" id="btnIcsBk" type="button">📅 Add to calendar (.ics)</button>
+                <!-- D110: share the confirmed booking on WhatsApp -->
+                <a class="btn btn-wa" id="btnShareWa" href="#" target="_blank" rel="noopener">💬 Share booking on WhatsApp</a>
               </div>
             </div>
             <div class="panel">
@@ -1536,6 +1539,8 @@
         userBookings.push({client:name, service:selService.name, stylist:selStylist, time:selTime, price:promoPrice(selService.price), phone:pendingPhone, notes:pendingNotes});
         lastBooking={name:name, service:selService.name, stylist:selStylist, day:selDay, time:selTime, price:promoPrice(selService.price), dur:selService.dur};
         var sr=$("bookingShareRow"); if(sr) sr.style.display="flex";
+        var wa=$("btnShareWa");
+        if(wa) wa.href="https://api.whatsapp.com/send?text="+encodeURIComponent("I'm booked at "+CFG.salon+" — "+lastBooking.service+" with "+lastBooking.stylist+", "+lastBooking.day+" "+timeLabel(lastBooking.time)+" · "+money(lastBooking.price)+". Booked with Noor, the AI receptionist!");
         renderCalendar({stylist:selStylist, time:selTime}); renderBookings(); renderStats(); renderSlotGrid();
         msg.className="book-msg ok";
         msg.textContent=(returning?"Welcome back, "+name+" — great to see you again. ":"")+"✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+timeLabel(selTime)+" · "+money(promoPrice(selService.price))+(promoPct?" ("+promoCode+" "+Math.round(promoPct*100)+"% off)":"")+" · "+selService.dur+". Confirmation sent, and a reminder is set for Friday 6:00 PM. A 15-minute buffer is set after your booking so the chair is reset."+loyaltyNote(name);
