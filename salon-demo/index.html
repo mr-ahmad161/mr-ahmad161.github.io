@@ -695,6 +695,13 @@
               <!-- D085: notes for the stylist — allergies, preferences, anything Noor should pass on -->
               <label class="field-lbl" for="inpNotes">Notes for your stylist (optional)</label>
               <textarea id="inpNotes" rows="2" placeholder="e.g. Allergy to PPD — please use ammonia-free colour"></textarea>
+              <!-- D106: new vs returning client — Noor greets returning clients by name and pulls up their last visit -->
+              <p class="field-lbl">First visit or returning?</p>
+              <div class="chip-row" id="clientKindRow" role="group" aria-label="New or returning client">
+                <button class="chip sel" id="btnClientNew" type="button" aria-pressed="true">New client</button>
+                <button class="chip" id="btnClientReturning" type="button" aria-pressed="false">Returning client</button>
+              </div>
+              <p class="sub" id="clientKindNote" style="margin:-8px 0 14px">First visit &mdash; Noor takes your details and confirms by text.</p>
               <button class="btn btn-gold" id="btnBook" type="button">Book my appointment</button>
               <!-- D082: confirmation summary — check the details before the booking is final -->
               <div class="summary-box" id="confirmSummary" role="status">
@@ -1253,6 +1260,8 @@
       /* D102: true once a booking is confirmed, so the progress bar can show Done */
       var bookedJustNow=false;
       var selDay="Saturday";
+      /* D106: the visitor says whether they are new or returning — the toggle decides the greeting */
+      var clientKind="new";
       function chips(containerId, items, labelFn, onPick, isSel){
         var c=$(containerId); c.innerHTML="";
         items.forEach(function(it, i){
@@ -1285,6 +1294,7 @@
 
       function buildBookingForm(){
         bookedJustNow=false;
+        setClientKind("new");
         /* D063: keep the current service/stylist when rescheduling; default only if the old pick no longer exists */
         if(SERVICES.indexOf(selService)<0) selService=SERVICES[0];
         if(STYLISTS.indexOf(selStylist)<0) selStylist=STYLISTS[0];
@@ -1345,6 +1355,20 @@
         renderWaitEst();
       }
 
+      /* D106: flip the new/returning toggle — Noor greets returning clients by name */
+      function setClientKind(k){
+        clientKind=k;
+        $("btnClientNew").classList.toggle("sel", k==="new");
+        $("btnClientNew").setAttribute("aria-pressed", k==="new" ? "true" : "false");
+        $("btnClientReturning").classList.toggle("sel", k==="returning");
+        $("btnClientReturning").setAttribute("aria-pressed", k==="returning" ? "true" : "false");
+        $("clientKindNote").textContent = k==="returning"
+          ? "Welcome back — Noor greets you by name and pulls up your last visit."
+          : "First visit — Noor takes your details and confirms by text.";
+      }
+      $("btnClientNew").addEventListener("click", function(){ setClientKind("new"); });
+      $("btnClientReturning").addEventListener("click", function(){ setClientKind("returning"); });
+
       /* D039: arrow keys move focus between chips and time slots, so the whole booking flow works by keyboard */
       document.addEventListener("keydown", function(e){
         if(e.key!=="ArrowRight"&&e.key!=="ArrowLeft"&&e.key!=="ArrowDown"&&e.key!=="ArrowUp") return;
@@ -1389,6 +1413,8 @@
 
       /* D086: a name already on today's calendar — or booked earlier in this demo — is a returning client */
       function isReturningClient(n){
+        if(clientKind==="returning") return true;
+        if(clientKind==="new") return false;
         var nl=n.toLowerCase();
         var known=["Emma","Olivia","Mia","Grace","Ruby","Ella"];
         for(var i=0;i<known.length;i++){ if(known[i].toLowerCase()===nl) return true; }
