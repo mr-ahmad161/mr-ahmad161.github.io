@@ -1455,6 +1455,17 @@
         for(var j=0;j<userBookings.length;j++){ if(userBookings[j].client.toLowerCase()===nl) return true; }
         return false;
       }
+      /* D108: loyalty — every 6th visit earns a free blow-dry; a returning client starts with one visit behind them */
+      function loyaltyCount(name){
+        var n = isReturningClient(name) ? 1 : 0;
+        userBookings.forEach(function(u){ if(u.client.toLowerCase()===name.toLowerCase()) n++; });
+        return n;
+      }
+      function loyaltyNote(name){
+        var v=loyaltyCount(name);
+        if(v>=6) return " Loyalty: that's visit "+v+" — your next blow-dry is on us.";
+        return " Loyalty: visit "+v+" of 6 — "+(6-v)+" more visit"+((6-v)===1?"":"s")+" and your next blow-dry is free.";
+      }
       $("btnBook").addEventListener("click", function(){
         var name=$("inpName").value.trim();
         var msg=$("bookMsg");
@@ -1487,7 +1498,7 @@
         userBookings.push({client:name, service:selService.name, stylist:selStylist, time:selTime, price:promoPrice(selService.price), phone:pendingPhone, notes:pendingNotes});
         renderCalendar({stylist:selStylist, time:selTime}); renderBookings(); renderStats(); renderSlotGrid();
         msg.className="book-msg ok";
-        msg.textContent=(returning?"Welcome back, "+name+" — great to see you again. ":"")+"✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+timeLabel(selTime)+" · "+money(promoPrice(selService.price))+(promoPct?" ("+promoCode+" "+Math.round(promoPct*100)+"% off)":"")+" · "+selService.dur+". Confirmation sent, and a reminder is set for Friday 6:00 PM. A 15-minute buffer is set after your booking so the chair is reset.";
+        msg.textContent=(returning?"Welcome back, "+name+" — great to see you again. ":"")+"✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+timeLabel(selTime)+" · "+money(promoPrice(selService.price))+(promoPct?" ("+promoCode+" "+Math.round(promoPct*100)+"% off)":"")+" · "+selService.dur+". Confirmation sent, and a reminder is set for Friday 6:00 PM. A 15-minute buffer is set after your booking so the chair is reset."+loyaltyNote(name);
         selTime=null; pendingName=null; pendingPhone=""; pendingNotes=""; $("confirmSummary").classList.remove("show"); renderSlotGrid();
         $("inpName").value=""; $("inpPhone").value=""; $("inpNotes").value="";
       }
