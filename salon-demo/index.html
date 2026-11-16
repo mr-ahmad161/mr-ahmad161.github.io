@@ -702,6 +702,13 @@
                 <button class="chip" id="btnClientReturning" type="button" aria-pressed="false">Returning client</button>
               </div>
               <p class="sub" id="clientKindNote" style="margin:-8px 0 14px">First visit &mdash; Noor takes your details and confirms by text.</p>
+              <!-- D107: promo code — NOOR10 takes 10% off a first booking, WELCOME15 takes 15% off -->
+              <label class="field-lbl" for="inpPromo">Promo code (optional)</label>
+              <div style="display:flex;gap:8px;align-items:flex-start">
+                <input type="text" id="inpPromo" placeholder="e.g. NOOR10" autocomplete="off" style="flex:1" />
+                <button class="btn btn-ghost" id="btnPromo" type="button" style="margin-top:8px;white-space:nowrap">Apply</button>
+              </div>
+              <p class="sub" id="promoMsg" style="margin:-8px 0 14px">Try NOOR10 for 10% off your first booking.</p>
               <button class="btn btn-gold" id="btnBook" type="button">Book my appointment</button>
               <!-- D082: confirmation summary — check the details before the booking is final -->
               <div class="summary-box" id="confirmSummary" role="status">
@@ -1262,6 +1269,10 @@
       var selDay="Saturday";
       /* D106: the visitor says whether they are new or returning — the toggle decides the greeting */
       var clientKind="new";
+      /* D107: demo promo codes and the discount currently applied to this booking */
+      var PROMOS={"NOOR10":0.10,"WELCOME15":0.15};
+      var promoCode=null, promoPct=0;
+      function promoPrice(p){ return Math.round(p*(1-promoPct)*100)/100; }
       function chips(containerId, items, labelFn, onPick, isSel){
         var c=$(containerId); c.innerHTML="";
         items.forEach(function(it, i){
@@ -1295,6 +1306,7 @@
       function buildBookingForm(){
         bookedJustNow=false;
         setClientKind("new");
+        clearPromo();
         /* D063: keep the current service/stylist when rescheduling; default only if the old pick no longer exists */
         if(SERVICES.indexOf(selService)<0) selService=SERVICES[0];
         if(STYLISTS.indexOf(selStylist)<0) selStylist=STYLISTS[0];
@@ -1322,7 +1334,7 @@
       /* D066: live price estimate for the booking being built */
       function renderPriceEst(){
         var el=$("priceEst"); if(!el) return;
-        var base="Estimated total: "+money(selService.price)+" — "+selService.name+" ("+selService.dur+") with "+selStylist;
+        var base="Estimated total: "+money(promoPrice(selService.price))+(promoPct?" (was "+money(selService.price)+" — "+promoCode+" "+Math.round(promoPct*100)+"% off)":"")+" — "+selService.name+" ("+selService.dur+") with "+selStylist;
         el.textContent = selTime ? base+", "+selDay+" "+timeLabel(selTime)+". No deposit, pay at the salon." : base+". Pick a free time to lock it in.";
       }
 
@@ -1368,6 +1380,28 @@
       }
       $("btnClientNew").addEventListener("click", function(){ setClientKind("new"); });
       $("btnClientReturning").addEventListener("click", function(){ setClientKind("returning"); });
+
+      /* D107: apply a promo code — the discount shows in the estimate, the summary and the booking itself */
+      function clearPromo(){
+        promoCode=null; promoPct=0;
+        var inp=$("inpPromo"); if(inp) inp.value="";
+        var m=$("promoMsg"); if(m){ m.textContent="Try NOOR10 for 10% off your first booking."; m.style.color=""; }
+      }
+      $("btnPromo").addEventListener("click", function(){
+        var code=$("inpPromo").value.trim().toUpperCase();
+        var m=$("promoMsg");
+        if(!code){ clearPromo(); renderPriceEst(); return; }
+        if(PROMOS[code]){
+          promoCode=code; promoPct=PROMOS[code];
+          m.textContent="✓ Promo "+code+" applied — "+Math.round(promoPct*100)+"% off your booking.";
+          m.style.color="var(--green)";
+        } else {
+          promoCode=null; promoPct=0;
+          m.textContent="That code isn't recognised in this demo — try NOOR10.";
+          m.style.color="var(--red)";
+        }
+        renderPriceEst();
+      });
 
       /* D039: arrow keys move focus between chips and time slots, so the whole booking flow works by keyboard */
       document.addEventListener("keydown", function(e){
@@ -1437,7 +1471,7 @@
         if(calendar[selStylist][selTime]){ msg.className="book-msg err"; msg.textContent="Oops, someone just took that slot — grab a free one instead."; renderSlotGrid(); return; }
         /* D082: show a confirmation summary first — nothing books until the client checks it */
         pendingName=name;
-        $("summaryText").textContent=(isReturningClient(name)?"Welcome back, "+name+" — great to see you again. ":"")+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+timeLabel(selTime)+" · "+money(selService.price)+" · "+selService.dur+"." +(pendingNotes?" Note for stylist: "+pendingNotes:"");
+        $("summaryText").textContent=(isReturningClient(name)?"Welcome back, "+name+" — great to see you again. ":"")+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+timeLabel(selTime)+" · "+money(promoPrice(selService.price))+(promoPct?" ("+promoCode+" "+Math.round(promoPct*100)+"% off)":"")+" · "+selService.dur+"." +(pendingNotes?" Note for stylist: "+pendingNotes:"");
         $("confirmSummary").classList.add("show");
         $("btnConfirmFinal").focus();
       });
@@ -1449,11 +1483,11 @@
         var returning=isReturningClient(name);
         var msg=$("bookMsg");
         if(calendar[selStylist][selTime]){ msg.className="book-msg err"; msg.textContent="Oops, someone just took that slot while you were checking — grab a free one instead."; $("confirmSummary").classList.remove("show"); renderSlotGrid(); return; }
-        calendar[selStylist][selTime]={client:name, service:selService.name, price:selService.price, byUser:true, phone:pendingPhone, notes:pendingNotes};
-        userBookings.push({client:name, service:selService.name, stylist:selStylist, time:selTime, price:selService.price, phone:pendingPhone, notes:pendingNotes});
+        calendar[selStylist][selTime]={client:name, service:selService.name, price:promoPrice(selService.price), byUser:true, phone:pendingPhone, notes:pendingNotes};
+        userBookings.push({client:name, service:selService.name, stylist:selStylist, time:selTime, price:promoPrice(selService.price), phone:pendingPhone, notes:pendingNotes});
         renderCalendar({stylist:selStylist, time:selTime}); renderBookings(); renderStats(); renderSlotGrid();
         msg.className="book-msg ok";
-        msg.textContent=(returning?"Welcome back, "+name+" — great to see you again. ":"")+"✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+timeLabel(selTime)+" · "+money(selService.price)+" · "+selService.dur+". Confirmation sent, and a reminder is set for Friday 6:00 PM. A 15-minute buffer is set after your booking so the chair is reset.";
+        msg.textContent=(returning?"Welcome back, "+name+" — great to see you again. ":"")+"✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+timeLabel(selTime)+" · "+money(promoPrice(selService.price))+(promoPct?" ("+promoCode+" "+Math.round(promoPct*100)+"% off)":"")+" · "+selService.dur+". Confirmation sent, and a reminder is set for Friday 6:00 PM. A 15-minute buffer is set after your booking so the chair is reset.";
         selTime=null; pendingName=null; pendingPhone=""; pendingNotes=""; $("confirmSummary").classList.remove("show"); renderSlotGrid();
         $("inpName").value=""; $("inpPhone").value=""; $("inpNotes").value="";
       }
