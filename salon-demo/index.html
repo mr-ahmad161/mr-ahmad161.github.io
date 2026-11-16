@@ -1008,7 +1008,7 @@
         $("calTitle").textContent = weekView ? "This week's calendar" : "Saturday's live calendar";
         if(weekView){ renderWeekView(t); return; }
         var corner = document.createElement("div"); t.appendChild(corner);
-        TIMES.forEach(function(tm){ var h=document.createElement("div"); h.className="ch"; h.textContent=tm; t.appendChild(h); });
+        TIMES.forEach(function(tm){ var h=document.createElement("div"); h.className="ch"; h.textContent=timeLabel(tm); t.appendChild(h); });
         STYLISTS.forEach(function(st){
           var s=document.createElement("div"); s.className="styl"; s.textContent=st; t.appendChild(s);
           TIMES.forEach(function(tm){
@@ -1041,7 +1041,7 @@
           var d=document.createElement("div"); d.className="bk-item";
           /* D065: show the service duration on every booking in the list */
           var dur=""; SERVICES.forEach(function(sv){ if(sv.name===it.service) dur=sv.dur; });
-          d.innerHTML="<b>"+it.client+" — "+it.service+"</b><span>with "+it.stylist+" · Saturday "+it.time+(dur?" · "+dur:"")+"</span>"+(it.notes?"<span>Note: "+esc(it.notes)+"</span>":"")+
+          d.innerHTML="<b>"+it.client+" — "+it.service+"</b><span>with "+it.stylist+" · Saturday "+timeLabel(it.time)+(dur?" · "+dur:"")+"</span>"+(it.notes?"<span>Note: "+esc(it.notes)+"</span>":"")+
             '<span class="tag'+(it.byUser?" you":"")+'">'+(it.byUser?"Booked by you just now":"Confirmed · reminder set")+"</span>"+
             /* D076: simple heuristic — a booking made by a brand-new client with no history is higher no-show risk; a confirmed booking with a reminder set is low risk */
             '<span class="risk '+(it.byUser?"high":"low")+'">'+(it.byUser?"Higher no-show risk · new client":"Low no-show risk")+"</span>";
@@ -1069,7 +1069,7 @@
         var b = removeUserBooking(st, tm); if(!b) return;
         renderCalendar(); renderBookings(); renderStats(); renderSlotGrid();
         var m=$("bookMsg"); m.className="book-msg ok";
-        m.textContent="Cancelled — "+b.client+"'s "+b.service+" with "+st+" on Saturday "+tm+" is off the calendar. The slot is free again.";
+        m.textContent="Cancelled — "+b.client+"'s "+b.service+" with "+st+" on Saturday "+timeLabel(tm)+" is off the calendar. The slot is free again.";
       }
       function rescheduleBooking(st, tm){
         var b = removeUserBooking(st, tm); if(!b) return;
@@ -1313,7 +1313,7 @@
       function renderPriceEst(){
         var el=$("priceEst"); if(!el) return;
         var base="Estimated total: "+money(selService.price)+" — "+selService.name+" ("+selService.dur+") with "+selStylist;
-        el.textContent = selTime ? base+", "+selDay+" "+selTime+". No deposit, pay at the salon." : base+". Pick a free time to lock it in.";
+        el.textContent = selTime ? base+", "+selDay+" "+timeLabel(selTime)+". No deposit, pay at the salon." : base+". Pick a free time to lock it in.";
       }
 
       /* D080: the demo call happens at 11:42 AM, and Noor needs 2 hours' notice before a booking */
@@ -1333,7 +1333,7 @@
           var b=document.createElement("button"); b.type="button"; b.className="slot-btn";
           var taken=calendar[selStylist][tm];
           var tooSoon=!taken && toMin(tm) < DEMO_NOW_MIN + LEAD_MIN;
-          b.innerHTML=tm+"<small>"+(taken?("Booked · "+taken.client):(tooSoon?"Too soon · needs 2h notice":(selStylist+" is free")))+"</small>";
+          b.innerHTML=timeLabel(tm)+"<small>"+(taken?("Booked · "+taken.client):(tooSoon?"Too soon · needs 2h notice":(selStylist+" is free")))+"</small>";
           if(taken){ b.disabled=true; b.title="Already booked — Noor never double-books a slot"; }
           if(tooSoon){ b.disabled=true; b.title="Too soon — Noor needs at least 2 hours' notice before a booking"; }
           if(selTime===tm) b.classList.add("sel");
@@ -1411,7 +1411,7 @@
         if(calendar[selStylist][selTime]){ msg.className="book-msg err"; msg.textContent="Oops, someone just took that slot — grab a free one instead."; renderSlotGrid(); return; }
         /* D082: show a confirmation summary first — nothing books until the client checks it */
         pendingName=name;
-        $("summaryText").textContent=(isReturningClient(name)?"Welcome back, "+name+" — great to see you again. ":"")+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+selTime+" · "+money(selService.price)+" · "+selService.dur+"." +(pendingNotes?" Note for stylist: "+pendingNotes:"");
+        $("summaryText").textContent=(isReturningClient(name)?"Welcome back, "+name+" — great to see you again. ":"")+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+timeLabel(selTime)+" · "+money(selService.price)+" · "+selService.dur+"." +(pendingNotes?" Note for stylist: "+pendingNotes:"");
         $("confirmSummary").classList.add("show");
         $("btnConfirmFinal").focus();
       });
@@ -1427,7 +1427,7 @@
         userBookings.push({client:name, service:selService.name, stylist:selStylist, time:selTime, price:selService.price, phone:pendingPhone, notes:pendingNotes});
         renderCalendar({stylist:selStylist, time:selTime}); renderBookings(); renderStats(); renderSlotGrid();
         msg.className="book-msg ok";
-        msg.textContent=(returning?"Welcome back, "+name+" — great to see you again. ":"")+"✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+selTime+" · "+money(selService.price)+" · "+selService.dur+". Confirmation sent, and a reminder is set for Friday 6:00 PM. A 15-minute buffer is set after your booking so the chair is reset.";
+        msg.textContent=(returning?"Welcome back, "+name+" — great to see you again. ":"")+"✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+timeLabel(selTime)+" · "+money(selService.price)+" · "+selService.dur+". Confirmation sent, and a reminder is set for Friday 6:00 PM. A 15-minute buffer is set after your booking so the chair is reset.";
         selTime=null; pendingName=null; pendingPhone=""; pendingNotes=""; $("confirmSummary").classList.remove("show"); renderSlotGrid();
         $("inpName").value=""; $("inpPhone").value=""; $("inpNotes").value="";
       }
