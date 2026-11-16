@@ -718,6 +718,10 @@
                 <button class="btn btn-ghost" id="btnEditSummary" type="button" style="margin-left:8px">Edit details</button>
               </div>
               <p class="book-msg" id="bookMsg" role="status"></p>
+              <!-- D109: download the confirmed booking as a calendar file -->
+              <div id="bookingShareRow" style="display:none;margin-top:12px;gap:8px;flex-wrap:wrap">
+                <button class="btn btn-ghost" id="btnIcsBk" type="button">📅 Add to calendar (.ics)</button>
+              </div>
             </div>
             <div class="panel">
               <h3>Saturday's bookings</h3>
@@ -1081,6 +1085,7 @@
       }
       function cancelBooking(st, tm){
         var b = removeUserBooking(st, tm); if(!b) return;
+        lastBooking=null; var sr3=$("bookingShareRow"); if(sr3) sr3.style.display="none";
         renderCalendar(); renderBookings(); renderStats(); renderSlotGrid();
         var m=$("bookMsg"); m.className="book-msg ok";
         m.textContent="Cancelled — "+b.client+"'s "+b.service+" with "+st+" on Saturday "+timeLabel(tm)+" is off the calendar. The slot is free again.";
@@ -1307,6 +1312,7 @@
         bookedJustNow=false;
         setClientKind("new");
         clearPromo();
+        lastBooking=null; var sr2=$("bookingShareRow"); if(sr2) sr2.style.display="none";
         /* D063: keep the current service/stylist when rescheduling; default only if the old pick no longer exists */
         if(SERVICES.indexOf(selService)<0) selService=SERVICES[0];
         if(STYLISTS.indexOf(selStylist)<0) selStylist=STYLISTS[0];
@@ -1445,6 +1451,36 @@
         setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
       });
 
+      /* D109: download the confirmed booking as an .ics calendar file (next Saturday, local time) */
+      function durMinutes(d){
+        var m={"30 min":30,"45 min":45,"1 hr":60,"1.5 hrs":90,"2 hrs":120};
+        return m[d]||60;
+      }
+      function icsStamp(dt){
+        function z(n){ return (n<10?"0":"")+n; }
+        return dt.getFullYear()+z(dt.getMonth()+1)+z(dt.getDate())+"T"+z(dt.getHours())+z(dt.getMinutes())+"00";
+      }
+      $("btnIcsBk").addEventListener("click", function(){
+        if(!lastBooking) return;
+        var d=new Date(); d.setDate(d.getDate()+((6-d.getDay()+7)%7)); /* next Saturday (today if it is Saturday) */
+        var tp=lastBooking.time.split(":");
+        var start=new Date(d.getFullYear(), d.getMonth(), d.getDate(), parseInt(tp[0],10), parseInt(tp[1],10), 0);
+        var end=new Date(start.getTime()+durMinutes(lastBooking.dur)*60000);
+        var ics=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Noor//Salon Booking//EN","BEGIN:VEVENT",
+          "UID:"+Date.now()+"@noor-demo",
+          "DTSTAMP:"+icsStamp(new Date()),
+          "DTSTART:"+icsStamp(start),
+          "DTEND:"+icsStamp(end),
+          "SUMMARY:"+lastBooking.service+" at "+CFG.salon+" with "+lastBooking.stylist,
+          "DESCRIPTION:Booked with Noor, the AI receptionist. "+money(lastBooking.price)+".",
+          "LOCATION:"+CFG.salon,
+          "END:VEVENT","END:VCALENDAR"].join("\r\n");
+        var blob=new Blob([ics],{type:"text/calendar"});
+        var a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+        a.download="noor-booking.ics"; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function(){ URL.revokeObjectURL(a.href); },1000);
+      });
+
       /* D086: a name already on today's calendar — or booked earlier in this demo — is a returning client */
       function isReturningClient(n){
         if(clientKind==="returning") return true;
@@ -1487,6 +1523,8 @@
         $("btnConfirmFinal").focus();
       });
       var pendingName=null, pendingPhone="", pendingNotes="";
+      /* D109: the most recent confirmed booking, for the calendar download and sharing */
+      var lastBooking=null;
       /* D082: the booking only lands when the client confirms the summary (slot re-checked — it may have gone while they were checking) */
       function finalizeBooking(){
         var name=pendingName; if(!name) return;
@@ -1496,6 +1534,8 @@
         if(calendar[selStylist][selTime]){ msg.className="book-msg err"; msg.textContent="Oops, someone just took that slot while you were checking — grab a free one instead."; $("confirmSummary").classList.remove("show"); renderSlotGrid(); return; }
         calendar[selStylist][selTime]={client:name, service:selService.name, price:promoPrice(selService.price), byUser:true, phone:pendingPhone, notes:pendingNotes};
         userBookings.push({client:name, service:selService.name, stylist:selStylist, time:selTime, price:promoPrice(selService.price), phone:pendingPhone, notes:pendingNotes});
+        lastBooking={name:name, service:selService.name, stylist:selStylist, day:selDay, time:selTime, price:promoPrice(selService.price), dur:selService.dur};
+        var sr=$("bookingShareRow"); if(sr) sr.style.display="flex";
         renderCalendar({stylist:selStylist, time:selTime}); renderBookings(); renderStats(); renderSlotGrid();
         msg.className="book-msg ok";
         msg.textContent=(returning?"Welcome back, "+name+" — great to see you again. ":"")+"✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+timeLabel(selTime)+" · "+money(promoPrice(selService.price))+(promoPct?" ("+promoCode+" "+Math.round(promoPct*100)+"% off)":"")+" · "+selService.dur+". Confirmation sent, and a reminder is set for Friday 6:00 PM. A 15-minute buffer is set after your booking so the chair is reset."+loyaltyNote(name);
