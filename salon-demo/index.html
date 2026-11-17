@@ -129,6 +129,12 @@
       .topnav{display:flex;gap:22px;font-size:.86rem;font-weight:600}
       .topnav a{color:var(--muted);text-decoration:none}
       .topnav a:hover{color:var(--ink)}
+      /* D112: promo banner slot under the header — dismissible */
+      .promo-bar{background:var(--gold-soft);border-bottom:1px solid var(--line);font-size:.88rem}
+      .promo-in{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:9px 0}
+      .promo-bar[hidden]{display:none}
+      .promo-close{border:0;background:transparent;color:var(--muted);font:inherit;font-size:.95rem;cursor:pointer;padding:6px 10px;min-height:34px;border-radius:var(--r-sm)}
+      .promo-close:hover{color:var(--ink)}
       @media (max-width:560px){.topnav{gap:14px;font-size:.8rem}}
       @media (max-width:480px){.topnav .nav-problem{display:none}.topnav{gap:12px}}
       @media (max-width:480px){.theme-toggle .theme-lbl{display:none}}
@@ -488,6 +494,14 @@
         <button class="ctl theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">🌙 <span class="theme-lbl">Dark</span></button>
       </div>
     </header>
+
+    <!-- D112: promo banner slot — seasonal offer, dismissible -->
+    <div class="promo-bar" id="promoBar" role="status">
+      <div class="wrap promo-in">
+        <span>&#127881; <strong>New salons:</strong> your first month of Noor is free &mdash; mention code <b>NOOR10</b> when you chat with us.</span>
+        <button type="button" class="promo-close" id="promoClose" aria-label="Dismiss promotion">&#10005;</button>
+      </div>
+    </div>
 
     <!-- MAIN -->
     <main id="top" tabindex="-1">
@@ -1653,6 +1667,9 @@
         if(mins < open || mins >= close){ bar.hidden = false; }
         $("afterHoursClose").addEventListener("click", function(){ bar.hidden = true; });
       })();
+
+      /* D112: promo banner dismiss */
+      $("promoClose").addEventListener("click", function(){ $("promoBar").hidden = true; });
 
       /* ---------- Init ---------- */
       renderCalendar(); renderBookings(); renderStats(); buildBookingForm(); refreshDemoStyPicker(); renderPresets();
