@@ -473,6 +473,9 @@
       .foot-in{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center}
       /* D058: opening hours line in the footer */
       .foot-hours{padding-top:12px}
+      /* D113: privacy note — the demo tracks nothing */
+      .foot-privacy{padding-top:8px}
+      .foot-privacy p{margin:0}
       .foot-hours p{margin:0}
       .foot-credit{margin-top:6px}
       .foot-credit a{color:inherit;font-weight:700}
@@ -918,6 +921,10 @@
       <!-- D058: opening hours — Noor keeps booking even after closing -->
       <div class="wrap foot-hours">
         <p>&#128336; Opening hours: Mon&ndash;Sat 9:00 AM &ndash; 8:00 PM &middot; Sun 10:00 AM &ndash; 5:00 PM &mdash; Noor answers calls and books clients even after closing.</p>
+      </div>
+      <!-- D113: privacy note — the demo tracks nothing -->
+      <div class="wrap foot-privacy">
+        <p>&#128274; No tracking: this demo sets no cookies and sends no data anywhere &mdash; every call, booking and calendar check happens in your browser.</p>
       </div>
     </footer>
 
