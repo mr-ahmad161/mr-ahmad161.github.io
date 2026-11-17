@@ -479,6 +479,11 @@
       .foot-hours p{margin:0}
       .foot-credit{margin-top:6px}
       .foot-credit a{color:inherit;font-weight:700}
+      /* D114: offline notice — fixed bar shown only while the browser is offline */
+      .offline-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;justify-content:center;
+        background:var(--navy);color:#fff;font-size:.88rem;font-weight:600;padding:12px 16px;text-align:center}
+      @media (prefers-color-scheme: dark){.offline-bar{background:#26466b}}
+      .offline-bar[hidden]{display:none}
       footer p{color:var(--faint);font-size:.85rem;margin:0}
     </style>
   </head>
@@ -929,6 +934,11 @@
     </footer>
 
     <!-- D057: sticky mobile CTA bar -->
+    <!-- D114: offline fallback — the demo keeps working without a connection -->
+    <div class="offline-bar" id="offlineBar" role="status" hidden>
+      <span>&#128246; You&apos;re offline &mdash; the demo still works in your browser, and any bookings you make are saved on this device.</span>
+    </div>
+
     <div class="mobile-cta" role="region" aria-label="Book a demo">
       <span class="cta-note">Noor answers 24/7</span>
       <a class="btn btn-gold" href="#demo">&#9654; Try the live demo</a>
@@ -1677,6 +1687,15 @@
 
       /* D112: promo banner dismiss */
       $("promoClose").addEventListener("click", function(){ $("promoBar").hidden = true; });
+
+      /* D114: offline fallback — show a notice while the browser is offline */
+      (function(){
+        var bar = $("offlineBar"); if(!bar) return;
+        function syncOffline(){ bar.hidden = navigator.onLine; }
+        window.addEventListener("offline", syncOffline);
+        window.addEventListener("online", syncOffline);
+        syncOffline();
+      })();
 
       /* ---------- Init ---------- */
       renderCalendar(); renderBookings(); renderStats(); buildBookingForm(); refreshDemoStyPicker(); renderPresets();
