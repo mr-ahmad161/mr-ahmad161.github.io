@@ -5,7 +5,7 @@
   Built by AHMAD, AI Full Stack Developer. Bookings, calls and calendar
   data in this demo are simulated in the browser - nothing leaves the page.
 -->
-<!-- Noor demo version: 2026.11.16 - bumped with each daily improvement batch -->
+<!-- Noor demo version: 2026.11.17 - bumped with each daily improvement batch -->
 <!--
   CHANGELOG (latest first - full log lives with the project notes):
   2026-11-14: section markers; fonts load without blocking paint; header comment; version stamp.
@@ -158,6 +158,13 @@
       .btn-ghost:hover{border-color:var(--gold);background:var(--gold-soft);transform:translateY(-2px)}
       .btn:active{transform:translateY(0) scale(.97)}
       .hero-note{font-size:.85rem;color:var(--faint);margin-top:14px}
+      /* D111: after-hours notice bar — shown when the salon is closed, Noor still books */
+      .after-hours{display:flex;gap:12px;align-items:center;justify-content:space-between;
+        background:var(--navy);color:#fff;border-radius:var(--r);padding:12px 18px;margin:18px 0 0;font-size:.9rem}
+      @media (prefers-color-scheme: dark){.after-hours{background:#26466b}}
+      .after-hours[hidden]{display:none}
+      .after-hours-close{border:0;background:transparent;color:#fff;font:inherit;font-size:1rem;cursor:pointer;padding:6px 10px;min-height:34px;border-radius:var(--r-sm)}
+      .after-hours-close:hover{background:rgba(255,255,255,.15)}
       .hero-media{position:relative}
       .hero-media img{border-radius:var(--r-lg);box-shadow:var(--shadow);aspect-ratio:4/3;object-fit:cover;width:100%;height:auto}
       .missed-chip{position:absolute;left:16px;bottom:16px;background:var(--surface);border:1px solid var(--line);
@@ -484,6 +491,11 @@
 
     <!-- MAIN -->
     <main id="top" tabindex="-1">
+      <!-- D111: after-hours notice — Noor keeps booking when the salon is closed -->
+      <div class="wrap"><div class="after-hours" id="afterHours" role="status" hidden>
+        <span>&#127769; We&apos;re closed right now &mdash; but Noor is still answering calls and booking clients.</span>
+        <button type="button" class="after-hours-close" id="afterHoursClose" aria-label="Dismiss after-hours notice">&#10005;</button>
+      </div></div>
       <!-- HERO -->
       <div class="wrap hero">
         <div class="hero-grid">
@@ -1631,6 +1643,16 @@
         fillForm(cfg);
         applyCfg(cfg, "✓ Back to the demo salon — Lumière Salon, with its original services, stylists and prices.");
       });
+
+      /* D111: after-hours notice — Mon-Sat 9:00-20:00, Sun 10:00-17:00; shown only when closed */
+      (function(){
+        var bar = $("afterHours"); if(!bar) return;
+        var now = new Date(); var day = now.getDay(); var mins = now.getHours()*60 + now.getMinutes();
+        var open = (day === 0) ? 10*60 : 9*60;
+        var close = (day === 0) ? 17*60 : 20*60;
+        if(mins < open || mins >= close){ bar.hidden = false; }
+        $("afterHoursClose").addEventListener("click", function(){ bar.hidden = true; });
+      })();
 
       /* ---------- Init ---------- */
       renderCalendar(); renderBookings(); renderStats(); buildBookingForm(); refreshDemoStyPicker(); renderPresets();
