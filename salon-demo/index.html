@@ -52,6 +52,55 @@
       "priceRange": "$$"
     }
     </script>
+    <!-- D118: FAQ structured data — mirrors the FAQ section below -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Does Noor really answer the phone herself?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Every call is picked up in under a second, 24/7 — even mid-rush when every stylist has a client in the chair. Try it in the live demo above."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens if a client calls after closing time?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "She books them anyway. People plan their hair at 9 PM on the sofa, and Noor takes the booking, checks the live calendar and sends the SMS confirmation — no missed call, no lost client."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can Noor take bookings for my own salon, services and prices?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Use “Make it yours” at the top of this page: type in your salon name, services, prices and stylists, and Noor quotes your details on the next call."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if two clients want the same slot?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It can’t happen. Noor checks the live calendar before offering a time, so a booked slot is locked instantly and never offered twice."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do clients get a confirmation?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — an SMS confirmation goes out on the spot, and a reminder is scheduled for the day before, so forgotten bookings and empty chairs quietly disappear."
+      }
+    }
+  ]
+}
+    </script>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a1a2e'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-style='italic' font-size='38' font-weight='700' fill='%23c9a227' text-anchor='middle'%3EN%3C/text%3E%3C/svg%3E" />
     <!-- D115: PWA manifest (inline, single-file demo) -->
     <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Noor%20%5Cu2014%20AI%20Booking%20Agent%20for%20Salons%22%2C%22short_name%22%3A%22Noor%22%2C%22description%22%3A%22Noor%20answers%20every%20salon%20call%2C%20checks%20the%20live%20calendar%20and%20books%20clients%2024%2F7%20%5Cu2014%20even%20after%20hours.%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%230a1a2e%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2064%2064%27%253E%253Crect%20width%3D%2764%27%20height%3D%2764%27%20rx%3D%2714%27%20fill%3D%27%25230a1a2e%27%2F%253E%253Ctext%20x%3D%2732%27%20y%3D%2744%27%20font-family%3D%27Georgia%2Cserif%27%20font-style%3D%27italic%27%20font-size%3D%2738%27%20font-weight%3D%27700%27%20fill%3D%27%2523c9a227%27%20text-anchor%3D%27middle%27%253EN%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%22%7D%2C%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2064%2064%27%253E%253Crect%20width%3D%2764%27%20height%3D%2764%27%20rx%3D%2714%27%20fill%3D%27%25230a1a2e%27%2F%253E%253Ctext%20x%3D%2732%27%20y%3D%2744%27%20font-family%3D%27Georgia%2Cserif%27%20font-style%3D%27italic%27%20font-size%3D%2738%27%20font-weight%3D%27700%27%20fill%3D%27%2523c9a227%27%20text-anchor%3D%27middle%27%253EN%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%22%7D%5D%7D" />
