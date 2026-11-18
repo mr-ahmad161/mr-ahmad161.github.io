@@ -773,6 +773,9 @@
               </div>
               <p class="field-lbl">1 · Service</p>
               <div class="chip-row" id="svcRow"></div>
+              <!-- D121: appointment length — standard, quick or relaxed version of the chosen service -->
+              <p class="field-lbl">How long would you like?</p>
+              <div class="chip-row" id="durRow" role="group" aria-label="Appointment length"></div>
               <p class="field-lbl">2 · Stylist</p>
               <div class="chip-row" id="styRow"></div>
               <p class="field-lbl">3 · Day</p>
@@ -1388,6 +1391,8 @@
 
       /* ---------- Manual booking ---------- */
       var selService=SERVICES[0], selStylist=STYLISTS[0], selTime=null;
+      /* D121: appointment length — standard, quick (-15 min) or relaxed (+30 min) */
+      var durMode="standard";
       /* D102: true once a booking is confirmed, so the progress bar can show Done */
       var bookedJustNow=false;
       var selDay="Saturday";
@@ -1436,13 +1441,34 @@
         if(SERVICES.indexOf(selService)<0) selService=SERVICES[0];
         if(STYLISTS.indexOf(selStylist)<0) selStylist=STYLISTS[0];
         selTime=null;
-        chips("svcRow", SERVICES, function(s){ return s.name+" <small>· "+money(s.price)+" · "+s.dur+"</small>"; }, function(s){ selService=s; bookedJustNow=false; renderSlotGrid(); }, function(s){ return s===selService; });
+        durMode="standard";
+        chips("svcRow", SERVICES, function(s){ return s.name+" <small>· "+money(s.price)+" · "+s.dur+"</small>"; }, function(s){ selService=s; bookedJustNow=false; renderDurRow(); renderSlotGrid(); }, function(s){ return s===selService; });
+        renderDurRow();
         chips("styRow", STYLISTS, function(s){ return s; }, function(s){ selStylist=s; selTime=null; bookedJustNow=false; renderSlotGrid(); }, function(s){ return s===selStylist; });
         selDay="Saturday";
         /* D079: a past day is listed so visitors can see it is blocked, not bookable */
         chips("dayRow", [{day:"Saturday",label:"Today · Saturday"},{day:"Sunday",label:"Tomorrow · Sunday — closed"},{day:"Friday",label:"Yesterday · Friday — past"}], function(d){ return d.label; }, function(d){ setDay(d.day); }, function(d){ return d.day===selDay; });
         setDay(selDay);
         renderSlotGrid();
+      }
+
+      /* D121: rebuild the appointment-length chips — labels depend on the chosen service's duration */
+      function fmtDur(mins){ var h=Math.floor(mins/60), r=mins%60;
+        if(h===0) return r+" min";
+        if(r===0) return h+(h===1?" hr":" hrs");
+        return h+(h===1?" hr":" hrs")+" "+r+" min"; }
+      function effDur(){ var m=durMinutes(selService.dur);
+        if(durMode==="quick") m=Math.max(15,m-15);
+        if(durMode==="relaxed") m=m+30;
+        return fmtDur(m); }
+      function renderDurRow(){
+        var opts=[{id:"standard",label:"Standard"},{id:"quick",label:"Quick"},{id:"relaxed",label:"Relaxed"}];
+        chips("durRow", opts, function(o){
+          var m=durMinutes(selService.dur);
+          if(o.id==="quick") m=Math.max(15,m-15);
+          if(o.id==="relaxed") m=m+30;
+          return o.label+" <small>· "+fmtDur(m)+"</small>";
+        }, function(o){ durMode=o.id; renderPriceEst(); }, function(o){ return o.id===durMode; });
       }
 
       /* D102: highlight the current booking step — 1-3 start done (they have defaults), Time is current until a slot is picked */
@@ -1459,7 +1485,7 @@
       /* D066: live price estimate for the booking being built */
       function renderPriceEst(){
         var el=$("priceEst"); if(!el) return;
-        var base="Estimated total: "+money(promoPrice(selService.price))+(promoPct?" (was "+money(selService.price)+" — "+promoCode+" "+Math.round(promoPct*100)+"% off)":"")+" — "+selService.name+" ("+selService.dur+") with "+selStylist;
+        var base="Estimated total: "+money(promoPrice(selService.price))+(promoPct?" (was "+money(selService.price)+" — "+promoCode+" "+Math.round(promoPct*100)+"% off)":"")+" — "+selService.name+" ("+effDur()+") with "+selStylist;
         el.textContent = selTime ? base+", "+selDay+" "+timeLabel(selTime)+". No deposit, pay at the salon." : base+". Pick a free time to lock it in.";
       }
 
@@ -1637,7 +1663,7 @@
         if(calendar[selStylist][selTime]){ msg.className="book-msg err"; msg.textContent="Oops, someone just took that slot — grab a free one instead."; renderSlotGrid(); return; }
         /* D082: show a confirmation summary first — nothing books until the client checks it */
         pendingName=name;
-        $("summaryText").textContent=(isReturningClient(name)?"Welcome back, "+name+" — great to see you again. ":"")+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+timeLabel(selTime)+" · "+money(promoPrice(selService.price))+(promoPct?" ("+promoCode+" "+Math.round(promoPct*100)+"% off)":"")+" · "+selService.dur+"." +(pendingNotes?" Note for stylist: "+pendingNotes:"");
+        $("summaryText").textContent=(isReturningClient(name)?"Welcome back, "+name+" — great to see you again. ":"")+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+timeLabel(selTime)+" · "+money(promoPrice(selService.price))+(promoPct?" ("+promoCode+" "+Math.round(promoPct*100)+"% off)":"")+" · "+effDur()+"." +(pendingNotes?" Note for stylist: "+pendingNotes:"");
         $("confirmSummary").classList.add("show");
         $("btnConfirmFinal").focus();
       });
@@ -1653,13 +1679,13 @@
         if(calendar[selStylist][selTime]){ msg.className="book-msg err"; msg.textContent="Oops, someone just took that slot while you were checking — grab a free one instead."; $("confirmSummary").classList.remove("show"); renderSlotGrid(); return; }
         calendar[selStylist][selTime]={client:name, service:selService.name, price:promoPrice(selService.price), byUser:true, phone:pendingPhone, notes:pendingNotes};
         userBookings.push({client:name, service:selService.name, stylist:selStylist, time:selTime, price:promoPrice(selService.price), phone:pendingPhone, notes:pendingNotes});
-        lastBooking={name:name, service:selService.name, stylist:selStylist, day:selDay, time:selTime, price:promoPrice(selService.price), dur:selService.dur};
+        lastBooking={name:name, service:selService.name, stylist:selStylist, day:selDay, time:selTime, price:promoPrice(selService.price), dur:effDur()};
         var sr=$("bookingShareRow"); if(sr) sr.style.display="flex";
         var wa=$("btnShareWa");
         if(wa) wa.href="https://api.whatsapp.com/send?text="+encodeURIComponent("I'm booked at "+CFG.salon+" — "+lastBooking.service+" with "+lastBooking.stylist+", "+lastBooking.day+" "+timeLabel(lastBooking.time)+" · "+money(lastBooking.price)+". Booked with Noor, the AI receptionist!");
         renderCalendar({stylist:selStylist, time:selTime}); renderBookings(); renderStats(); renderSlotGrid();
         msg.className="book-msg ok";
-        msg.textContent=(returning?"Welcome back, "+name+" — great to see you again. ":"")+"✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+timeLabel(selTime)+" · "+money(promoPrice(selService.price))+(promoPct?" ("+promoCode+" "+Math.round(promoPct*100)+"% off)":"")+" · "+selService.dur+". Confirmation sent, and a reminder is set for Friday 6:00 PM. A 15-minute buffer is set after your booking so the chair is reset."+loyaltyNote(name);
+        msg.textContent=(returning?"Welcome back, "+name+" — great to see you again. ":"")+"✓ You're booked at "+CFG.salon+", "+name+" — "+selService.name+" with "+selStylist+", "+selDay+" "+timeLabel(selTime)+" · "+money(promoPrice(selService.price))+(promoPct?" ("+promoCode+" "+Math.round(promoPct*100)+"% off)":"")+" · "+effDur()+". Confirmation sent, and a reminder is set for Friday 6:00 PM. A 15-minute buffer is set after your booking so the chair is reset."+loyaltyNote(name);
         selTime=null; pendingName=null; pendingPhone=""; pendingNotes=""; $("confirmSummary").classList.remove("show"); renderSlotGrid();
         $("inpName").value=""; $("inpPhone").value=""; $("inpNotes").value="";
       }
