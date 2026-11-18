@@ -544,6 +544,12 @@
       @media (prefers-color-scheme: dark){.offline-bar{background:#26466b}}
       .offline-bar[hidden]{display:none}
       footer p{color:var(--faint);font-size:.85rem;margin:0}
+      /* D119: breadcrumb — small, quiet, above the hero */
+      .crumbs ol{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:16px 0 0;font-size:.85rem;color:var(--muted)}
+      .crumbs li{display:flex;align-items:center;gap:8px}
+      .crumbs li+li::before{content:"\203A";color:var(--faint)}
+      .crumbs a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+      .crumbs [aria-current]{color:var(--ink);font-weight:600}
     </style>
   </head>
   <body>
@@ -572,6 +578,10 @@
 
     <!-- MAIN -->
     <main id="top" tabindex="-1">
+      <!-- D119: breadcrumb — Home / Noor demo -->
+      <nav class="wrap crumbs" aria-label="Breadcrumb">
+        <ol><li><a href="https://mr-ahmad161.github.io/">Home</a></li><li><span aria-current="page">Noor — AI booking agent demo</span></li></ol>
+      </nav>
       <!-- D111: after-hours notice — Noor keeps booking when the salon is closed -->
       <div class="wrap"><div class="after-hours" id="afterHours" role="status" hidden>
         <span>&#127769; We&apos;re closed right now &mdash; but Noor is still answering calls and booking clients.</span>
