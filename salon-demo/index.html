@@ -546,6 +546,23 @@
       .offline-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;justify-content:center;
         background:var(--navy);color:#fff;font-size:.88rem;font-weight:600;padding:12px 16px;text-align:center}
       @media (prefers-color-scheme: dark){.offline-bar{background:#26466b}}
+      /* D125: live chat bubble — a UI mock of chatting with Noor */
+      .chat-fab{position:fixed;right:16px;bottom:16px;z-index:70;border:1.5px solid var(--gold);background:var(--gold);color:var(--on-gold);font:inherit;font-weight:700;font-size:.9rem;padding:12px 18px;border-radius:var(--r-pill);cursor:pointer;box-shadow:var(--shadow-sm)}
+      @media (max-width:640px){.chat-fab{bottom:78px}}
+      .chat-panel{position:fixed;right:16px;bottom:76px;z-index:70;width:min(340px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);overflow:hidden}
+      .chat-panel[hidden]{display:none}
+      @media (max-width:640px){.chat-panel{bottom:138px}}
+      .chat-head{display:flex;align-items:center;gap:8px;background:var(--navy-deep);color:#fff;padding:12px 14px}
+      .chat-head b{font-size:.9rem}
+      .chat-head span{font-size:.72rem;opacity:.8;flex:1}
+      .chat-close{background:none;border:0;color:#fff;font:inherit;cursor:pointer;padding:6px}
+      .chat-body{max-height:260px;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+      .chat-msg{margin:0;font-size:.88rem;padding:9px 12px;border-radius:var(--r-md);max-width:88%}
+      .chat-msg.agent{background:var(--surface-2);border:1px solid var(--line);align-self:flex-start}
+      .chat-msg.user{background:var(--gold-soft);border:1px solid var(--gold);align-self:flex-end}
+      .chat-form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line)}
+      .chat-form input[type=text]{margin:0;flex:1;min-width:0}
+      .chat-form .btn{min-height:44px}
       .offline-bar[hidden]{display:none}
       footer p{color:var(--faint);font-size:.85rem;margin:0}
       /* D119: breadcrumb — small, quiet, above the hero */
@@ -1052,6 +1069,20 @@
     <div class="mobile-cta" role="region" aria-label="Book a demo">
       <span class="cta-note">Noor answers 24/7</span>
       <a class="btn btn-gold" href="#demo">&#9654; Try the live demo</a>
+    </div>
+
+    <!-- D125: live chat bubble — a UI mock of chatting with Noor -->
+    <button class="chat-fab" id="chatFab" type="button" aria-expanded="false" aria-controls="chatPanel" aria-label="Chat with Noor">&#128172; Chat with Noor</button>
+    <div class="chat-panel" id="chatPanel" role="dialog" aria-label="Chat with Noor (demo)" hidden>
+      <div class="chat-head"><b>Noor · AI receptionist</b><span>Replies instantly · demo chat</span><button class="chat-close" id="chatClose" type="button" aria-label="Close chat">&#10005;</button></div>
+      <div class="chat-body" id="chatBody">
+        <p class="chat-msg agent">Hi! I&apos;m Noor &mdash; I answer the salon phone and book appointments 24/7. Ask me about a service, or try the live call demo above.</p>
+        <p class="chat-msg agent">This is a demo chat &mdash; nothing you type leaves this page.</p>
+      </div>
+      <form class="chat-form" id="chatForm">
+        <input type="text" id="chatInput" placeholder="Ask about a service or a time&hellip;" aria-label="Message Noor" autocomplete="off" />
+        <button class="btn btn-gold" type="submit">Send</button>
+      </form>
     </div>
 
     <script>
@@ -1823,6 +1854,29 @@
 
       /* D114: offline fallback — show a notice while the browser is offline */
       (function(){
+      /* D125: live chat bubble — a UI mock of chatting with Noor */
+      (function(){
+        var fab=$("chatFab"), panel=$("chatPanel"), body=$("chatBody"), form=$("chatForm"), input=$("chatInput");
+        if(!fab||!panel||!form) return;
+        fab.addEventListener("click", function(){
+          var open=panel.hidden; panel.hidden=!open;
+          fab.setAttribute("aria-expanded", open?"true":"false");
+          if(open) input.focus();
+        });
+        $("chatClose").addEventListener("click", function(){ panel.hidden=true; fab.setAttribute("aria-expanded","false"); fab.focus(); });
+        form.addEventListener("submit", function(e){
+          e.preventDefault();
+          var txt=input.value.trim(); if(!txt) return;
+          var u=document.createElement("p"); u.className="chat-msg user"; u.textContent=txt; body.appendChild(u);
+          input.value=""; body.scrollTop=body.scrollHeight;
+          setTimeout(function(){
+            var r=document.createElement("p"); r.className="chat-msg agent";
+            r.textContent="Got it \u2014 in the real salon I\u2019d check the calendar and hold that slot for you right here. Try the live call demo above to watch me book, or the \u201cNow you be the client\u201d panel to book it yourself.";
+            body.appendChild(r); body.scrollTop=body.scrollHeight;
+          }, 700);
+        });
+      })();
+
         var bar = $("offlineBar"); if(!bar) return;
         function syncOffline(){ bar.hidden = navigator.onLine; }
         window.addEventListener("offline", syncOffline);
