@@ -274,11 +274,9 @@
       .wave{display:flex;align-items:center;gap:3px;height:38px;margin:6px 0 14px;padding:0 2px}
       .wave span{flex:1;background:var(--line);border-radius:var(--r-pill);height:8%;transition:height .18s ease}
       .wave.speaking span{background:var(--gold)}
-      .wave.speaking span:nth-child(3n){animation:wv .7s ease-in-out infinite alternate}
-      .wave.speaking span:nth-child(4n){animation:wv .5s ease-in-out infinite alternate-reverse}
-      .wave.speaking span:nth-child(5n){animation:wv .9s ease-in-out infinite alternate}
-      @keyframes wv{from{height:14%}to{height:92%}}
-      @media (prefers-reduced-motion: reduce){.wave.speaking span{animation:none}}
+      /* D127: bar heights are driven by JS while Noor speaks, so the waveform moves like a real voice */
+      .wave-label{display:none;font-size:.78rem;font-weight:600;color:var(--muted);margin:-6px 0 10px}
+      .wave-label.show{display:block}
       /* D101: live caption line under the waveform — the call is silent, every line appears here as text */
       .call-caption{font-size:.88rem;color:var(--muted);margin:0 0 12px;min-height:1.3em}
       .call-caption b{color:var(--ink)}
@@ -741,6 +739,8 @@
                   <span class="status-pill" id="statusPill">Ringing…</span>
                 </div>
                 <div class="wave" id="wave" aria-hidden="true"></div>
+                <!-- D127: shown while Noor is speaking, so the waveform reads as a live voice -->
+                <p class="wave-label" id="waveLabel" aria-hidden="true">Noor is speaking&hellip;</p>
                 <!-- D101: captions — the call plays silently, every spoken line appears here -->
                 <p class="call-caption" id="callCaption" aria-live="polite">Captions on — the call plays silently, and every line appears here as text.</p>
                 <div class="transcript" id="transcript" aria-live="polite"></div>
@@ -1323,7 +1323,23 @@
       /* ---------- Waveform ---------- */
       var wave=$("wave");
       for(var i=0;i<28;i++){ wave.appendChild(document.createElement("span")); }
-      function speaking(on){ wave.classList.toggle("speaking", !!on); }
+      var waveTimer=null;
+      function speaking(on){
+        wave.classList.toggle("speaking", !!on);
+        var wl=$("waveLabel"); if(wl) wl.classList.toggle("show", !!on);
+        if(waveTimer){ clearInterval(waveTimer); waveTimer=null; }
+        var bars=wave.children, i;
+        if(on){
+          var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          if(!reduceMotion){
+            waveTimer=setInterval(function(){
+              for(var k=0;k<bars.length;k++){ bars[k].style.height=(12+Math.random()*80).toFixed(0)+"%"; }
+            }, 140);
+          }
+        } else {
+          for(i=0;i<bars.length;i++){ bars[i].style.height=""; }
+        }
+      }
 
       /* ---------- Transcript & log helpers ---------- */
       var transcript=$("transcript"), logEl=$("agentLog");
