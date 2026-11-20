@@ -408,6 +408,10 @@
       .slot-btn.sel{border-color:var(--gold);background:var(--gold-soft)}
       .slot-btn:hover:not(:disabled){border-color:var(--gold);transform:translateY(-1px)}
       .slot-btn:disabled{opacity:.42;cursor:not-allowed;text-decoration:line-through}
+      /* D129: drag-to-reschedule — your bookings can be dragged onto a free slot */
+      .bk-item.draggable{cursor:grab}
+      .bk-item.draggable:active{cursor:grabbing}
+      .slot-btn.drop-ok{border-color:var(--green);background:var(--green-soft)}
       input[type=text],input[type=number],input[type=tel]{width:100%;font:inherit;padding:12px 14px;border:1.5px solid var(--line);border-radius:var(--r-sm);
         background:var(--surface);color:var(--ink);margin:8px 0 16px}
       input[type=text]:focus,input[type=number]:focus,input[type=tel]:focus{outline:2px solid var(--gold);outline-offset:1px}
@@ -883,6 +887,8 @@
             <div class="panel">
               <h3>Saturday's bookings</h3>
               <p class="sub" style="margin-bottom:14px">Everything on this list is locked into the calendar above. Noor flags each booking&rsquo;s no-show risk: new clients with no history are higher risk, confirmed regulars are low risk.</p>
+              <!-- D129: drag-to-reschedule — drag one of your bookings onto a free time slot -->
+              <p class="sub" style="margin-bottom:14px">&#128073; Drag one of your bookings onto a free time slot on the left to move it &mdash; no need to cancel and rebook.</p>
               <button class="btn btn-ghost no-print" id="btnPrintBk" type="button" style="margin-bottom:14px">🖨 Print today's bookings</button>
               <button class="btn btn-ghost no-print" id="btnCsvBk" type="button" style="margin-bottom:14px">⬇ Export day bookings (CSV)</button>
               <input type="text" id="bkSearch" class="no-print" placeholder="Search bookings by client name…" aria-label="Search bookings by client name" autocomplete="off" style="margin-bottom:12px" />
@@ -1294,6 +1300,14 @@
             '<span class="tag'+(it.byUser?" you":"")+'">'+(it.byUser?"Booked by you just now":"Confirmed · reminder set")+"</span>"+
             /* D076: simple heuristic — a booking made by a brand-new client with no history is higher no-show risk; a confirmed booking with a reminder set is low risk */
             '<span class="risk '+(it.byUser?"high":"low")+'">'+(it.byUser?"Higher no-show risk · new client":"Low no-show risk")+"</span>";
+          /* D129: drag one of your bookings onto a free time slot to move it */
+          if(it.byUser){
+            d.draggable=true; d.classList.add("draggable");
+            d.addEventListener("dragstart", function(e){
+              e.dataTransfer.setData("text/plain", JSON.stringify({stylist:it.stylist, time:it.time}));
+              e.dataTransfer.effectAllowed="move";
+            });
+          }
           if(it.byUser){
             var acts=document.createElement("div"); acts.className="bk-actions";
             var cBtn=document.createElement("button"); cBtn.type="button"; cBtn.className="bk-act danger"; cBtn.textContent="Cancel";
@@ -1329,6 +1343,20 @@
         var m=$("bookMsg"); m.className="book-msg ok";
         m.textContent="Pick a new time for "+b.client+" — "+b.service+" with "+st+". Your old slot is free again.";
         document.getElementById("book").scrollIntoView({behavior:(typeof reduce!=="undefined"&&reduce)?"auto":"smooth", block:"start"});
+      }
+
+      /* D129: drag-to-reschedule — move one of your bookings to a free slot */
+      function moveUserBooking(fromSt, fromTm, toTm){
+        var b=calendar[fromSt] ? calendar[fromSt][fromTm] : null;
+        if(!b || !b.byUser) return;
+        if(fromTm===toTm) return;
+        if(calendar[fromSt][toTm]) return;
+        calendar[fromSt][toTm]=b; calendar[fromSt][fromTm]=null;
+        userBookings.forEach(function(u){ if(u.stylist===fromSt && u.time===fromTm) u.time=toTm; });
+        if(lastBooking && lastBooking.stylist===fromSt && lastBooking.time===fromTm) lastBooking.time=toTm;
+        renderCalendar(); renderBookings(); renderStats(); renderSlotGrid();
+        var m=$("bookMsg"); m.className="book-msg ok";
+        m.textContent="Moved — "+b.client+"'s "+b.service+" with "+fromSt+" is now Saturday "+timeLabel(toTm)+". The old slot is free again.";
       }
 
       function renderStats(){
@@ -1635,6 +1663,16 @@
           b.innerHTML=timeLabel(tm)+"<small>"+(taken?("Booked · "+taken.client):(tooSoon?"Too soon · needs 2h notice":(selStylist+" is free")))+"</small>";
           if(taken){ b.disabled=true; b.title="Already booked — Noor never double-books a slot"; }
           if(tooSoon){ b.disabled=true; b.title="Too soon — Noor needs at least 2 hours' notice before a booking"; }
+          /* D129: drag-to-reschedule — a free slot accepts a dragged booking */
+          if(!taken && !tooSoon){
+            b.addEventListener("dragover", function(e){ e.preventDefault(); e.dataTransfer.dropEffect="move"; b.classList.add("drop-ok"); });
+            b.addEventListener("dragleave", function(){ b.classList.remove("drop-ok"); });
+            b.addEventListener("drop", function(e){
+              e.preventDefault(); b.classList.remove("drop-ok");
+              var mv=null; try{ mv=JSON.parse(e.dataTransfer.getData("text/plain")); }catch(err){}
+              if(mv && mv.stylist && mv.time) moveUserBooking(mv.stylist, mv.time, tm);
+            });
+          }
           if(selTime===tm) b.classList.add("sel");
           b.addEventListener("click", function(){ selTime=tm; bookedJustNow=false; renderSlotGrid(); });
           g.appendChild(b);
