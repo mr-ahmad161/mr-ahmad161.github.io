@@ -563,6 +563,12 @@
       .chat-form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line)}
       .chat-form input[type=text]{margin:0;flex:1;min-width:0}
       .chat-form .btn{min-height:44px}
+      /* D126: full call transcript — the scripted demo call, readable without pressing play */
+      .full-transcript{margin-top:18px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface-2);padding:12px 16px}
+      .full-transcript summary{cursor:pointer;font-weight:700;font-size:.92rem}
+      .full-transcript .transcript-text{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+      .full-transcript .transcript-text p{margin:0;font-size:.88rem}
+      .full-transcript .transcript-text b{color:var(--gold)}
       .offline-bar[hidden]{display:none}
       footer p{color:var(--faint);font-size:.85rem;margin:0}
       /* D119: breadcrumb — small, quiet, above the hero */
@@ -769,6 +775,20 @@
                 </div>
               </div>
             </div>
+            <!-- D126: full call transcript — the scripted demo call, readable without pressing play -->
+            <details class="full-transcript">
+              <summary>Read the full call transcript &mdash; what Noor says, word for word</summary>
+              <div class="transcript-text">
+                <p><b>System:</b> Incoming call &mdash; Saturday 11:42 AM. Amara, Sofia and Lena all have clients in the chair.</p>
+                <p><b>Noor:</b> Hello Sarah, thanks for calling Lumi&egrave;re Salon! This is Noor. How can I help today &mdash; looking to book an appointment?</p>
+                <p><b>Sarah:</b> Hi! I need a balayage this Saturday if possible &mdash; my regular salon is fully booked.</p>
+                <p><b>Noor:</b> Good news &mdash; Amara has 2:30 PM open on Saturday. Balayage takes about 2 hours, $140. Shall I lock that in for you?</p>
+                <p><b>Sarah:</b> Perfect, yes please! It&apos;s Sarah.</p>
+                <p><b>Noor:</b> Done, Sarah &mdash; you&apos;re booked with Amara, Saturday at 2:30 PM. I&apos;ve sent a confirmation text, and I&apos;ll remind you the day before. See you Saturday!</p>
+                <p><b>System:</b> Call ended &middot; 1 min 12 sec &middot; Booking value $140 &mdash; a client who would have hit voicemail.</p>
+              </div>
+              <p class="sub">Names, services and times follow the demo settings above &mdash; change the caller, stylist or service and the live call changes too.</p>
+            </details>
             <!-- STATS -->
             <div class="stats">
               <div class="stat"><div class="num" id="stCalls">6</div><div class="lbl">Calls answered today</div><div class="delta" id="stCallsD"></div></div>
