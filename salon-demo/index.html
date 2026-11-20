@@ -315,6 +315,11 @@
       /* D075: week view squeezes the calendar into 7 day columns */
       .cal-table.week{grid-template-columns:repeat(7,1fr)}
       .cal-table.week .slot{min-height:74px}
+      /* D128: month view — November 2026, the demo month, with the demo Saturday highlighted */
+      .cal-table.month{grid-template-columns:repeat(7,1fr)}
+      .cal-table.month .slot{min-height:56px}
+      .cal-table.month .slot.demo-sat{background:var(--gold-soft);border-color:var(--gold);color:var(--gold)}
+      .cal-table.month .slot.demo-sat b{color:var(--gold)}
       .cal-table .ch{font-weight:700;color:var(--muted);text-align:center;padding:4px 0}
       .cal-table .styl{font-weight:700;display:flex;align-items:center}
       .slot{border:1px solid var(--line-soft);border-radius:var(--r-xs);min-height:44px;padding:5px 6px;text-align:center;
@@ -752,7 +757,7 @@
                     <h3 id="calTitle">Saturday's live calendar</h3>
                     <p class="sub">Noor checks this before offering a slot — double bookings are impossible.</p>
                   </div>
-                  <button class="ctl" id="btnWeekView" type="button" aria-pressed="false">Week view</button>
+                  <button class="ctl" id="btnWeekView" type="button" aria-label="Switch calendar view — now showing Saturday">Week view</button>
                 </div>
                 <div class="cal-wrap" id="calWrap">
                   <div class="cal-table" id="calTable"></div>
@@ -1210,7 +1215,24 @@
 
       /* ---------- Calendar render ---------- */
       /* D075: flip the dashboard calendar between Saturday detail and the whole week */
-      var weekView=false;
+      /* D128: the calendar now cycles Day → Week → Month */
+      var calView="day"; // "day" | "week" | "month"
+      function renderMonthView(t){
+        var days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+        days.forEach(function(day){ var h=document.createElement("div"); h.className="ch"; h.textContent=day.slice(0,3); t.appendChild(h); });
+        var booked=0;
+        STYLISTS.forEach(function(st){ TIMES.forEach(function(tm){ if(calendar[st][tm]) booked++; }); });
+        var d, blank;
+        for(d=0; d<6; d++){ blank=document.createElement("div"); blank.className="slot"; t.appendChild(blank); } /* 1 Nov 2026 is a Sunday, so Mon-Sat of week 1 are blank */
+        for(d=1; d<=30; d++){
+          var cell=document.createElement("div"); cell.className="slot";
+          var dow=(d+5)%7; /* Mon=0 .. Sun=6; 1 Nov 2026 is a Sunday */
+          if(dow===6){ cell.textContent=d+" · Closed"; }
+          else if(d===21){ cell.className="slot demo-sat"; cell.innerHTML="<b>"+d+" · Demo Saturday</b>"+booked+" booked"; }
+          else { cell.textContent=d+" · Open"; }
+          t.appendChild(cell);
+        }
+      }
       function renderWeekView(t){
         var days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
         days.forEach(function(day){ var h=document.createElement("div"); h.className="ch"; h.textContent=day.slice(0,3); t.appendChild(h); });
@@ -1229,9 +1251,11 @@
       }
       function renderCalendar(highlight){
         var t = $("calTable"); t.innerHTML = "";
-        t.classList.toggle("week", weekView);
-        $("calTitle").textContent = weekView ? "This week's calendar" : "Saturday's live calendar";
-        if(weekView){ renderWeekView(t); return; }
+        t.classList.toggle("week", calView==="week");
+        t.classList.toggle("month", calView==="month");
+        $("calTitle").textContent = calView==="week" ? "This week's calendar" : calView==="month" ? "November 2026 — the demo month" : "Saturday's live calendar";
+        if(calView==="week"){ renderWeekView(t); return; }
+        if(calView==="month"){ renderMonthView(t); return; }
         var corner = document.createElement("div"); t.appendChild(corner);
         TIMES.forEach(function(tm){ var h=document.createElement("div"); h.className="ch"; h.textContent=timeLabel(tm); t.appendChild(h); });
         STYLISTS.forEach(function(st){
@@ -1471,10 +1495,11 @@
         if(idx>=steps.length){ restart(); return; }
         steps[idx].fn(); idx++; markDots();
       });
+      /* D128: the calendar button cycles Day → Week → Month */
       $("btnWeekView").addEventListener("click", function(){
-        weekView=!weekView;
-        this.textContent = weekView ? "Day view" : "Week view";
-        this.setAttribute("aria-pressed", weekView ? "true" : "false");
+        calView = calView==="day" ? "week" : calView==="week" ? "month" : "day";
+        this.textContent = calView==="day" ? "Week view" : calView==="week" ? "Month view" : "Day view";
+        this.setAttribute("aria-label", "Switch calendar view — now showing " + (calView==="day" ? "Saturday" : calView==="week" ? "the week" : "the month"));
         renderCalendar();
       });
       $("selSpeed").addEventListener("change", function(){ speed=parseFloat(this.value)||1; });
