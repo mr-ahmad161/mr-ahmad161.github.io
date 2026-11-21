@@ -439,9 +439,12 @@
       .bk-list{display:flex;flex-direction:column;gap:10px}
       /* D032: booking items never overflow on narrow screens — long client/service names wrap */
       .bk-item{border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 14px;background:var(--surface-2);min-width:0;overflow-wrap:break-word}
+      /* D130: staff avatar on every booking — stylist initials in a gold circle */
+      .bk-item{position:relative;padding-left:60px}
+      .bk-item .bk-avatar{position:absolute;left:12px;top:12px;width:36px;height:36px;border-radius:50%;background:var(--gold-soft);color:var(--gold);font-weight:700;font-size:.8rem;display:flex;align-items:center;justify-content:center}
       @media (max-width:560px){
         .bk-list{gap:8px}
-        .bk-item{padding:13px 14px}
+        .bk-item{padding:13px 14px 13px 60px}
         .bk-item b{font-size:.95rem}
         .bk-item .tag{margin-top:7px}
       }
@@ -1296,7 +1299,9 @@
           var d=document.createElement("div"); d.className="bk-item";
           /* D065: show the service duration on every booking in the list */
           var dur=""; SERVICES.forEach(function(sv){ if(sv.name===it.service) dur=sv.dur; });
-          d.innerHTML="<b>"+it.client+" — "+it.service+"</b><span>with "+it.stylist+" · Saturday "+timeLabel(it.time)+(dur?" · "+dur:"")+"</span>"+(it.notes?"<span>Note: "+esc(it.notes)+"</span>":"")+
+          /* D130: staff avatar — the stylist's initials in a gold circle on every booking */
+          var ini=it.stylist.slice(0,2).toUpperCase();
+          d.innerHTML='<span class="bk-avatar" aria-hidden="true">'+ini+'</span>'+"<b>"+it.client+" — "+it.service+"</b><span>with "+it.stylist+" · Saturday "+timeLabel(it.time)+(dur?" · "+dur:"")+"</span>"+(it.notes?"<span>Note: "+esc(it.notes)+"</span>":"")+
             '<span class="tag'+(it.byUser?" you":"")+'">'+(it.byUser?"Booked by you just now":"Confirmed · reminder set")+"</span>"+
             /* D076: simple heuristic — a booking made by a brand-new client with no history is higher no-show risk; a confirmed booking with a reminder set is low risk */
             '<span class="risk '+(it.byUser?"high":"low")+'">'+(it.byUser?"Higher no-show risk · new client":"Low no-show risk")+"</span>";
