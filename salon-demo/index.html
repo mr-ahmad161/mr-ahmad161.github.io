@@ -484,6 +484,11 @@
       .ba-before{background:#e9e2d6;color:#6b6257}
       .ba-after{background:linear-gradient(135deg,var(--gold),#e8c85a);color:#fff}
       .ba-card figcaption{margin-top:10px;font-size:.9rem;color:var(--muted)}
+      /* D133: Instagram feed embed placeholder grid */
+      .ig-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+      @media (max-width:860px){.ig-grid{grid-template-columns:repeat(2,1fr)}}
+      .ig-ph{aspect-ratio:1;border-radius:var(--radius);border:1px solid var(--line);background:linear-gradient(135deg,#fdf6ec,#f3e7d3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--muted);font-size:.85rem;text-align:center;padding:8px}
+      .ig-ph b{font-size:1.3rem}
       .steps4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
       @media (max-width:900px){.steps4{grid-template-columns:repeat(2,1fr)}}
       @media (max-width:520px){.steps4{grid-template-columns:1fr}}
@@ -1102,6 +1107,24 @@
               <figcaption><b>Lena</b>Owner, bridal &amp; styling studio</figcaption>
             </figure>
           </div>
+        </div>
+      </section>
+
+      <!-- INSTAGRAM -->
+      <!-- D133: Instagram feed embed placeholder — the salon's live feed goes here -->
+      <section id="instagram">
+        <div class="wrap">
+          <div class="sec-head">
+            <h2>Fresh from the salon floor</h2>
+            <p>Our latest work, straight from Instagram.</p>
+          </div>
+          <div class="ig-grid" aria-label="Instagram feed placeholder">
+            <div class="ig-ph"><b aria-hidden="true">&#9986;</b><span>Latest cut</span></div>
+            <div class="ig-ph"><b aria-hidden="true">&#127912;</b><span>Fresh colour</span></div>
+            <div class="ig-ph"><b aria-hidden="true">&#128133;</b><span>Nail day</span></div>
+            <div class="ig-ph"><b aria-hidden="true">&#128141;</b><span>Bridal morning</span></div>
+          </div>
+          <p class="cust-note">Instagram feed placeholder &mdash; connect your salon&rsquo;s Instagram and your latest posts appear here. <a href="https://www.instagram.com/" target="_blank" rel="noopener">Follow Lumi&egrave;re Salon on Instagram</a></p>
         </div>
       </section>
 
