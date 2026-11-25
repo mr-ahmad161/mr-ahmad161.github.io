@@ -477,6 +477,13 @@
       .pain .n{font-family:"Playfair Display",serif;font-style:italic;font-size:1.7rem;color:var(--gold);line-height:1}
       .pain h3{margin:10px 0 6px;font-size:1.05rem}
       .pain p{margin:0;color:var(--muted);font-size:.93rem}
+      /* D132: before/after gallery placeholder tiles */
+      .ba-card{margin:0}
+      .ba-ph{display:flex;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line)}
+      .ba-ph span{flex:1;padding:34px 8px;text-align:center;font-size:.85rem;font-weight:600}
+      .ba-before{background:#e9e2d6;color:#6b6257}
+      .ba-after{background:linear-gradient(135deg,var(--gold),#e8c85a);color:#fff}
+      .ba-card figcaption{margin-top:10px;font-size:.9rem;color:var(--muted)}
       .steps4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
       @media (max-width:900px){.steps4{grid-template-columns:repeat(2,1fr)}}
       @media (max-width:520px){.steps4{grid-template-columns:1fr}}
@@ -982,6 +989,32 @@
             </ul>
             <p class="cust-note">These are the demo salon&rsquo;s prices — change them in &ldquo;Make it yours&rdquo; and Noor quotes your prices instead.</p>
           </div>
+        </div>
+      </section>
+
+      <!-- BEFORE / AFTER -->
+      <!-- D132: before-and-after gallery placeholder — the salon's real photos go here -->
+      <section id="gallery">
+        <div class="wrap">
+          <div class="sec-head">
+            <h2>Before &amp; after</h2>
+            <p>Real results from the chair &mdash; your salon&rsquo;s photos go here.</p>
+          </div>
+          <div class="cards3">
+            <figure class="ba-card">
+              <div class="ba-ph"><span class="ba-before">Before</span><span class="ba-after">After</span></div>
+              <figcaption><b>Balayage refresh</b> &mdash; full colour, toned and finished</figcaption>
+            </figure>
+            <figure class="ba-card">
+              <div class="ba-ph"><span class="ba-before">Before</span><span class="ba-after">After</span></div>
+              <figcaption><b>Signature haircut</b> &mdash; cut, wash and blow-dry finish</figcaption>
+            </figure>
+            <figure class="ba-card">
+              <div class="ba-ph"><span class="ba-before">Before</span><span class="ba-after">After</span></div>
+              <figcaption><b>Bridal trial</b> &mdash; trial style before the big day</figcaption>
+            </figure>
+          </div>
+          <p class="cust-note">Gallery placeholder &mdash; add your salon&rsquo;s before-and-after photos and Noor can mention them on calls.</p>
         </div>
       </section>
 
