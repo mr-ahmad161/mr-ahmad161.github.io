@@ -495,6 +495,8 @@
       .menu-list li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:16px 0;border-bottom:1px solid var(--line-soft)}
       .menu-list li:last-child{border-bottom:0}
       .menu-list b{font-size:.98rem}
+      /* D131: service icons — a quick visual cue for each service in the menu */
+      .menu-list .svc-ic{display:inline-block;font-size:1.1rem;margin-right:8px;vertical-align:-2px}
       .menu-list span{display:block;font-size:.85rem;color:var(--muted);margin-top:2px}
       .menu-price{font-size:1.05rem;color:var(--gold);white-space:nowrap}
       /* D055: FAQ accordion */
@@ -973,10 +975,10 @@
           </div>
           <div class="panel menu-panel">
             <ul class="menu-list">
-              <li><div><b>Balayage</b><span>Full colour, toned and finished &middot; 2 hours</span></div><b class="menu-price">$140</b></li>
-              <li><div><b>Signature Haircut</b><span>Cut, wash and blow-dry finish &middot; 1 hour</span></div><b class="menu-price">$65</b></li>
-              <li><div><b>Gel Manicure</b><span>Shape, gel colour and cuticle care &middot; 45 minutes</span></div><b class="menu-price">$45</b></li>
-              <li><div><b>Bridal Trial</b><span>Trial style and consultation before the big day &middot; 1.5 hours</span></div><b class="menu-price">$95</b></li>
+              <li><div><span class="svc-ic" aria-hidden="true">&#127912;</span><b>Balayage</b><span>Full colour, toned and finished &middot; 2 hours</span></div><b class="menu-price">$140</b></li>
+              <li><div><span class="svc-ic" aria-hidden="true">&#9986;</span><b>Signature Haircut</b><span>Cut, wash and blow-dry finish &middot; 1 hour</span></div><b class="menu-price">$65</b></li>
+              <li><div><span class="svc-ic" aria-hidden="true">&#128133;</span><b>Gel Manicure</b><span>Shape, gel colour and cuticle care &middot; 45 minutes</span></div><b class="menu-price">$45</b></li>
+              <li><div><span class="svc-ic" aria-hidden="true">&#128141;</span><b>Bridal Trial</b><span>Trial style and consultation before the big day &middot; 1.5 hours</span></div><b class="menu-price">$95</b></li>
             </ul>
             <p class="cust-note">These are the demo salon&rsquo;s prices — change them in &ldquo;Make it yours&rdquo; and Noor quotes your prices instead.</p>
           </div>
