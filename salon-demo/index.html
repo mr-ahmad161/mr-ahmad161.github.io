@@ -489,6 +489,12 @@
       @media (max-width:860px){.ig-grid{grid-template-columns:repeat(2,1fr)}}
       .ig-ph{aspect-ratio:1;border-radius:var(--radius);border:1px solid var(--line);background:linear-gradient(135deg,#fdf6ec,#f3e7d3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--muted);font-size:.85rem;text-align:center;padding:8px}
       .ig-ph b{font-size:1.3rem}
+      /* D134: map embed placeholder — the salon's live map goes here */
+      .visit-panel{padding:20px 26px}
+      .map-ph{background:linear-gradient(135deg,#eef3f6,#dde8ee);border:1px solid var(--line);border-radius:var(--radius);text-align:center;padding:36px 16px 28px}
+      .map-pin{font-size:2rem;display:block;margin-bottom:8px}
+      .map-ph p{margin:6px 0;color:var(--muted);font-size:.93rem}
+      .map-note{font-size:.85rem!important;color:var(--faint)!important}
       .steps4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
       @media (max-width:900px){.steps4{grid-template-columns:repeat(2,1fr)}}
       @media (max-width:520px){.steps4{grid-template-columns:1fr}}
@@ -1125,6 +1131,24 @@
             <div class="ig-ph"><b aria-hidden="true">&#128141;</b><span>Bridal morning</span></div>
           </div>
           <p class="cust-note">Instagram feed placeholder &mdash; connect your salon&rsquo;s Instagram and your latest posts appear here. <a href="https://www.instagram.com/" target="_blank" rel="noopener">Follow Lumi&egrave;re Salon on Instagram</a></p>
+        </div>
+      </section>
+
+      <!-- VISIT -->
+      <!-- D134: map embed placeholder — the salon's real map embed goes here -->
+      <section id="visit">
+        <div class="wrap">
+          <div class="sec-head">
+            <h2>Find Lumi&egrave;re Salon</h2>
+            <p>Drop in, or call Noor and she will book you in before you arrive.</p>
+          </div>
+          <div class="panel visit-panel">
+            <div class="map-ph" role="img" aria-label="Map placeholder showing Lumière Salon at 214 Maple Avenue, New York">
+              <span class="map-pin" aria-hidden="true">&#128205;</span>
+              <p><b>Lumi&egrave;re Salon</b><br>214 Maple Avenue, New York, NY 10001</p>
+              <p class="map-note">Map placeholder &mdash; your salon&rsquo;s live map embed goes here.</p>
+            </div>
+          </div>
         </div>
       </section>
 
